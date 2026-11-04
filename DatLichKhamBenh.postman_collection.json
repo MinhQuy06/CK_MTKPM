@@ -1,0 +1,167 @@
+{
+  "info": {
+    "_postman_id": "dat-lich-kham-benh-collection-id",
+    "name": "DatLichKhamBenh - API Testing Collection",
+    "description": "Bộ Postman Collection mẫu cho hệ thống Đặt Lịch Khám Bệnh (DatLichKhamBenh)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Authentication (Xác thực)",
+      "item": [
+        {
+          "name": "Đăng Nhập Admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@clinic.vn\",\n  \"password\": \"Admin@123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Đăng Nhập Bác Sĩ",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"bs.nguyenvana@clinic.vn\",\n  \"password\": \"Doctor@123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Đăng Nhập Bệnh Nhân",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"bn.hoangminh@gmail.com\",\n  \"password\": \"Patient@123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Đăng Ký Bệnh Nhân Mới",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"patient.test@gmail.com\",\n  \"password\": \"Patient@123\",\n  \"role\": \"PATIENT\",\n  \"fullName\": \"Nguyễn Văn Test\",\n  \"phone\": \"0987654321\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "register"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Bác Sĩ & Chuyên Khoa (Doctors & Specialties)",
+      "item": [
+        {
+          "name": "Danh Sách Chuyên Khoa",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/doctors/specialties",
+              "host": ["{{baseUrl}}"],
+              "path": ["doctors", "specialties"]
+            }
+          }
+        },
+        {
+          "name": "Danh Sách Bác Sĩ",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/doctors",
+              "host": ["{{baseUrl}}"],
+              "path": ["doctors"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Lịch Hẹn & Đặt Lịch (Appointments & Booking)",
+      "item": [
+        {
+          "name": "Danh Sách Lịch Hẹn Của Tôi",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/appointments/my-appointments",
+              "host": ["{{baseUrl}}"],
+              "path": ["appointments", "my-appointments"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

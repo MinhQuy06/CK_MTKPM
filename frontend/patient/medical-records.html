@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hồ Sơ Bệnh Án - DatLichKhamBenh</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    body { background-color: #f8fafc; color: #1e293b; }
+    .sidebar { background: #0f172a; color: #fff; min-height: 100vh; }
+    .sidebar .nav-link { color: #94a3b8; border-radius: 10px; margin-bottom: 4px; padding: 10px 16px; font-weight: 500; }
+    .sidebar .nav-link:hover, .sidebar .nav-link.active { background: #1e293b; color: #38bdf8; }
+    .record-card { border-radius: 16px; border: 1px solid #e2e8f0; background: #fff; transition: all 0.2s ease; }
+    .record-card:hover { box-shadow: 0 8px 20px rgba(0,0,0,0.08); transform: translateY(-2px); }
+  </style>
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Sidebar -->
+      <aside class="col-md-3 col-lg-2 d-md-block sidebar collapse p-3">
+        <div class="d-flex align-items-center gap-2 mb-4 px-2">
+          <div class="bg-primary text-white rounded-3 p-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+            <i class="bi bi-hospital fs-4"></i>
+          </div>
+          <div>
+            <h6 class="fw-bold mb-0 text-white">Bệnh Nhân</h6>
+            <small class="text-secondary">DatLichKhamBenh</small>
+          </div>
+        </div>
+        <ul class="nav nav-pills flex-column mb-auto">
+          <li class="nav-item"><a href="dashboard.html" class="nav-link d-flex align-items-center gap-2"><i class="bi bi-search fs-5"></i> Tìm & Đặt Bác Sĩ</a></li>
+          <li class="nav-item"><a href="appointments.html" class="nav-link d-flex align-items-center gap-2"><i class="bi bi-calendar-event fs-5"></i> Lịch Hẹn Của Tôi</a></li>
+          <li class="nav-item"><a href="medical-records.html" class="nav-link active d-flex align-items-center gap-2"><i class="bi bi-file-earmark-medical fs-5"></i> Hồ Sơ Bệnh Án</a></li>
+          <li class="nav-item"><a href="profile.html" class="nav-link d-flex align-items-center gap-2"><i class="bi bi-person-gear fs-5"></i> Thông Tin Cá Nhân</a></li>
+        </ul>
+        <hr class="text-secondary my-4">
+        <div class="d-flex align-items-center justify-content-between px-2">
+          <div class="d-flex align-items-center gap-2">
+            <div class="bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 36px; height: 36px;" id="user-avatar">P</div>
+            <div class="fw-semibold text-white small" id="user-name">Bệnh nhân</div>
+          </div>
+          <button onclick="Auth.logout()" class="btn btn-outline-danger btn-sm border-0"><i class="bi bi-box-arrow-right fs-5"></i></button>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div>
+            <h2 class="fw-bold text-dark mb-1"><i class="bi bi-file-earmark-medical text-primary me-2"></i>Hồ Sơ Bệnh Án</h2>
+            <p class="text-muted mb-0">Toàn bộ kết quả chẩn đoán, đơn thuốc từ các lần khám bệnh đã hoàn thành</p>
+          </div>
+          <a href="appointments.html" class="btn btn-outline-primary rounded-pill fw-semibold">
+            <i class="bi bi-calendar-event me-1"></i>Xem Lịch Hẹn
+          </a>
+        </div>
+
+        <!-- Records container -->
+        <div id="records-container" class="d-flex flex-column gap-3">
+          <div class="text-center py-5">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="mt-2 text-muted fw-medium">Đang tải hồ sơ bệnh án...</p>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Detail Modal -->
+  <div class="modal fade" id="record-detail-modal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg rounded-4">
+        <div class="modal-header border-0 bg-success text-white rounded-top-4 py-3">
+          <h5 class="modal-title fw-bold"><i class="bi bi-clipboard2-pulse me-2"></i>Chi Tiết Hồ Sơ Bệnh Án</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4" id="record-detail-content"></div>
+        <div class="modal-footer border-0 bg-light rounded-bottom-4">
+          <button class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Đóng</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    const user = Auth.checkAuth(['PATIENT']);
+    if (user) {
+      document.getElementById('user-name').innerText = user.fullName || user.email.split('@')[0];
+      document.getElementById('user-avatar').innerText = (user.fullName || user.email).charAt(0).toUpperCase();
+    }
+
+    let recordDetailModal = null;
+    document.addEventListener('DOMContentLoaded', () => {
+      recordDetailModal = new bootstrap.Modal(document.getElementById('record-detail-modal'));
+      loadRecords();
+    });
+
+    async function loadRecords() {
+      const container = document.getElementById('records-container');
+      try {
+        const records = (await Api.patient.medicalRecords()).data || [];
+
+        if (records.length === 0) {
+          container.innerHTML = `
+            <div class="card border-0 shadow-sm rounded-4 p-5 text-center bg-white">
+              <i class="bi bi-file-earmark-x display-2 text-muted mb-3"></i>
+              <h5 class="fw-bold text-secondary">Chưa có hồ sơ bệnh án nào</h5>
+              <p class="text-muted">Kết quả chẩn đoán từ bác sĩ sẽ xuất hiện tại đây sau mỗi lần khám bệnh hoàn thành.</p>
+              <a href="dashboard.html" class="btn btn-primary rounded-pill px-4 mt-2 fw-semibold">
+                <i class="bi bi-search me-1"></i> Đặt Lịch Khám Ngay
+              </a>
+            </div>`;
+          return;
+        }
+
+        container.innerHTML = records.map(x => `
+          <article class="card record-card p-4 shadow-sm" style="cursor:pointer" onclick="openRecordDetail(${x.id || 0}, '${encodeURIComponent(JSON.stringify(x))}')">
+            <div class="row align-items-start g-3">
+              <div class="col-auto">
+                <div class="bg-success-subtle text-success rounded-3 d-flex align-items-center justify-content-center" style="width:50px;height:50px;font-size:1.4rem;">
+                  <i class="bi bi-clipboard2-pulse"></i>
+                </div>
+              </div>
+              <div class="col">
+                <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
+                  <h5 class="fw-bold text-dark mb-0">
+                    <i class="bi bi-stethoscope me-2 text-primary"></i>${x.diagnosis || 'Kết quả khám'}
+                  </h5>
+                  <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-2">
+                    <i class="bi bi-calendar-check me-1"></i>${Utils.formatDate(x.createdAt || x.workDate || '')}
+                  </span>
+                </div>
+                ${x.doctorName ? `<div class="small text-muted mb-2"><i class="bi bi-person-badge me-1 text-primary"></i>Bác sĩ: <strong>${x.doctorName}</strong></div>` : ''}
+                <div class="p-3 bg-light rounded-3">
+                  <small class="text-muted d-block mb-1 fw-semibold"><i class="bi bi-journal-text me-1"></i>Ghi chú & Đơn thuốc:</small>
+                  <p class="mb-0 text-dark text-truncate" style="max-height:48px; overflow:hidden;">${x.doctorNotes || 'Không có ghi chú.'}</p>
+                </div>
+                <div class="mt-2 small text-primary fw-semibold"><i class="bi bi-arrow-right-circle me-1"></i>Bấm để xem đầy đủ chi tiết</div>
+              </div>
+            </div>
+          </article>
+        `).join('');
+      } catch (e) {
+        container.innerHTML = `<div class="alert alert-danger shadow-sm rounded-3">${e.message}</div>`;
+      }
+    }
+
+    function openRecordDetail(id, encodedData) {
+      const x = JSON.parse(decodeURIComponent(encodedData));
+      document.getElementById('record-detail-content').innerHTML = `
+        <div class="row g-3">
+          <div class="col-md-6">
+            <p class="text-muted fw-semibold small text-uppercase mb-1">Bác sĩ điều trị</p>
+            <p class="fw-bold text-dark"><i class="bi bi-person-badge me-1 text-primary"></i>${x.doctorName || 'Chưa có thông tin'}</p>
+            <p class="text-muted fw-semibold small text-uppercase mb-1">Ngày khám</p>
+            <p class="fw-bold text-dark"><i class="bi bi-calendar-check me-1 text-success"></i>${Utils.formatDate(x.createdAt || x.workDate || '')}</p>
+          </div>
+          <div class="col-md-6">
+            <p class="text-muted fw-semibold small text-uppercase mb-1">Chẩn đoán bệnh</p>
+            <p class="fw-bold text-dark fs-6"><i class="bi bi-stethoscope me-1 text-primary"></i>${x.diagnosis || 'Chưa cập nhật'}</p>
+          </div>
+          <div class="col-12">
+            <hr>
+            <p class="text-muted fw-semibold small text-uppercase mb-2"><i class="bi bi-journal-medical me-1"></i>Lời dặn của bác sĩ & Đơn thuốc chi tiết</p>
+            <div class="bg-light rounded-4 p-4">
+              <p class="mb-0 text-dark" style="white-space: pre-wrap; line-height: 1.8;">${x.doctorNotes || '<span class="text-muted fst-italic">Không có ghi chú.</span>'}</p>
+            </div>
+          </div>
+        </div>`;
+      recordDetailModal.show();
+    }
+  </script>
+</body>
+</html>
