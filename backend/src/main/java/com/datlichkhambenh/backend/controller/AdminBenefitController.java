@@ -1,5 +1,6 @@
 package com.datlichkhambenh.backend.controller;
 import com.datlichkhambenh.backend.dto.request.BenefitDecisionInput;
+import com.datlichkhambenh.backend.dto.request.BenefitRevokeInput;
 import com.datlichkhambenh.backend.dto.response.*;
 import com.datlichkhambenh.backend.service.*;
 import jakarta.validation.Valid;
@@ -19,5 +20,10 @@ public class AdminBenefitController {
  public ApiResponseDto<BenefitRequestDto> decide(@AuthenticationPrincipal UserDetails actor,@PathVariable Long id,
     @Valid @RequestBody BenefitDecisionInput input) {
   return ApiResponseDto.success(benefits.decide(id,current.getUserId(actor),input));
+ }
+ @PostMapping("/{id}/revoke")
+ public ApiResponseDto<BenefitRequestDto> revoke(@AuthenticationPrincipal UserDetails actor,@PathVariable Long id,
+    @Valid @RequestBody BenefitRevokeInput input) {
+  return ApiResponseDto.success(benefits.revoke(id,current.getUserId(actor),input));
  }
 }

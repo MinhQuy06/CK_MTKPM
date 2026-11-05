@@ -112,3 +112,7 @@ Nâng cấp MySQL hiện hữu: thực thi script 001-benefit-requests.sql trong
 ### Quyết định quyền hưởng (ticket #10)
 
 BENEFIT_REQUESTS bổ sung approved_from/approved_until (date, nullable); chỉ được ghi khi Admin duyệt. BENEFIT_DECISIONS lưu id (bigint PK), request_id (FK BENEFIT_REQUESTS), action (APPROVE/REJECT), reason (varchar 1000), decided_by (FK USERS), decided_at (datetime). Lịch sử chỉ thêm, không sửa/xóa qua API. Quyết định khóa bản ghi yêu cầu; yêu cầu đã xử lý không được duyệt lại. Chạy upgrade 002 sau 001 trên MySQL hiện hữu.
+
+### Gia hạn/thu hồi (ticket #11)
+
+BENEFIT_REQUESTS bổ sung renewal_of_id (nullable FK tới yêu cầu gốc). Gia hạn tạo bản ghi PENDING mới cùng người bệnh/loại; không sửa hồ sơ gốc. Thu hồi chuyển APPROVED → REVOKED dưới khóa yêu cầu và thêm quyết định REVOKE vào BENEFIT_DECISIONS. Hết hạn/chưa hiệu lực được suy ra theo ngày Việt Nam, không sửa mất trạng thái quyết định. Chạy upgrade 003 sau 002.

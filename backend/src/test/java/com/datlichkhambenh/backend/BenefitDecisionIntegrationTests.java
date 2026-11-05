@@ -98,4 +98,48 @@ class BenefitDecisionIntegrationTests {
     .andExpect(jsonPath("$.data.decisions.length()").value(1));
   } finally {pool.shutdownNow();}
  }
+
+ @Test void revokeIsAdminOnlyAndKeepsApprovalHistory() throws Exception {
+  long id=request();assertEquals(200,decide(id,admin,"APPROVE"));
+  String path=base+"/"+id+"/revoke";
+  mvc.perform(post(path).servletPath(path).header("Authorization","Bearer "+patient).contentType(MediaType.APPLICATION_JSON)
+   .content("{\"reason\":\"Hồ sơ không còn hợp lệ\"}")).andExpect(status().isForbidden());
+  mvc.perform(post(path).servletPath(path).header("Authorization","Bearer "+admin).contentType(MediaType.APPLICATION_JSON)
+   .content("{\"reason\":\"Hồ sơ không còn hợp lệ\"}")).andExpect(status().isOk())
+   .andExpect(jsonPath("$.data.status").value("REVOKED")).andExpect(jsonPath("$.data.decisions.length()").value(2))
+   .andExpect(jsonPath("$.data.decisions[0].action").value("APPROVE")).andExpect(jsonPath("$.data.decisions[1].action").value("REVOKE"));
+  mvc.perform(post(path).servletPath(path).header("Authorization","Bearer "+admin).contentType(MediaType.APPLICATION_JSON)
+   .content("{\"reason\":\"Lặp quyết định\"}")).andExpect(status().isConflict());
+ }
+ @Test void renewalCreatesNewPendingRequestWithoutOverwritingOriginal() throws Exception {
+  long id=request();assertEquals(200,decide(id,admin,"APPROVE"));
+  String path="/api/v1/patients/me/benefit-requests";
+  String body="{\"kind\":\"INSURANCE\",\"referenceCode\":\"HS-RENEW\",\"requestedFrom\":\"2028-01-01\",\"requestedUntil\":\"2028-12-31\",\"renewalOfId\":"+id+"}";
+  String result=mvc.perform(post(path).servletPath(path).header("Authorization","Bearer "+patient).contentType(MediaType.APPLICATION_JSON).content(body))
+   .andExpect(status().isCreated()).andExpect(jsonPath("$.data.status").value("PENDING"))
+   .andExpect(jsonPath("$.data.renewalOfId").value(id)).andReturn().getResponse().getContentAsString();
+  assertNotEquals(id,json.readTree(result).path("data").path("id").asLong());
+  String original=base+"/"+id;
+  mvc.perform(get(original).servletPath(original).header("Authorization","Bearer "+admin))
+   .andExpect(jsonPath("$.data.status").value("APPROVED")).andExpect(jsonPath("$.data.decisions.length()").value(1))
+   .andExpect(jsonPath("$.data.approvedUntil").value("2027-12-31"));
+ }
+ @Test void expiredApprovedRightsAreDisplayedAsExpired() throws Exception {
+  long id=request();String path=base+"/"+id+"/decision";
+  mvc.perform(post(path).servletPath(path).header("Authorization","Bearer "+admin).contentType(MediaType.APPLICATION_JSON)
+   .content("{\"action\":\"APPROVE\",\"reason\":\"Hồ sơ cũ\",\"approvedFrom\":\"2020-01-01\",\"approvedUntil\":\"2020-12-31\"}"))
+   .andExpect(status().isOk()).andExpect(jsonPath("$.data.status").value("APPROVED"))
+   .andExpect(jsonPath("$.data.effectiveStatus").value("EXPIRED"));
+ }
+ @Test void renewalCannotReferenceAnotherPatientsRequest() throws Exception {
+  long id=request();assertEquals(200,decide(id,admin,"APPROVE"));
+  String other=new TransactionTemplate(tm).execute(tx->{
+   User u=users.save(User.builder().email(UUID.randomUUID()+"@test.vn").passwordHash("unused").role("PATIENT").isActive(true).build());
+   patients.save(Patient.builder().user(u).fullName("Other").build());return jwt.generateToken(u.getEmail(),"PATIENT");
+  });
+  String path="/api/v1/patients/me/benefit-requests";
+  mvc.perform(post(path).servletPath(path).header("Authorization","Bearer "+other).contentType(MediaType.APPLICATION_JSON)
+   .content("{\"kind\":\"INSURANCE\",\"referenceCode\":\"HS\",\"requestedFrom\":\"2028-01-01\",\"requestedUntil\":\"2028-12-31\",\"renewalOfId\":"+id+"}"))
+   .andExpect(status().isNotFound());
+ }
 }

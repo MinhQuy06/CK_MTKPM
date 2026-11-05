@@ -34,3 +34,5 @@ Primary seam: HTTP APIs with real Spring/H2/MockMvc JWT; browser smoke for rende
 - #9 complete: patient request/list/detail API and UI; ownership and self-approval guards; 60 Maven + 9 Node tests and real Chrome smoke passed. Additive upgrade 001 supplied.
 
 - #10 complete: Admin review/decision UI/API and append-only decision history; request pessimistic lock; 65 Maven + 9 Node tests and real Chrome approval smoke passed, including conflicting-decision concurrency.
+
+- #11 complete: admin-only revocation, derived expiry state, linked new renewal requests, unchanged original history; 69 Maven + 9 Node tests and Chrome full benefit lifecycle passed.

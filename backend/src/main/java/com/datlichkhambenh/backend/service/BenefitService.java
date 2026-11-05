@@ -1,5 +1,6 @@
 package com.datlichkhambenh.backend.service;
 import com.datlichkhambenh.backend.dto.request.SubmitBenefitRequest;
+import com.datlichkhambenh.backend.dto.request.BenefitRevokeInput;
 import com.datlichkhambenh.backend.dto.request.BenefitDecisionInput;
 import com.datlichkhambenh.backend.dto.response.BenefitDecisionDto;
 import com.datlichkhambenh.backend.entity.BenefitDecision;
@@ -27,7 +28,13 @@ public class BenefitService {
     public BenefitRequestDto submit(Long patientId,SubmitBenefitRequest input) {
         if(input.requestedUntil().isBefore(input.requestedFrom())) throw new AppException("Ngày kết thúc phải từ ngày bắt đầu trở đi");
         var patient=patients.findById(patientId).orElseThrow(()->new ResourceNotFoundException("Hồ sơ bệnh nhân không tồn tại"));
-        var request=new BenefitRequest();
+        if(input.renewalOfId()!=null) {
+            var previous=requests.findByIdAndPatientUserId(input.renewalOfId(),patientId)
+                    .orElseThrow(()->new ResourceNotFoundException("Yêu cầu gia hạn gốc không tồn tại"));
+            if(!previous.getKind().equals(input.kind()) || !("APPROVED".equals(previous.getStatus()) || "REVOKED".equals(previous.getStatus())))
+                throw new AppException("Chỉ gia hạn cùng loại quyền đã từng được duyệt");
+        }
+        var request=new BenefitRequest();request.setRenewalOfId(input.renewalOfId());
         request.setPatient(patient);request.setKind(input.kind());request.setReferenceCode(input.referenceCode().trim());
         request.setRequestedFrom(input.requestedFrom());request.setRequestedUntil(input.requestedUntil());
         request.setStatus("PENDING");
@@ -64,11 +71,27 @@ public class BenefitService {
         decisions.saveAndFlush(new BenefitDecision(request,input.action(),input.reason().trim(),adminId));
         return view(request);
     }
+    @Transactional
+    public BenefitRequestDto revoke(Long id,Long adminId,BenefitRevokeInput input) {
+        var request=requests.findForUpdate(id).orElseThrow(()->new ResourceNotFoundException("Yêu cầu không tồn tại"));
+        if(!"APPROVED".equals(request.getStatus())) throw new BookingConflictException("Chỉ thu hồi quyền đã được duyệt; vui lòng tải lại");
+        request.setStatus("REVOKED");requests.saveAndFlush(request);
+        decisions.saveAndFlush(new BenefitDecision(request,"REVOKE",input.reason().trim(),adminId));
+        return view(request);
+    }
+    private String effectiveStatus(BenefitRequest r) {
+        if(!"APPROVED".equals(r.getStatus())) return r.getStatus();
+        if(r.getApprovedFrom()==null || r.getApprovedUntil()==null) return "INVALID";
+        var today=java.time.LocalDate.now(java.time.ZoneId.of("Asia/Ho_Chi_Minh"));
+        if(today.isAfter(r.getApprovedUntil())) return "EXPIRED";
+        if(today.isBefore(r.getApprovedFrom())) return "NOT_YET_VALID";
+        return "APPROVED";
+    }
     private BenefitRequestDto view(BenefitRequest r) {
         var history=decisions.findByRequestIdOrderByIdAsc(r.getId()).stream()
                 .map(d->new BenefitDecisionDto(d.getId(),d.getAction(),d.getReason(),d.getDecidedBy(),d.getDecidedAt())).toList();
         return new BenefitRequestDto(r.getId(),r.getPatient().getUserId(),r.getPatient().getFullName(),r.getKind(),
                 r.getReferenceCode(),r.getRequestedFrom(),r.getRequestedUntil(),r.getStatus(),r.getCreatedAt(),
-                r.getApprovedFrom(),r.getApprovedUntil(),history);
+                r.getApprovedFrom(),r.getApprovedUntil(),r.getRenewalOfId(),effectiveStatus(r),history);
     }
 }

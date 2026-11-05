@@ -1,6 +1,6 @@
 # 04: Thu hồi và gia hạn quyền hưởng, giữ lịch sử
 
-Status: ready-for-agent
+Status: completed
 
 **Parent:** https://github.com/MinhQuy06/CK_MTKPM/issues/1
 
@@ -12,10 +12,12 @@ Thực hiện trong repository MinhQuy06/CK_MTKPM, branch thaihoa, tại checkou
 
 **Blocked by:** 03: Admin duyệt hoặc từ chối yêu cầu quyền hưởng
 
-- [ ] Admin thu hồi quyền đang được cấp qua giao diện/API, ghi lý do, người và thời điểm thu hồi; người không có quyền Admin không thực hiện được.
-- [ ] Bệnh nhân xem được tình trạng bị thu hồi/hết hiệu lực và lịch sử quyết định phù hợp; không được sửa hoặc xóa lịch sử.
-- [ ] Gia hạn bằng yêu cầu mới theo luồng duyệt đã có, không ghi đè thời hạn hoặc quyết định của hồ sơ cũ.
-- [ ] Quyền bị thu hồi không còn đủ điều kiện cho báo giá/đặt mới; hết hạn được xác định nhất quán từ thời hạn theo múi giờ Việt Nam.
-- [ ] Lưu đủ trạng thái và lịch sử để kiểm tra thay đổi đồng thời và để ticket đặt lịch truy nguyên quyền được dùng.
-- [ ] Kiểm thử API/giao diện thu hồi, phân quyền, lịch sử giữ nguyên, gửi yêu cầu gia hạn và chỉ được hưởng sau khi yêu cầu mới được duyệt.
-- [ ] Không tạo UML riêng; không sửa giá của lịch đã xác nhận khi trạng thái quyền hưởng thay đổi.
+- [x] Admin thu hồi quyền đang được cấp qua giao diện/API, ghi lý do, người và thời điểm thu hồi; người không có quyền Admin không thực hiện được.
+- [x] Bệnh nhân xem được tình trạng bị thu hồi/hết hiệu lực và lịch sử quyết định phù hợp; không được sửa hoặc xóa lịch sử.
+- [x] Gia hạn bằng yêu cầu mới theo luồng duyệt đã có, không ghi đè thời hạn hoặc quyết định của hồ sơ cũ.
+- [x] Quyền bị thu hồi không còn đủ điều kiện cho báo giá/đặt mới; hết hạn được xác định nhất quán từ thời hạn theo múi giờ Việt Nam.
+- [x] Lưu đủ trạng thái và lịch sử để kiểm tra thay đổi đồng thời và để ticket đặt lịch truy nguyên quyền được dùng.
+- [x] Kiểm thử API/giao diện thu hồi, phân quyền, lịch sử giữ nguyên, gửi yêu cầu gia hạn và chỉ được hưởng sau khi yêu cầu mới được duyệt.
+- [x] Không tạo UML riêng; không sửa giá của lịch đã xác nhận khi trạng thái quyền hưởng thay đổi.
+
+Verification: 69 Maven + 9 Node tests passed; Chrome approve/revoke/renew lifecycle passed; original decisions retained. Upgrade 003 supplied.

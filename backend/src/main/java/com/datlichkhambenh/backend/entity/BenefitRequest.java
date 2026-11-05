@@ -21,5 +21,6 @@ public class BenefitRequest {
     @CreationTimestamp @Column(name="created_at",nullable=false,updatable=false) private LocalDateTime createdAt;
     @Column(name="approved_from") private LocalDate approvedFrom;
     @Column(name="approved_until") private LocalDate approvedUntil;
+    @Column(name="renewal_of_id") private Long renewalOfId;
     @Version @Column(nullable=false) private long version;
 }

@@ -30,6 +30,13 @@ async function loadAdminBenefits() {
      });form.append(button);
     });row.append(form);
    }
+   if(item.approvedFrom)row.append(adminBenefitNode('p','small','Hiệu lực đã duyệt: '+item.approvedFrom+' → '+item.approvedUntil));
+   if(item.status==='APPROVED') {
+    const reason=adminBenefitNode('input','form-control revoke-reason mb-2');reason.placeholder='Lý do thu hồi';reason.setAttribute('aria-label','Lý do thu hồi');reason.maxLength=1000;
+    const button=adminBenefitNode('button','btn btn-outline-danger benefit-revoke','Thu hồi quyền hưởng');button.type='button';
+    button.addEventListener('click',async()=>{button.disabled=true;try{await Api.benefits.revoke(item.id,{reason:reason.value});document.getElementById('admin-benefit-message').textContent='Đã thu hồi và lưu lịch sử.';await loadAdminBenefits();}catch(error){document.getElementById('admin-benefit-message').textContent=error.message;}finally{button.disabled=false;}});
+    row.append(reason,button);
+   }
    list.append(row);
   });
  }catch(error){list.textContent=error.message;}
