@@ -19,5 +19,7 @@ public class BenefitRequest {
     @Column(name="requested_until",nullable=false) private LocalDate requestedUntil;
     @Column(nullable=false,length=20) private String status="PENDING";
     @CreationTimestamp @Column(name="created_at",nullable=false,updatable=false) private LocalDateTime createdAt;
+    @Column(name="approved_from") private LocalDate approvedFrom;
+    @Column(name="approved_until") private LocalDate approvedUntil;
     @Version @Column(nullable=false) private long version;
 }

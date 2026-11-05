@@ -13,7 +13,10 @@ async function loadBenefitRequests() {
       title.textContent=(item.kind==='INSURANCE'?'Bảo hiểm':'VIP')+' — '+(benefitLabels[item.status]||item.status);
       const detail=document.createElement('p');detail.className='mb-0';
       detail.textContent='Mã hồ sơ: '+item.referenceCode+' · Đề nghị: '+item.requestedFrom+' → '+item.requestedUntil;
-      article.append(title,detail);container.append(article);
+      article.append(title,detail);
+      if(item.approvedFrom) { const valid=document.createElement('p');valid.textContent='Hiệu lực đã duyệt: '+item.approvedFrom+' → '+item.approvedUntil;article.append(valid); }
+      (item.decisions||[]).forEach(d=>{const history=document.createElement('p');history.className='small mb-1';history.textContent=d.action+': '+d.reason+' · '+d.decidedAt;article.append(history);});
+      container.append(article);
     });
   } catch(error) { container.textContent=error.message; }
 }

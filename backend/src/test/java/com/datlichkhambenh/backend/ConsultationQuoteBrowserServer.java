@@ -40,6 +40,8 @@ public class ConsultationQuoteBrowserServer {
                         .endTime(LocalTime.of(hour, 30)).isAvailable(true).build());
             }
         }
+        users.save(User.builder().email("quote-admin@test.vn").passwordHash(encoder.encode("BrowserTest123!"))
+                .role("ADMIN").isActive(true).build());
         User user = users.save(User.builder().email("quote-patient@test.vn")
                 .passwordHash(encoder.encode("BrowserTest123!")).role("PATIENT").isActive(true).build());
         context.getBean(PatientRepository.class).save(Patient.builder().user(user).fullName("Bệnh nhân kiểm thử").build());

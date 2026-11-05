@@ -108,3 +108,7 @@ APPOINTMENTS (1) ────── (1) MEDICAL_RECORDS
 | version | bigint | Phiên bản chống cập nhật xung đột |
 
 Nâng cấp MySQL hiện hữu: thực thi script 001-benefit-requests.sql trong bộ db/upgrade trước triển khai. Không xóa hoặc ghi đè dữ liệu cũ. Yêu cầu chờ không tự cấp quyền hưởng.
+
+### Quyết định quyền hưởng (ticket #10)
+
+BENEFIT_REQUESTS bổ sung approved_from/approved_until (date, nullable); chỉ được ghi khi Admin duyệt. BENEFIT_DECISIONS lưu id (bigint PK), request_id (FK BENEFIT_REQUESTS), action (APPROVE/REJECT), reason (varchar 1000), decided_by (FK USERS), decided_at (datetime). Lịch sử chỉ thêm, không sửa/xóa qua API. Quyết định khóa bản ghi yêu cầu; yêu cầu đã xử lý không được duyệt lại. Chạy upgrade 002 sau 001 trên MySQL hiện hữu.

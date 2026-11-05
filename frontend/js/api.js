@@ -94,6 +94,9 @@ const Api = {
   },
 
   benefits: {
+    adminList: () => Api.get('/admin/benefit-requests'),
+    adminGet: id => Api.get('/admin/benefit-requests/' + id),
+    decide: (id,body) => Api.post('/admin/benefit-requests/' + id + '/decision', body),
     submit: body => Api.post('/patients/me/benefit-requests', body),
     mine: () => Api.get('/patients/me/benefit-requests'),
     get: id => Api.get('/patients/me/benefit-requests/' + id),
