@@ -244,7 +244,7 @@
           <div class="bg-light border rounded-3 p-3 text-start mb-4">
             <div class="d-flex justify-content-between mb-2">
               <span class="text-muted">Mã đặt chỗ:</span>
-              <strong class="text-primary font-monospace" id="success-booking-code">BK-0000</strong>
+              <strong class="text-primary font-monospace" id="success-booking-code">BK-0000</strong><p class="mt-2 mb-0">Giá khám đã chốt: <strong id="success-price"></strong> · <span id="success-pricing-kind"></span></p>
             </div>
             <div class="d-flex justify-content-between mb-2">
               <span class="text-muted">Bác sĩ khám:</span>
@@ -638,15 +638,22 @@
       btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Đang xử lý đặt lịch...';
 
       try {
+        const quote=consultationQuote.getState().quote;
         const res = await Api.appointments.create({
           scheduleId: parseInt(scheduleId),
-          symptoms: symptoms
+          symptoms: symptoms,
+          strategyKey: quote.strategyKey,
+          expectedBasePrice: quote.basePrice,
+          expectedDiscountRate: quote.discountRate,
+          expectedPrice: quote.finalPrice
         });
 
         bookingBsModal.hide();
         Utils.showToast('Đặt lịch khám thành công!', 'success');
 
         const createdApp = res.data || {};
+        document.getElementById('success-price').textContent = Utils.formatCurrency(createdApp.price);
+        document.getElementById('success-pricing-kind').textContent = ({STANDARD:'Tiêu chuẩn',INSURANCE:'Bảo hiểm',VIP:'VIP'})[createdApp.pricingKey] || '';
         document.getElementById('success-booking-code').innerText = createdApp.bookingCode || 'BK-SUCCESS';
         document.getElementById('success-doctor-name').innerText = docName;
         document.getElementById('success-date-time').innerText = Utils.formatDate(dateVal);
@@ -654,8 +661,14 @@
 
       } catch (err) {
         Utils.showToast(err.message, 'error');
+        if(err.code==='PRICE_CHANGED') {
+          consultationQuote.reset();
+          document.getElementById('quote-status').textContent=err.message;
+          document.getElementById('quote-retry').textContent='Xem lại báo giá';
+          document.getElementById('quote-retry').hidden=false;
+        }
       } finally {
-        btn.disabled = false;
+        btn.disabled = consultationQuote.getState().status !== 'ready';
         btn.innerHTML = '<i class="bi bi-check-circle me-1"></i> Xác Nhận Đặt Lịch';
       }
     });

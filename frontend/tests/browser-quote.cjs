@@ -11,7 +11,7 @@ const path = require('node:path');
   page.on('pageerror', error => errors.push(error.message));
   let bookingPosts = 0;
   page.on('request', request => {
-    if (request.method() === 'POST' && new URL(request.url()).pathname === '/api/v1/appointments') bookingPosts++;
+    if (request.method() === 'POST' && new URL(request.url()).pathname.startsWith('/api/v1/appointments')) bookingPosts++;
   });
   try {
     // Login and all quote/slot reads use the real backend and real JWT.

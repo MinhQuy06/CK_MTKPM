@@ -40,3 +40,7 @@ Primary seam: HTTP APIs with real Spring/H2/MockMvc JWT; browser smoke for rende
 - #12 complete: operative Insurance Strategy, authenticated patient/date eligibility, pricing-options API/UI; today and appointment-day inclusive boundaries, revoked/other-patient denial tested; 79 Maven + 9 Node and Chrome insurance quote smoke passed.
 
 - #13 complete: VipPricingStrategy registered without changing Context algorithm; 81 Maven + 9 Node tests and fresh-fixture Chrome VIP quote passed. Initial browser timeout after host sleep/clock leaps cleared on a clean fixture rerun; no product change made to mask it.
+
+- Ruling: new clients use POST /appointments/confirm with a server-only quoteRequired marker, while legacy POST remains compatible. This prevents stripping all quote fields from downgrading the strict endpoint; cost is one additive endpoint and the client route update.
+- Ruling: discount snapshot uses DECIMAL(19,18) and rejects more than 18 fractional digits rather than silently rounding a configured rate; cost is an explicit precision limit for unusually precise policies.
+- #14 complete: server-calculated Standard snapshots, strict quote comparison, legacy compatibility, after-commit email capture, slot races; 95 H2/MySQL tests + 10 Node + real Chrome booking passed; 4 MySQL upgrades preserve old appointment fee/null metadata. Four editable monochrome UML/PNGs verified.

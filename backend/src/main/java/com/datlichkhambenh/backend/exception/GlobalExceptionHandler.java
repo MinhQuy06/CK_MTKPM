@@ -19,6 +19,12 @@ import java.util.stream.Collectors;
 @Slf4j
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(BookingRejectionException.class)
+    public ResponseEntity<ApiResponseDto<Void>> handleBookingRejection(BookingRejectionException ex) {
+        var body=ApiResponseDto.<Void>error(ex.getMessage());body.setCode(ex.getCode());
+        return ResponseEntity.status(ex.getStatus()).body(body);
+    }
+
     @ExceptionHandler(AppException.class)
     public ResponseEntity<ApiResponseDto<Void>> handleAppException(AppException ex) {
         return ResponseEntity

@@ -28,5 +28,8 @@ public class AppointmentDto {
     private String symptoms;
     private String status;
     private BigDecimal price;
+    private String pricingKey;
+    private BigDecimal basePrice;
+    private BigDecimal discountRate;
     private LocalDateTime createdAt;
 }

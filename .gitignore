@@ -27,3 +27,5 @@ replay_pid*
 backend/target/
 frontend/node_modules/
 .superpowers/
+
+__pycache__/

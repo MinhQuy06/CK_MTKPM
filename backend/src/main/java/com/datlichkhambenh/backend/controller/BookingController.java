@@ -36,6 +36,15 @@ public class BookingController {
                 .body(ApiResponseDto.success(appointment, "Đặt lịch khám thành công"));
     }
 
+    @PostMapping("/confirm")
+    @PreAuthorize("hasAuthority('PATIENT')")
+    public ResponseEntity<ApiResponseDto<AppointmentDto>> confirmBooking(
+            @AuthenticationPrincipal UserDetails userDetails,@Valid @RequestBody CreateBookingDto request) {
+        request.setQuoteRequired(true);
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponseDto.success(
+                bookingService.createBooking(currentUserService.getUserId(userDetails),request),"Đặt lịch khám thành công"));
+    }
+
     @DeleteMapping("/{id}/cancel")
     @PreAuthorize("hasAuthority('PATIENT')")
     public ResponseEntity<ApiResponseDto<Void>> cancelBooking(

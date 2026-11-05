@@ -39,6 +39,7 @@ public class PricingContext {
         if (rate == null || rate.signum() < 0 || rate.compareTo(BigDecimal.ONE) > 0) {
             throw new IllegalArgumentException("Tỷ lệ giảm phải nằm trong khoảng 0 đến 1");
         }
+        if(rate.stripTrailingZeros().scale()>18) throw new IllegalArgumentException("Tỷ lệ giảm có tối đa 18 chữ số thập phân");
         BigDecimal base = wholeVnd(fee);
         BigDecimal price = wholeVnd(strategy.calculate(base));
         if (price.compareTo(base) > 0) {

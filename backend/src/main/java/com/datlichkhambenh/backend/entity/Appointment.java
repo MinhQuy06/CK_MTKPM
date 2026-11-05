@@ -58,6 +58,10 @@ public class Appointment {
     @Column(name = "price", precision = 12, scale = 2)
     private BigDecimal price;
 
+    @Column(name="pricing_key",length=20) private String pricingKey;
+    @Column(name="base_price",precision=12,scale=2) private BigDecimal basePrice;
+    @Column(name="discount_rate",precision=19,scale=18) private BigDecimal discountRate;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -132,4 +136,10 @@ public class Appointment {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public String getPricingKey(){return pricingKey;}
+    public void setPricingKey(String value){pricingKey=value;}
+    public BigDecimal getBasePrice(){return basePrice;}
+    public void setBasePrice(BigDecimal value){basePrice=value;}
+    public BigDecimal getDiscountRate(){return discountRate;}
+    public void setDiscountRate(BigDecimal value){discountRate=value;}
 }

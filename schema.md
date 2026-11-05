@@ -116,3 +116,7 @@ BENEFIT_REQUESTS bổ sung approved_from/approved_until (date, nullable); chỉ 
 ### Gia hạn/thu hồi (ticket #11)
 
 BENEFIT_REQUESTS bổ sung renewal_of_id (nullable FK tới yêu cầu gốc). Gia hạn tạo bản ghi PENDING mới cùng người bệnh/loại; không sửa hồ sơ gốc. Thu hồi chuyển APPROVED → REVOKED dưới khóa yêu cầu và thêm quyết định REVOKE vào BENEFIT_DECISIONS. Hết hạn/chưa hiệu lực được suy ra theo ngày Việt Nam, không sửa mất trạng thái quyết định. Chạy upgrade 003 sau 002.
+
+### Snapshot giá lịch hẹn (ticket #14)
+
+APPOINTMENTS bổ sung pricing_key (varchar 20), base_price (decimal 12,2), discount_rate (decimal 19,18). Các cột cho phép null để giữ lịch cũ đúng dữ liệu gốc; không backfill loại quyền hoặc tỷ lệ chưa từng ghi nhận. price tiếp tục là giá cuối đã chốt. Chạy upgrade 004 sau 003. Tỷ lệ có tối đa 18 chữ số phần thập phân để lưu chính xác; chuẩn hóa tiền HALF_UP đến đồng.

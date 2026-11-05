@@ -29,7 +29,9 @@ const Api = {
       }
       if (!res.ok) {
         const msg = data.message || data.error || `Lỗi ${res.status}`;
-        throw new Error(msg);
+        const error = new Error(msg);
+        error.status = res.status; error.code = data.code; error.data = data.data;
+        throw error;
       }
       return data;
     } catch (err) {
@@ -110,7 +112,7 @@ const Api = {
       const params = new URLSearchParams({ scheduleId, strategyKey });
       return Api.get(`/appointments/quote?${params}`);
     },
-    create: (body) => Api.post('/appointments', body),
+    create: (body) => Api.post('/appointments/confirm', body),
     cancel: (id) => Api.delete(`/appointments/${id}/cancel`),
     get: (id) => Api.get(`/appointments/${id}`),
     mine: () => Api.get('/appointments/my-appointments'),

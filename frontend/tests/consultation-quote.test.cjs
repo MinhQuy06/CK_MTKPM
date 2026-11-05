@@ -97,3 +97,12 @@ test('explicit API base is preserved and query parameters are encoded', async ()
   await api.appointments.quote(7, 'A&B');
   assert.equal(calls[0].url, 'https://clinic.example/api/v1/appointments/quote?scheduleId=7&strategyKey=A%26B');
 });
+
+test('booking errors preserve machine code and HTTP status for recovery UI', async () => {
+  const context = { window:{location:{protocol:'http:',port:'18081'}}, URLSearchParams,
+    localStorage:{getItem:()=> 'fixture-token'},fetch:async()=>({
+      ok:false,status:409,json:async()=>({success:false,code:'PRICE_CHANGED',message:'Giá đã đổi'})
+    })};
+  vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../js/api.js'),'utf8')+'\nglobalThis.client=Api;',context);
+  await assert.rejects(context.client.appointments.create({scheduleId:7}), error=>error.code==='PRICE_CHANGED'&&error.status===409);
+});
