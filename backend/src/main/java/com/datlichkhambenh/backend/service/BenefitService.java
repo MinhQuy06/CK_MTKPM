@@ -88,6 +88,23 @@ public class BenefitService {
                         && !appointmentDay.isBefore(r.getApprovedFrom()) && !appointmentDay.isAfter(r.getApprovedUntil()))
                 .findFirst();
     }
+    @Transactional(propagation=org.springframework.transaction.annotation.Propagation.MANDATORY)
+    public BenefitRequest lockedEligible(Long patientId,String kind,java.time.LocalDate appointmentDay) {
+        // Query scalar IDs first: do not cache a pre-lock entity snapshot in this transaction.
+        for(Long id:requests.findApprovedIds(patientId,kind)) {
+            var grant=requests.findForUpdate(id).orElse(null);
+            if(grant!=null && grant.getPatient().getUserId().equals(patientId) && grant.getKind().equals(kind)
+                    && "APPROVED".equals(grant.getStatus()) && coversDates(grant,appointmentDay)) return grant;
+        }
+        throw new com.datlichkhambenh.backend.exception.BookingRejectionException("BENEFIT_UNAVAILABLE",
+                "Quyền hưởng không còn hợp lệ cho ngày khám. Vui lòng chọn lại loại phí.",org.springframework.http.HttpStatus.FORBIDDEN);
+    }
+    private boolean coversDates(BenefitRequest grant,java.time.LocalDate day) {
+        var today=java.time.LocalDate.now(java.time.ZoneId.of("Asia/Ho_Chi_Minh"));
+        return grant.getApprovedFrom()!=null && grant.getApprovedUntil()!=null
+                && !today.isBefore(grant.getApprovedFrom()) && !today.isAfter(grant.getApprovedUntil())
+                && !day.isBefore(grant.getApprovedFrom()) && !day.isAfter(grant.getApprovedUntil());
+    }
     private String effectiveStatus(BenefitRequest r) {
         if(!"APPROVED".equals(r.getStatus())) return r.getStatus();
         if(r.getApprovedFrom()==null || r.getApprovedUntil()==null) return "INVALID";

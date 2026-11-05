@@ -17,7 +17,7 @@
         <mxCell id="service" value="«Client / Transaction boundary»&#10;BookingServiceImpl" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="40" y="470" width="540" height="365" as="geometry" />
         </mxCell>
-        <mxCell id="service-body" value="- schedules: ScheduleRepository&#10;- appointments: AppointmentRepository&#10;- pricing: PricingContext&#10;&#10;+ createBooking(patientId, request): AppointmentDto&#10;- confirmedPrice(request, doctor): PricingAmounts&#10;&#10;Lock slot; validate; calculate and compare quote;&#10;save snapshot and unavailable slot; notify after commit.&#10;This stage accepts STANDARD booking only." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="service">
+        <mxCell id="service-body" value="- schedules: ScheduleRepository&#10;- appointments: AppointmentRepository&#10;- pricing: PricingContext&#10;&#10;+ createBooking(patientId, request): AppointmentDto&#10;- confirmedPrice(request, doctor): PricingAmounts&#10;&#10;Lock slot; validate; calculate and compare quote;&#10;save snapshot and unavailable slot; notify after commit.&#10;Verify and lock eligible benefit for discounts." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="service">
           <mxGeometry x="0" y="52" width="540" height="313" as="geometry" />
         </mxCell>
         <mxCell id="context" value="«Context»&#10;PricingContext" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
@@ -59,16 +59,16 @@
         <mxCell id="e3" value="implements" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;endArrow=block;endFill=0;exitX=1;exitY=0.1;entryX=1;entryY=0.5;" edge="1" parent="1" source="vip" target="interface">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="repo" value="«Repository interfaces»&#10;ScheduleRepository / AppointmentRepository" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+        <mxCell id="repo" value="«Repository interfaces»&#10;ScheduleRepository / DoctorRepository / AppointmentRepository" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="40" y="1040" width="540" height="225" as="geometry" />
         </mxCell>
-        <mxCell id="repo-body" value="+ findByIdForUpdate(id): Optional&lt;Schedule&gt;&#10;+ existsByScheduleId(id): boolean&#10;+ save(entity)&#10;&#10;PESSIMISTIC_WRITE on Schedule; unique schedule_id&#10;provides an additional database constraint." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="repo">
+        <mxCell id="repo-body" value="+ Schedule.findByIdForUpdate(id): Optional&lt;Schedule&gt;&#10;+ Doctor.findByIdForUpdate(id): Optional&lt;Doctor&gt;&#10;+ Appointment.existsByScheduleId / save&#10;&#10;Slot and fee remain locked until commit;&#10;unique schedule_id also prevents duplicates." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="repo">
           <mxGeometry x="0" y="52" width="540" height="173" as="geometry" />
         </mxCell>
         <mxCell id="snapshot" value="«Persisted entity / response snapshot»&#10;Appointment / AppointmentDto" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="760" y="1040" width="470" height="245" as="geometry" />
         </mxCell>
-        <mxCell id="snapshot-body" value="price: agreed final amount&#10;pricingKey: selected Strategy&#10;basePrice: normalized original fee&#10;discountRate: agreed rate&#10;&#10;Historical null metadata is preserved, not invented." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="snapshot">
+        <mxCell id="snapshot-body" value="price: agreed final amount&#10;pricingKey: selected Strategy&#10;basePrice: normalized original fee&#10;discountRate: agreed rate&#10;benefitRequestId: verified grant used&#10;&#10;Historical null metadata is preserved, not invented." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="snapshot">
           <mxGeometry x="0" y="52" width="470" height="193" as="geometry" />
         </mxCell>
         <mxCell id="notification" value="«Existing notification subsystem»&#10;AsyncEmailNotificationService" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
@@ -101,6 +101,15 @@
               <mxPoint x="1290" y="1234" />
             </Array>
           </mxGeometry>
+        </mxCell>
+        <mxCell id="benefit" value="«Supporting eligibility service»&#10;BenefitService" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="760" y="760" width="470" height="225" as="geometry" />
+        </mxCell>
+        <mxCell id="benefit-body" value="+ lockedEligible(patientId, kind, day)&#10;  : BenefitRequest&#10;&#10;Locks verified grant until booking commits;&#10;revocation takes the same row lock." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="benefit">
+          <mxGeometry x="0" y="52" width="470" height="173" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" value="checks and locks grant" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=1;exitY=0.65;entryX=0;entryY=0.4;" edge="1" parent="1" source="service" target="benefit">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="scope" value="Only the Strategy-enabled booking feature is modeled. No separate Admin/benefit workflow, payment or whole-system UML.&#10;Price changes → explicit reconfirmation; no partial appointment, consumed slot or confirmation on failure." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=15;spacing=5;" vertex="1" parent="1">
           <mxGeometry x="40" y="1430" width="2040" height="65" as="geometry" />

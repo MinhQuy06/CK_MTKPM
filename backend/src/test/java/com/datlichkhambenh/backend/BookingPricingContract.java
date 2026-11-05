@@ -51,6 +51,7 @@ abstract class BookingPricingContract {
    patients.save(Patient.builder().user(p).fullName("Booking Patient").build());patientId=p.getId();patient=jwt.generateToken(p.getEmail(),"PATIENT");
    User o=users.save(User.builder().email("booking-o-"+suffix+"@test.vn").passwordHash("unused").role("PATIENT").isActive(true).build());
    patients.save(Patient.builder().user(o).fullName("Other Patient").build());otherPatient=jwt.generateToken(o.getEmail(),"PATIENT");
+   User adminUser=users.save(User.builder().email("booking-a-"+suffix+"@test.vn").passwordHash("unused").role("ADMIN").isActive(true).build());admin=jwt.generateToken(adminUser.getEmail(),"ADMIN");
    User d=users.save(User.builder().email("booking-d-"+suffix+"@test.vn").passwordHash("unused").role("DOCTOR").isActive(true).build());
    var specialty=specialties.save(Specialty.builder().name("Booking "+suffix).build());
    var doctor=doctors.save(Doctor.builder().user(d).specialty(specialty).fullName("Booking Doctor").consultationFee(new BigDecimal("300000")).isApproved(true).build());doctorId=doctor.getUserId();
@@ -116,5 +117,79 @@ abstract class BookingPricingContract {
   mvc.perform(post(path).servletPath(path).header("Authorization","Bearer "+patient).contentType(MediaType.APPLICATION_JSON)
    .content(json.writeValueAsString(Map.of("scheduleId",scheduleId,"quoteRequired",false))))
    .andExpect(status().isBadRequest());noBookingOrEmail();
+ }
+
+ @Autowired BenefitRequestRepository benefitRequests;
+ String admin;
+ Long grant(String kind,LocalDate from,LocalDate until) throws Exception {
+  String path="/api/v1/patients/me/benefit-requests";
+  var payload=Map.of("kind",kind,"referenceCode","BOOK-GRANT","requestedFrom",from.toString(),"requestedUntil",until.toString());
+  var response=mvc.perform(post(path).servletPath(path).header("Authorization","Bearer "+patient).contentType(MediaType.APPLICATION_JSON).content(json.writeValueAsString(payload)))
+    .andExpect(status().isCreated()).andReturn();
+  long id=json.readTree(response.getResponse().getContentAsString()).path("data").path("id").asLong();
+  path="/api/v1/admin/benefit-requests/"+id+"/decision";
+  mvc.perform(post(path).servletPath(path).header("Authorization","Bearer "+admin).contentType(MediaType.APPLICATION_JSON)
+    .content(json.writeValueAsString(Map.of("action","APPROVE","reason","Đã xác minh","approvedFrom",from.toString(),"approvedUntil",until.toString()))))
+    .andExpect(status().isOk());
+  return id;
+ }
+ void revoke(Long id) throws Exception {
+  String path="/api/v1/admin/benefit-requests/"+id+"/revoke";
+  mvc.perform(post(path).servletPath(path).header("Authorization","Bearer "+admin).contentType(MediaType.APPLICATION_JSON)
+   .content("{\"reason\":\"Quyền không còn hợp lệ\"}")).andExpect(status().isOk());
+ }
+ Map<String,Object> discounted(String kind) {
+  var body=confirmed();body.put("strategyKey",kind);body.put("expectedDiscountRate",new BigDecimal(kind.equals("INSURANCE")?"0.8":"0.1"));
+  body.put("expectedPrice",kind.equals("INSURANCE")?60000:270000);return body;
+ }
+ @org.junit.jupiter.params.ParameterizedTest @org.junit.jupiter.params.provider.ValueSource(strings={"INSURANCE","VIP"})
+ void discountedBookingPersistsGrantAndKeepsPriceAfterRevocation(String kind) throws Exception {
+  long grant=grant(kind,day.minusDays(5),day.plusDays(30));
+  var result=book(discounted(kind),patient);assertEquals(201,result.getResponse().getStatus());
+  var data=json.readTree(result.getResponse().getContentAsString()).path("data");
+  assertEquals(grant,data.path("benefitRequestId").asLong());assertEquals(kind,data.path("pricingKey").asText());
+  int expected=kind.equals("INSURANCE")?60000:270000;assertEquals(expected,data.path("price").asInt());
+  assertEquals(0,new BigDecimal(email().price()).compareTo(new BigDecimal(expected)));
+  revoke(grant);String detail=PATH+"/"+data.path("id").asLong();
+  mvc.perform(get(detail).servletPath(detail).header("Authorization","Bearer "+patient)).andExpect(jsonPath("$.data.price").value(expected)).andExpect(jsonPath("$.data.benefitRequestId").value(grant));
+ }
+ @Test void revokedGrantCannotBookOrConsumeSlot() throws Exception {
+  long grant=grant("INSURANCE",day.minusDays(5),day.plusDays(30));revoke(grant);
+  var response=book(discounted("INSURANCE"),patient);assertEquals(403,response.getResponse().getStatus());
+  assertEquals("BENEFIT_UNAVAILABLE",json.readTree(response.getResponse().getContentAsString()).path("code").asText());
+  noBookingOrEmail();assertEquals(201,book(confirmed(),patient).getResponse().getStatus());email();
+ }
+ @Test void expiredGrantIsNotEnoughEvenWhenClientKnowsDiscountRate() throws Exception {
+  grant("VIP",day.minusYears(2),day.minusYears(1));
+  assertEquals(403,book(discounted("VIP"),patient).getResponse().getStatus());noBookingOrEmail();
+ }
+ @Test void bookingWaitsForInFlightRevocationAndRejectsAfterCommit() throws Exception {
+  long id=grant("INSURANCE",day.minusDays(5),day.plusDays(30));
+  var pool=Executors.newSingleThreadExecutor();var holder=new java.util.concurrent.atomic.AtomicReference<Future<org.springframework.test.web.servlet.MvcResult>>();
+  try {
+   new TransactionTemplate(tm).executeWithoutResult(tx->{
+    benefitRequests.findForUpdate(id).orElseThrow();
+    try {
+     revoke(id);
+     holder.set(pool.submit(()->book(discounted("INSURANCE"),patient)));
+     assertThrows(TimeoutException.class,()->holder.get().get(300,TimeUnit.MILLISECONDS),"booking must wait for pending revocation");
+    }catch(Exception e){throw new RuntimeException(e);}
+   });
+   var response=holder.get().get(20,TimeUnit.SECONDS);assertEquals(403,response.getResponse().getStatus());noBookingOrEmail();
+  }finally{pool.shutdownNow();}
+ }
+
+ @Autowired jakarta.persistence.EntityManager entityManager;
+ @Test void bookingWaitsForFeeUpdateAndRequiresReconfirmation() throws Exception {
+  var pool=Executors.newSingleThreadExecutor();var holder=new java.util.concurrent.atomic.AtomicReference<Future<org.springframework.test.web.servlet.MvcResult>>();
+  try {
+   new TransactionTemplate(tm).executeWithoutResult(tx->{
+    var doctor=entityManager.find(Doctor.class,doctorId,jakarta.persistence.LockModeType.PESSIMISTIC_WRITE);
+    doctor.setConsultationFee(new BigDecimal("350000"));doctors.saveAndFlush(doctor);
+    holder.set(pool.submit(()->book(confirmed(),patient)));
+    assertThrows(TimeoutException.class,()->holder.get().get(300,TimeUnit.MILLISECONDS));
+   });
+   var response=holder.get().get(20,TimeUnit.SECONDS);assertEquals(409,response.getResponse().getStatus());noBookingOrEmail();
+  }finally{pool.shutdownNow();}
  }
 }

@@ -44,3 +44,10 @@ Primary seam: HTTP APIs with real Spring/H2/MockMvc JWT; browser smoke for rende
 - Ruling: new clients use POST /appointments/confirm with a server-only quoteRequired marker, while legacy POST remains compatible. This prevents stripping all quote fields from downgrading the strict endpoint; cost is one additive endpoint and the client route update.
 - Ruling: discount snapshot uses DECIMAL(19,18) and rejects more than 18 fractional digits rather than silently rounding a configured rate; cost is an explicit precision limit for unusually precise policies.
 - #14 complete: server-calculated Standard snapshots, strict quote comparison, legacy compatibility, after-commit email capture, slot races; 95 H2/MySQL tests + 10 Node + real Chrome booking passed; 4 MySQL upgrades preserve old appointment fee/null metadata. Four editable monochrome UML/PNGs verified.
+
+- Ruling: baseline tracked backend/target resources were restored with newer timestamps and Maven kept stale api.js pointing to localhost:8080 (source uses same-origin). Remove generated target files from Git and run clean builds; cost: checkout requires the normal Maven build instead of relying on tracked stale output.
+
+- #15 clean-build check exposed a duplicate DoctorRepository lock declaration introduced during this ticket (the baseline already had it). Removed the duplicate and reused the existing method; clean rebuild is the verification authority, not cached incremental output.
+
+- Ruling: lock existing Doctor row as well as Schedule before pricing, so an in-flight fee update cannot leave a booking using a pre-wait fee; cost is brief serialization of bookings for one doctor while the transaction runs.
+- #15 complete: locked benefit revalidation, snapshot grant reference, Insurance/VIP booking, synchronized revocation and fee updates; CLEAN build 107 H2/MySQL tests (0 failed/skipped) + 10 Node tests passed. Five MySQL upgrades and real Chrome two-policy booking/readback passed; later revocation leaves historical fees intact.

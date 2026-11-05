@@ -54,5 +54,3 @@ class Diagram:
         OUT.mkdir(parents=True, exist_ok=True)
         ET.indent(self.file)
         ET.ElementTree(self.file).write(OUT / name, encoding='utf-8', xml_declaration=True)
-
-

@@ -62,6 +62,8 @@ public class Appointment {
     @Column(name="base_price",precision=12,scale=2) private BigDecimal basePrice;
     @Column(name="discount_rate",precision=19,scale=18) private BigDecimal discountRate;
 
+    @Column(name="benefit_request_id") private Long benefitRequestId;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -142,4 +144,6 @@ public class Appointment {
     public void setBasePrice(BigDecimal value){basePrice=value;}
     public BigDecimal getDiscountRate(){return discountRate;}
     public void setDiscountRate(BigDecimal value){discountRate=value;}
+    public Long getBenefitRequestId(){return benefitRequestId;}
+    public void setBenefitRequestId(Long value){benefitRequestId=value;}
 }

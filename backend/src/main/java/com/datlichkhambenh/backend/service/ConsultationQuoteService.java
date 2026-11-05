@@ -23,7 +23,7 @@ public class ConsultationQuoteService {
   String key=strategyKey==null?"STANDARD":strategyKey;
   if(!pricing.supports(key))throw new IllegalArgumentException("Loại tính phí không được hỗ trợ");
   if(!"STANDARD".equals(key)&&benefits.eligible(patientId,key,schedule.getWorkDate()).isEmpty())
-   throw new AppException("Bạn không đủ điều kiện hưởng loại phí này cho ngày khám đã chọn",HttpStatus.FORBIDDEN);
+   throw new BookingRejectionException("BENEFIT_UNAVAILABLE","Bạn không đủ điều kiện hưởng loại phí này cho ngày khám đã chọn",HttpStatus.FORBIDDEN);
   PricingAmounts amount=pricing.calculate(key,schedule.getDoctor().getConsultationFee());
   return new ConsultationQuoteDto(scheduleId,amount.strategyKey(),amount.strategyName(),amount.basePrice(),amount.discountRate(),amount.finalPrice(),"VND",false);
  }

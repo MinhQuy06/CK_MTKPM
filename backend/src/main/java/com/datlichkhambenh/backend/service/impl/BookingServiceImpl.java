@@ -42,6 +42,7 @@ public class BookingServiceImpl implements BookingService {
     private final AsyncEmailNotificationService emailNotificationService;
     private final RedisCacheService redisCacheService;
     private final PricingContext pricing;
+    private final com.datlichkhambenh.backend.service.BenefitService benefits;
 
     @Override
     @Transactional
@@ -66,7 +67,10 @@ public class BookingServiceImpl implements BookingService {
         Patient patient = patientRepository.findById(patientUserId)
                 .orElseThrow(() -> new ResourceNotFoundException("Hồ sơ bệnh nhân không tồn tại"));
 
-        Doctor doctor = schedule.getDoctor();
+        Doctor assignedDoctor=schedule.getDoctor();
+        if(assignedDoctor==null) throw new ResourceNotFoundException("Bác sĩ không tồn tại");
+        Doctor doctor = doctorRepository.findByIdForUpdate(assignedDoctor.getUserId())
+                .orElseThrow(()->new ResourceNotFoundException("Bác sĩ không tồn tại"));
         if (doctor == null) {
             throw new ResourceNotFoundException("Bác sĩ phụ trách ca khám không tồn tại");
         }
@@ -74,6 +78,10 @@ public class BookingServiceImpl implements BookingService {
             throw new AppException("Bác sĩ hiện không nhận lịch khám");
         }
 
+        String selectedKey=request.getStrategyKey()==null?"STANDARD":request.getStrategyKey();
+        if(!pricing.supports(selectedKey)) throw new BookingRejectionException("UNSUPPORTED_STRATEGY","Loại phí không được hỗ trợ",HttpStatus.BAD_REQUEST);
+        com.datlichkhambenh.backend.entity.BenefitRequest grant=null;
+        if(!"STANDARD".equals(selectedKey)) grant=benefits.lockedEligible(patientUserId,selectedKey,schedule.getWorkDate());
         PricingAmounts amount=confirmedPrice(request,doctor);
 
         // 3. Tạo Appointment mới với booking_code ngẫu nhiên
@@ -90,6 +98,7 @@ public class BookingServiceImpl implements BookingService {
                 .build();
 
         appointment.setPricingKey(amount.strategyKey());appointment.setBasePrice(amount.basePrice());appointment.setDiscountRate(amount.discountRate());
+        appointment.setBenefitRequestId(grant==null?null:grant.getId());
         Appointment savedAppointment = appointmentRepository.save(appointment);
 
         // 4. Cập nhật trạng thái slot thành không khả dụng
@@ -234,7 +243,7 @@ public class BookingServiceImpl implements BookingService {
         if(request.isQuoteRequired() && request.getStrategyKey()==null)
             throw new BookingRejectionException("QUOTE_REQUIRED","Cần chọn loại phí và xác nhận báo giá",HttpStatus.BAD_REQUEST);
         String key=legacy?"STANDARD":request.getStrategyKey();
-        if(!"STANDARD".equals(key)) throw new BookingRejectionException("UNSUPPORTED_STRATEGY","Loại phí này chưa được hỗ trợ đặt lịch",HttpStatus.BAD_REQUEST);
+        if(!pricing.supports(key)) throw new BookingRejectionException("UNSUPPORTED_STRATEGY","Loại phí không được hỗ trợ",HttpStatus.BAD_REQUEST);
         PricingAmounts amount=pricing.calculate(key,doctor.getConsultationFee());
         if(!legacy) {
             if(request.getExpectedPrice()==null || request.getExpectedBasePrice()==null || request.getExpectedDiscountRate()==null)
@@ -263,7 +272,7 @@ public class BookingServiceImpl implements BookingService {
                 .symptoms(appointment.getSymptoms())
                 .status(appointment.getStatus())
                 .price(appointment.getPrice())
-                .pricingKey(appointment.getPricingKey()).basePrice(appointment.getBasePrice()).discountRate(appointment.getDiscountRate())
+                .pricingKey(appointment.getPricingKey()).basePrice(appointment.getBasePrice()).discountRate(appointment.getDiscountRate()).benefitRequestId(appointment.getBenefitRequestId())
                 .createdAt(appointment.getCreatedAt())
                 .build();
     }

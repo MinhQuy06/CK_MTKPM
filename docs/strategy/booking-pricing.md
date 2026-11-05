@@ -11,3 +11,7 @@ Tiền HALF_UP đến đồng. Tỷ lệ dùng DECIMAL(19,18), tối đa 18 ch�
 Kiểm tra nhanh: bash scripts/maven.sh -q -f backend/pom.xml test; npm --prefix frontend test. MySQL contract: đặt CK_MYSQL_URL trỏ tới database tổng hợp kiểm thử rồi chạy MySqlBookingPricingIntegrationTests. Script scripts/test-mysql-upgrades.py chỉ dùng container ck-mtkpm-strategy-mysql và schema tổng hợp ck_mtkpm_upgrade_test để kiểm tra giữ giá lịch sử qua nâng cấp.
 
 Class + Sequence đặt lịch nằm trong docs/diagrams/consultation-booking-*.drawio, cùng PNG đen trắng xuất cục bộ. Hai sơ đồ này bổ sung cặp báo giá, tổng cộng đúng 4 draw.io và 4 PNG.
+
+## Bảo hiểm/VIP — ticket #15
+
+Cả ba Strategy được dùng khi đặt lịch. Ưu đãi yêu cầu quyền đã duyệt hợp lệ cả hôm nay/ngày khám; server khóa Schedule → Doctor → BenefitRequest và kiểm tra trạng thái/ngày dưới khóa. Đọc ứng viên bằng ID trước khi khóa tránh dùng entity cũ trong persistence context. Thu hồi dùng cùng khóa quyền; phí bác sĩ được giữ ổn định đến commit. BENEFIT_UNAVAILABLE trả 403, không tự chuyển loại. Snapshot thêm benefitRequestId, vẫn giữ nguyên sau khi quyền bị thu hồi. Chạy migration 005 sau 004. Các test race điều khiển một cập nhật đang giữ khóa rồi xác nhận booking phải đợi và xét dữ liệu sau commit, chạy cả H2/MySQL.

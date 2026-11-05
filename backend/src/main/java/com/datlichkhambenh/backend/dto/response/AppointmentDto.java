@@ -29,6 +29,7 @@ public class AppointmentDto {
     private String status;
     private BigDecimal price;
     private String pricingKey;
+    private Long benefitRequestId;
     private BigDecimal basePrice;
     private BigDecimal discountRate;
     private LocalDateTime createdAt;

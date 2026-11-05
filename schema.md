@@ -120,3 +120,7 @@ BENEFIT_REQUESTS bổ sung renewal_of_id (nullable FK tới yêu cầu gốc). G
 ### Snapshot giá lịch hẹn (ticket #14)
 
 APPOINTMENTS bổ sung pricing_key (varchar 20), base_price (decimal 12,2), discount_rate (decimal 19,18). Các cột cho phép null để giữ lịch cũ đúng dữ liệu gốc; không backfill loại quyền hoặc tỷ lệ chưa từng ghi nhận. price tiếp tục là giá cuối đã chốt. Chạy upgrade 004 sau 003. Tỷ lệ có tối đa 18 chữ số phần thập phân để lưu chính xác; chuẩn hóa tiền HALF_UP đến đồng.
+
+### Tham chiếu quyền hưởng (ticket #15)
+
+APPOINTMENTS bổ sung benefit_request_id (nullable FK BENEFIT_REQUESTS.id). Chỉ đặt ưu đãi lưu quyền đã xác minh; Tiêu chuẩn/lịch cũ giữ null. Thứ tự khóa đặt lịch: Schedule → Doctor (giữ phí hiện tại) → BenefitRequest khi áp ưu đãi. Thu hồi khóa cùng BenefitRequest nên được tuần tự hóa với đặt lịch. Truy vấn ứng viên chỉ lấy ID trước khi khóa để tránh entity trạng thái cũ; kiểm tra lại điều kiện dưới khóa. Chạy upgrade 005 sau 004.
