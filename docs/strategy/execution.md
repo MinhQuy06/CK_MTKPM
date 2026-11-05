@@ -53,3 +53,17 @@ Primary seam: HTTP APIs with real Spring/H2/MockMvc JWT; browser smoke for rende
 - #15 complete: locked benefit revalidation, snapshot grant reference, Insurance/VIP booking, synchronized revocation and fee updates; CLEAN build 107 H2/MySQL tests (0 failed/skipped) + 10 Node tests passed. Five MySQL upgrades and real Chrome two-policy booking/readback passed; later revocation leaves historical fees intact.
 
 - #16 complete: 111 H2/MySQL tests, 10 Node tests and Chrome reconfirmation passed. Real fee changes twice plus cached old-policy rate scenario; no automatic POST, old/new price shown, symptoms retained, explicit final booking snapshot. Sequence and SOLID/explanation updated. Browser regression initially failed waiting for the absent reconfirmation notice, then passed.
+
+- Ruling: retain numeric discountRate for compatibility and add discountRateExact string for browser confirmation, because JavaScript Number cannot preserve all 18 fractional digits. Cost: one additional response field; older numeric-only clients can still receive PRICE_CHANGED for unusually precise rates.
+
+- #17 timezone regression: Chrome at 00:30 Vietnam in Honolulu timezone defaulted to today instead of Vietnam tomorrow (RED). Use Vietnam calendar date plus UTC day arithmetic; align synthetic fixture with same zone.
+
+- Final review (fresh gpt-6-astra): two Important findings confirmed by RED tests: deleted slot has generic 404/no recovery; edited slot time still accepts old quote. One fix pass adds coded missing-slot errors and strict date/start/end binding under Schedule lock; legacy route retained.
+- Final: minor (deferred): no direct test of deliberately rolling back after notification event registration. Existing tests observe no email on earlier rejections and real AFTER_COMMIT on success; delivery code unchanged.
+- Final: Ruling: existing cancellation/completion timezone behavior stays outside this quote/confirmation change — it does not decide the new Strategy price — cost: those older flows retain their existing timezone rules.
+- Final: Ruling: do not add account-activation serialization to pricing locks — no demonstrated changed-flow regression and outside fee/grant work — cost: no new guarantee for an account being disabled during booking.
+- Final: Ruling: keep existing Rabbit delivery without outbox — delivery redesign is explicitly excluded — cost: this work does not guarantee eventual email after broker failure.
+
+- Final: fixed deleted-slot recovery — deletedQuotedSlotReturnsRecoveryCodeWithoutBookingOrEmail API and browser-deleted-slot RED→GREEN; full clean suite 118/118.
+- Final: fixed unconfirmed moved slot — shiftedQuotedSlotRequiresFreshSelectionBeforeBooking and strictConfirmationCannotStripQuotedSlotTiming RED→GREEN; browser edited-slot and quote-slot-change confirm explicit reselection; full clean suite 118/118.
+- #17 complete: 118 H2/MySQL tests (0 failures/errors/skips), 11 Node tests, all 16 isolated Chrome scripts and 5 MySQL upgrade migrations passed. Exactly 4 editable mxGraph draw.io +4 offline PNG verified monochrome and visually inspected; frontend/static copies identical. Final fresh review material findings fixed in one pass; deferred Minor documented. All ten tickets complete.

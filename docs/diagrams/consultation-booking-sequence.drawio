@@ -101,7 +101,7 @@
         <mxCell id="preconditions" value="JWT + PATIENT. Strict confirm route requires server-verified quote fields; old POST keeps documented Standard compatibility." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
           <mxGeometry x="30" y="180" width="2765" height="55" as="geometry" />
         </mxCell>
-        <mxCell id="l11" value="POST /appointments/confirm&#10;(scheduleId, key, expected quote, symptoms)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=0;verticalAlign=bottom;">
+        <mxCell id="l11" value="POST /appointments/confirm&#10;(scheduleId, expected day/start/end, key, expected quote, symptoms)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=0;verticalAlign=bottom;">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="140" y="285" as="sourcePoint" />
             <mxPoint x="415" y="285" as="targetPoint" />
@@ -137,7 +137,7 @@
             <mxPoint x="690" y="610" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="guards" value="Validate available/future slot, no appointment, approved active doctor and patient. Missing slot → 404; unavailable → 409 SLOT_UNAVAILABLE.&#10;Invalid key / missing strict quote fields → 400; stop and roll back before any write." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+        <mxCell id="guards" value="Validate available/future slot, no appointment, approved active doctor and patient. Missing slot → 404 SLOT_UNAVAILABLE; unavailable → 409 SLOT_UNAVAILABLE; UI clears quote/selection, reloads slots, retains symptoms.&#10;Compare quoted day/start/end under slot lock; changed time → SLOT_UNAVAILABLE. Invalid key / missing strict fields → 400; stop and roll back before any write." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
           <mxGeometry x="40" y="650" width="2735" height="85" as="geometry" />
         </mxCell>
         <mxCell id="l17" value="lockedEligible(patientId, key, appointmentDay) [discount only]" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=0;verticalAlign=bottom;">
@@ -152,8 +152,8 @@
             <mxPoint x="690" y="850" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="eligibility-error" value="No approved grant valid today + appointment day → 403 BENEFIT_UNAVAILABLE, rollback. STANDARD skips grant check." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=14;" vertex="1" parent="1">
-          <mxGeometry x="500" y="875" width="2265" height="55" as="geometry" />
+        <mxCell id="eligibility-error" value="No approved grant valid today + appointment day → 403 BENEFIT_UNAVAILABLE, rollback. STANDARD skips grant check. UI refreshes permitted types and requires explicit selection; no fallback." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="500" y="875" width="2265" height="75" as="geometry" />
         </mxCell>
         <mxCell id="l19" value="calculate(key, doctor.consultationFee)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=0;verticalAlign=bottom;">
           <mxGeometry relative="1" as="geometry">

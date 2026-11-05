@@ -106,3 +106,13 @@ test('booking errors preserve machine code and HTTP status for recovery UI', asy
   vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../js/api.js'),'utf8')+'\nglobalThis.client=Api;',context);
   await assert.rejects(context.client.appointments.create({scheduleId:7}), error=>error.code==='PRICE_CHANGED'&&error.status===409);
 });
+
+
+test('current quote rejection keeps the recovery code; a later selection clears it', async () => {
+  const controller = Quote.create({ fetchQuote: async id => {
+    if (id === 1) throw Object.assign(new Error('Quyền đã thu hồi'), {code:'BENEFIT_UNAVAILABLE'});
+    return quote(id);
+  }, onChange() {} });
+  await controller.select(1); assert.equal(controller.getState().errorCode, 'BENEFIT_UNAVAILABLE');
+  await controller.select(2); assert.equal(controller.getState().errorCode, undefined);
+});

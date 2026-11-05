@@ -23,3 +23,7 @@ PRICE_CHANGED làm giao diện lấy lại báo giá cùng ca/loại, hiển th�
 Strategy tách ba thuật toán khỏi luồng đặt lịch: PricingContext nhận registry theo interface, nên thêm thuật toán không cần sửa phép tính của Context (OCP), controller/service phụ thuộc abstraction (DIP), mỗi Strategy chỉ giữ chính sách tính phí (SRP). Eligibility là điều kiện sử dụng, không phải thuật toán thứ tư; không gộp Bảo hiểm và VIP. Với phí gốc 300.000đ: Tiêu chuẩn 300.000đ, Bảo hiểm 60.000đ, VIP 270.000đ.
 
 Lợi ích: dùng chung phép tính giữa báo giá/đặt, kiểm thử từng chính sách, snapshot giải thích được giá lịch sử. Hạn chế: thêm lớp/điều phối; phải cấu hình tỷ lệ nhất quán giữa instance; xác minh quyền là quy trình nội bộ thủ công; khóa bác sĩ làm các booking cùng bác sĩ chờ nhau ngắn hạn. Không phải hệ thống thanh toán hoặc kết nối cơ quan bảo hiểm.
+
+## Ngày/giờ ca trong xác nhận nghiêm ngặt
+
+Quote trả workDate/startTime/endTime. POST /confirm bắt buộc expectedWorkDate/expectedStartTime/expectedEndTime ngoài các trường giá; kiểm tra dưới khóa Schedule. Ca bị xóa trả 404 SLOT_UNAVAILABLE, ca bị đổi giờ/ngày trả 409 SLOT_UNAVAILABLE; cả hai kích hoạt chọn lại ca, giữ triệu chứng. UI đối chiếu ca đang hiển thị ngay khi quote về, và dùng ngày/giờ lịch lưu trong thông báo thành công. POST legacy giữ tương thích.

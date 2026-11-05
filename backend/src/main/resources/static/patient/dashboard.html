@@ -208,6 +208,7 @@
                 <dt class="col-6">Giá báo trước</dt><dd class="col-6 text-end fw-bold" id="quote-final"></dd>
                 <dt class="col-6">Đơn vị</dt><dd class="col-6 text-end" id="quote-currency"></dd>
               </dl>
+              <p id="booking-recovery-notice" class="alert alert-warning small" role="alert" hidden></p>
               <p id="price-change-notice" class="alert alert-warning small" role="alert" hidden></p>
               <button type="button" id="quote-retry" class="btn btn-outline-primary btn-sm mb-2" hidden>Thử lại báo giá</button>
               <p class="small text-muted mb-0">Xem báo giá chưa giữ chỗ. Ca khám chỉ được giữ sau khi đặt lịch thành công.</p>
@@ -322,7 +323,36 @@
       onChange: renderQuote
     });
 
+    async function recoverBooking(code, message) {
+      setBookingSubmitting(false);
+      clearPriceReconfirmation();
+      consultationQuote.reset();
+      const notice = document.getElementById('booking-recovery-notice');
+      notice.hidden = false;
+      notice.textContent = code === 'BENEFIT_UNAVAILABLE'
+        ? 'Không còn quyền hưởng loại phí đã chọn. Vui lòng chọn lại loại phí đủ điều kiện và xem báo giá mới. ' + message
+        : 'Mất ca khám đã chọn. Vui lòng chọn ca còn trống và xem lại báo giá. ' + message;
+      if (code === 'BENEFIT_UNAVAILABLE') await refreshPricingOptions(true);
+      else await loadSlots(true);
+    }
+
+    function clearRecoveryNotice() {
+      document.getElementById('booking-recovery-notice').hidden = true;
+    }
+
     function renderQuote(state) {
+      if (state.status === 'error' && ['BENEFIT_UNAVAILABLE', 'SLOT_UNAVAILABLE'].includes(state.errorCode)) {
+        void recoverBooking(state.errorCode, state.error);
+        return;
+      }
+      if (state.status === 'ready') {
+        const selected = document.querySelector('#slots-container .slot-btn.selected');
+        if (!selected || state.quote.workDate !== document.getElementById('booking-date').value
+            || state.quote.startTime !== selected.dataset.startTime || state.quote.endTime !== selected.dataset.endTime) {
+          void recoverBooking('SLOT_UNAVAILABLE', 'Thông tin ngày/giờ ca đã thay đổi trong lúc lấy báo giá.');
+          return;
+        }
+      }
       const status = document.getElementById('quote-status');
       const ready = state.status === 'ready';
       document.getElementById('quote-details').hidden = !ready;
@@ -347,7 +377,7 @@
       document.getElementById('quote-currency').textContent = quote.currency;
     }
 
-    async function refreshPricingOptions() {
+    async function refreshPricingOptions(requireChoice = false) {
       const id=document.getElementById('selected-schedule-id').value;
       const version=++pricingOptionsVersion;
       consultationQuote.reset();
@@ -361,13 +391,14 @@
         select.disabled=false;
         select.replaceChildren();
         result.data.forEach(choice=>{const option=document.createElement('option');option.value=choice.key;option.textContent=choice.name;select.append(option);});
-        if(result.data.some(choice=>choice.key===previous)){select.value=previous;refreshQuote();}
+        if(!requireChoice && result.data.some(choice=>choice.key===previous)){select.value=previous;refreshQuote();}
         else {
           const option=document.createElement('option');option.value='';option.textContent='Chọn lại loại phí hợp lệ';option.disabled=true;option.selected=true;select.prepend(option);
           document.getElementById('quote-status').textContent='Loại phí trước đó không còn hợp lệ cho ca này. Vui lòng chọn lại.';
         }
       } catch(error) {
         if(version!==pricingOptionsVersion)return;
+        if (error.code === 'SLOT_UNAVAILABLE') { await recoverBooking(error.code, error.message); return; }
         document.getElementById('quote-status').textContent=error.message;
         document.getElementById('quote-retry').hidden=false;
       }
@@ -379,10 +410,11 @@
       consultationQuote.select(Number(id), document.getElementById('pricing-kind').value);
     }
 
-    document.getElementById('pricing-kind').addEventListener('change', () => { clearPriceReconfirmation(); refreshQuote(); });
-    document.getElementById('quote-retry').addEventListener('click', refreshPricingOptions);
+    document.getElementById('pricing-kind').addEventListener('change', () => { clearRecoveryNotice(); clearPriceReconfirmation(); refreshQuote(); });
+    document.getElementById('quote-retry').addEventListener('click', () => refreshPricingOptions());
     document.getElementById('booking-modal').addEventListener('hide.bs.modal', event => { if (bookingSubmitting) event.preventDefault(); });
     document.getElementById('booking-modal').addEventListener('hidden.bs.modal', () => {
+      clearRecoveryNotice();
       clearPriceReconfirmation();
       slotsRequestVersion++;
       pricingOptionsVersion++;
@@ -390,8 +422,9 @@
       consultationQuote.reset();
     });
 
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
+    const todayVietnam = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Ho_Chi_Minh', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
+    const tomorrow = new Date(todayVietnam + 'T00:00:00Z');
+    tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
     document.getElementById('booking-date').value = tomorrow.toISOString().split('T')[0];
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -598,7 +631,8 @@
       loadSlots();
     }
 
-    async function loadSlots() {
+    async function loadSlots(keepRecoveryNotice = false) {
+      if (!keepRecoveryNotice) clearRecoveryNotice();
       clearPriceReconfirmation();
       const requestVersion = ++slotsRequestVersion;
       pricingOptionsVersion++;
@@ -639,7 +673,7 @@
           }
           return `
             <button type="button" class="btn btn-outline-success rounded-3 px-3 py-2 fw-semibold slot-btn" 
-              onclick="selectSlot(this, ${s.id})">
+              data-start-time="${s.startTime}" data-end-time="${s.endTime}" onclick="selectSlot(this, ${s.id})">
               <i class="bi bi-clock me-1"></i>${Utils.formatTime(s.startTime)} - ${Utils.formatTime(s.endTime)}
             </button>
           `;
@@ -652,6 +686,7 @@
 
     function selectSlot(btn, scheduleId) {
       if (bookingSubmitting) return;
+      clearRecoveryNotice();
       clearPriceReconfirmation();
       document.querySelectorAll('.slot-btn').forEach(b => {
         if (!b.classList.contains('unavailable')) {
@@ -671,7 +706,6 @@
       const scheduleId = document.getElementById('selected-schedule-id').value;
       const symptoms = document.getElementById('symptoms').value;
       const docName = document.getElementById('modal-doc-detail-name').innerText;
-      const dateVal = document.getElementById('booking-date').value;
 
       if (bookingSubmitting || !scheduleId || consultationQuote.getState().status !== 'ready') return;
       const quote = { ...consultationQuote.getState().quote };
@@ -682,8 +716,11 @@
           scheduleId: parseInt(scheduleId),
           symptoms: symptoms,
           strategyKey: quote.strategyKey,
+          expectedWorkDate: quote.workDate,
+          expectedStartTime: quote.startTime,
+          expectedEndTime: quote.endTime,
           expectedBasePrice: quote.basePrice,
-          expectedDiscountRate: quote.discountRate,
+          expectedDiscountRate: quote.discountRateExact ?? quote.discountRate,
           expectedPrice: quote.finalPrice
         });
 
@@ -696,7 +733,7 @@
         document.getElementById('success-pricing-kind').textContent = ({STANDARD:'Tiêu chuẩn',INSURANCE:'Bảo hiểm',VIP:'VIP'})[createdApp.pricingKey] || '';
         document.getElementById('success-booking-code').innerText = createdApp.bookingCode || 'BK-SUCCESS';
         document.getElementById('success-doctor-name').innerText = docName;
-        document.getElementById('success-date-time').innerText = Utils.formatDate(dateVal);
+        document.getElementById('success-date-time').innerText = Utils.formatDate(createdApp.workDate) + ' · ' + Utils.formatTime(createdApp.startTime) + ' - ' + Utils.formatTime(createdApp.endTime);
         successBsModal.show();
 
       } catch (err) {
@@ -704,6 +741,8 @@
         if(err.code==='PRICE_CHANGED') {
           previousQuoteForReconfirmation = quote;
           await consultationQuote.select(Number(scheduleId), quote.strategyKey);
+        } else if (['BENEFIT_UNAVAILABLE', 'SLOT_UNAVAILABLE'].includes(err.code)) {
+          await recoverBooking(err.code, err.message);
         }
       } finally {
         setBookingSubmitting(false);

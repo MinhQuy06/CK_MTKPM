@@ -49,7 +49,7 @@ public class BookingServiceImpl implements BookingService {
     public AppointmentDto createBooking(Long patientUserId, CreateBookingDto request) {
         // 1. Pessimistic Write Lock trên bản ghi Schedule để tránh Race Condition khi 2 bệnh nhân đặt cùng 1 slot
         Schedule schedule = scheduleRepository.findByIdForUpdate(request.getScheduleId())
-                .orElseThrow(() -> new ResourceNotFoundException("Ca khám (Schedule) không tồn tại"));
+                .orElseThrow(() -> new BookingRejectionException("SLOT_UNAVAILABLE","Ca khám không tồn tại. Vui lòng chọn lại ca.",HttpStatus.NOT_FOUND));
 
         // 2. Kiểm tra slot còn khả dụng hay không
         if (!Boolean.TRUE.equals(schedule.getIsAvailable())) {
@@ -57,6 +57,17 @@ public class BookingServiceImpl implements BookingService {
         }
         if (appointmentRepository.existsByScheduleId(schedule.getId())) {
             throw new BookingRejectionException("SLOT_UNAVAILABLE","Ca khám này đã có lịch hẹn",HttpStatus.CONFLICT);
+        }
+
+        if (request.isQuoteRequired()) {
+            if (request.getExpectedWorkDate()==null || request.getExpectedStartTime()==null || request.getExpectedEndTime()==null) {
+                throw new BookingRejectionException("QUOTE_REQUIRED","Cần ngày và giờ khám trong báo giá đã xác nhận",HttpStatus.BAD_REQUEST);
+            }
+            if (!schedule.getWorkDate().equals(request.getExpectedWorkDate())
+                    || !schedule.getStartTime().equals(request.getExpectedStartTime())
+                    || !schedule.getEndTime().equals(request.getExpectedEndTime())) {
+                throw new BookingRejectionException("SLOT_UNAVAILABLE","Ngày hoặc giờ của ca đã thay đổi. Vui lòng chọn lại ca và báo giá.",HttpStatus.CONFLICT);
+            }
         }
 
         LocalDateTime slotTime = LocalDateTime.of(schedule.getWorkDate(), schedule.getStartTime());

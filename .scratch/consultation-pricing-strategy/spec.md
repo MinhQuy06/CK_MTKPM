@@ -1,6 +1,6 @@
 # Spec: Strategy tính phí khám với quyền hưởng đã xác minh
 
-Status: ready-for-agent
+Status: completed
 
 ## Problem Statement
 
@@ -163,3 +163,7 @@ Bàn giao UML đúng **4 file draw.io chỉnh sửa được và 4 PNG**: Class 
 ## Execution authorization (2026-11-05)
 
 User instructed sequential execution of all approved tickets, with a commit and push to thaihoa after each completed ticket, and no PR. This supersedes the earlier no-push instruction.
+
+## Completion evidence (2026-11-05)
+
+Tickets #8–#17 completed sequentially on thaihoa with a commit and push per ticket, no PR. Final clean verification: 118 H2/MySQL tests, 11 Node tests, 16 Chrome scenarios and five MySQL upgrades. Four editable monochrome draw.io plus four PNG; docs/strategy/report.md contains handoff/demo and review limits.

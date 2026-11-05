@@ -55,17 +55,17 @@ ui,controller,service,slot,doctor=xs[:5];index=5
 if discounted:benefit=xs[index];index+=1
 context,strategy,appointments,notification=xs[index:]
 s.box('preconditions','JWT + PATIENT. Strict confirm route requires server-verified quote fields; old POST keeps documented Standard compatibility.',30,180,width,55,'whiteSpace=wrap;fontSize=15;')
-s.line(ui,285,controller,285,'POST /appointments/confirm\n(scheduleId, key, expected quote, symptoms)')
+s.line(ui,285,controller,285,'POST /appointments/confirm\n(scheduleId, expected day/start/end, key, expected quote, symptoms)')
 s.line(controller,350,service,350,'createBooking(patientId, request)')
 s.line(service,420,slot,420,'findByIdForUpdate(scheduleId)')
 s.line(slot,480,service,480,'locked Schedule',dashed=True)
 s.line(service,550,doctor,550,'findByIdForUpdate(doctorId)')
 s.line(doctor,610,service,610,'locked Doctor with current fee',dashed=True)
-s.box('guards','Validate available/future slot, no appointment, approved active doctor and patient. Missing slot → 404; unavailable → 409 SLOT_UNAVAILABLE.\nInvalid key / missing strict quote fields → 400; stop and roll back before any write.',40,650,width-30,85,'whiteSpace=wrap;fontSize=15;')
+s.box('guards','Validate available/future slot, no appointment, approved active doctor and patient. Missing slot → 404 SLOT_UNAVAILABLE; unavailable → 409 SLOT_UNAVAILABLE; UI clears quote/selection, reloads slots, retains symptoms.\nCompare quoted day/start/end under slot lock; changed time → SLOT_UNAVAILABLE. Invalid key / missing strict fields → 400; stop and roll back before any write.',40,650,width-30,85,'whiteSpace=wrap;fontSize=15;')
 if discounted:
  s.line(service,790,benefit,790,'lockedEligible(patientId, key, appointmentDay) [discount only]')
  s.line(benefit,850,service,850,'verified BenefitRequest, row locked until commit',dashed=True)
- s.box('eligibility-error','No approved grant valid today + appointment day → 403 BENEFIT_UNAVAILABLE, rollback. STANDARD skips grant check.',500,875,width-500,55,'whiteSpace=wrap;fontSize=14;')
+ s.box('eligibility-error','No approved grant valid today + appointment day → 403 BENEFIT_UNAVAILABLE, rollback. STANDARD skips grant check. UI refreshes permitted types and requires explicit selection; no fallback.',500,875,width-500,75,'whiteSpace=wrap;fontSize=14;')
 s.line(service,1050,context,1050,'calculate(key, doctor.consultationFee)')
 s.line(context,1120,strategy,1120,'calculate(normalized basePrice)')
 s.line(strategy,1190,context,1190,'calculated amount',dashed=True)

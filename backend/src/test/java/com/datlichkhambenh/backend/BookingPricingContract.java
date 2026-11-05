@@ -60,6 +60,7 @@ abstract class BookingPricingContract {
  }
  Map<String,Object> confirmed() {
   Map<String,Object> body=new HashMap<>();body.put("scheduleId",scheduleId);body.put("symptoms","Giữ triệu chứng");
+  body.put("expectedWorkDate",day.toString());body.put("expectedStartTime","09:00:00");body.put("expectedEndTime","09:30:00");
   body.put("strategyKey","STANDARD");body.put("expectedBasePrice",300000);body.put("expectedDiscountRate",0);body.put("expectedPrice",300000);return body;
  }
  org.springframework.test.web.servlet.MvcResult book(Map<String,Object> body,String token) throws Exception {
@@ -193,6 +194,28 @@ abstract class BookingPricingContract {
   }finally{pool.shutdownNow();}
  }
 
+ @Test void shiftedQuotedSlotRequiresFreshSelectionBeforeBooking() throws Exception {
+  new TransactionTemplate(tm).executeWithoutResult(tx->{var s=schedules.findById(scheduleId).orElseThrow();s.setWorkDate(day.plusDays(1));s.setStartTime(LocalTime.of(10,0));s.setEndTime(LocalTime.of(10,30));schedules.save(s);});
+  var response=book(confirmed(),patient);assertEquals(409,response.getResponse().getStatus());
+  assertEquals("SLOT_UNAVAILABLE",json.readTree(response.getResponse().getContentAsString()).path("code").asText());noBookingOrEmail();
+  var refreshed=confirmed();refreshed.put("expectedWorkDate",day.plusDays(1).toString());refreshed.put("expectedStartTime","10:00:00");refreshed.put("expectedEndTime","10:30:00");
+  var saved=book(refreshed,patient);assertEquals(201,saved.getResponse().getStatus());
+  var data=json.readTree(saved.getResponse().getContentAsString()).path("data");assertEquals(day.plusDays(1).toString(),data.path("workDate").asText());assertEquals("10:00:00",data.path("startTime").asText());email();
+ }
+ @Test void strictConfirmationCannotStripQuotedSlotTiming() throws Exception {
+  var body=confirmed();body.remove("expectedWorkDate");body.remove("expectedStartTime");body.remove("expectedEndTime");
+  var response=book(body,patient);assertEquals(400,response.getResponse().getStatus());
+  assertEquals("QUOTE_REQUIRED",json.readTree(response.getResponse().getContentAsString()).path("code").asText());noBookingOrEmail();
+ }
+ @Test void deletedQuotedSlotReturnsRecoveryCodeWithoutBookingOrEmail() throws Exception {
+  new TransactionTemplate(tm).executeWithoutResult(tx->schedules.deleteById(scheduleId));
+  var response=book(confirmed(),patient);assertEquals(404,response.getResponse().getStatus());
+  assertEquals("SLOT_UNAVAILABLE",json.readTree(response.getResponse().getContentAsString()).path("code").asText());
+  assertFalse(schedules.existsById(scheduleId));assertNull(sink.messages.poll(500,TimeUnit.MILLISECONDS));
+  String path=PATH+"/quote";
+  mvc.perform(get(path).servletPath(path).header("Authorization","Bearer "+patient).param("scheduleId",scheduleId.toString()))
+    .andExpect(status().isNotFound()).andExpect(jsonPath("$.code").value("SLOT_UNAVAILABLE"));
+ }
  @Test void stalePolicyRateRequiresFreshQuoteEvenWhenBaseUnchanged() throws Exception {
   grant("INSURANCE",day.minusDays(5),day.plusDays(30));
   var stale=discounted("INSURANCE");stale.put("expectedDiscountRate",new BigDecimal("0.7"));stale.put("expectedPrice",90000);

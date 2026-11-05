@@ -8,6 +8,8 @@ public class CreateBookingDto {
     private Long scheduleId;
 
     private String symptoms;
+    private java.time.LocalDate expectedWorkDate;
+    private java.time.LocalTime expectedStartTime, expectedEndTime;
     @com.fasterxml.jackson.annotation.JsonIgnore
     private boolean quoteRequired;
     private String strategyKey;
@@ -30,20 +32,33 @@ public class CreateBookingDto {
         private Long scheduleId;
         private String symptoms;
         private String strategyKey;
+        private java.time.LocalDate expectedWorkDate;
+        private java.time.LocalTime expectedStartTime, expectedEndTime;
         private java.math.BigDecimal expectedBasePrice, expectedDiscountRate, expectedPrice;
 
         public CreateBookingDtoBuilder scheduleId(Long scheduleId) { this.scheduleId = scheduleId; return this; }
         public CreateBookingDtoBuilder symptoms(String symptoms) { this.symptoms = symptoms; return this; }
 
+        public CreateBookingDtoBuilder expectedWorkDate(java.time.LocalDate value){this.expectedWorkDate=value;return this;}
+        public CreateBookingDtoBuilder expectedStartTime(java.time.LocalTime value){this.expectedStartTime=value;return this;}
+        public CreateBookingDtoBuilder expectedEndTime(java.time.LocalTime value){this.expectedEndTime=value;return this;}
         public CreateBookingDtoBuilder strategyKey(String value){this.strategyKey=value;return this;}
         public CreateBookingDtoBuilder expectedBasePrice(java.math.BigDecimal value){this.expectedBasePrice=value;return this;}
         public CreateBookingDtoBuilder expectedDiscountRate(java.math.BigDecimal value){this.expectedDiscountRate=value;return this;}
         public CreateBookingDtoBuilder expectedPrice(java.math.BigDecimal value){this.expectedPrice=value;return this;}
         public CreateBookingDto build() {
             var dto=new CreateBookingDto(scheduleId,symptoms);dto.strategyKey=strategyKey;dto.expectedBasePrice=expectedBasePrice;
+            dto.expectedWorkDate=expectedWorkDate;dto.expectedStartTime=expectedStartTime;dto.expectedEndTime=expectedEndTime;
             dto.expectedDiscountRate=expectedDiscountRate;dto.expectedPrice=expectedPrice;return dto;
         }
     }
+
+    public java.time.LocalDate getExpectedWorkDate(){return expectedWorkDate;}
+    public void setExpectedWorkDate(java.time.LocalDate value){expectedWorkDate=value;}
+    public java.time.LocalTime getExpectedStartTime(){return expectedStartTime;}
+    public void setExpectedStartTime(java.time.LocalTime value){expectedStartTime=value;}
+    public java.time.LocalTime getExpectedEndTime(){return expectedEndTime;}
+    public void setExpectedEndTime(java.time.LocalTime value){expectedEndTime=value;}
 
     public Long getScheduleId() { return scheduleId; }
     public void setScheduleId(Long scheduleId) { this.scheduleId = scheduleId; }

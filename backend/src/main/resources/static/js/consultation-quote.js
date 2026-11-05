@@ -25,7 +25,7 @@
       } catch (error) {
         if (request !== version) return;
         update({ status: 'error', quote: null, error: error.message || 'Không thể tải báo giá. Vui lòng thử lại.',
-          scheduleId, strategyKey });
+          scheduleId, strategyKey, errorCode: error.code });
       }
     }
 

@@ -113,13 +113,13 @@
         <mxCell id="missing-label" value="break [schedule absent]" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=15;spacing=5;" vertex="1" parent="1">
           <mxGeometry x="40" y="505" width="1400" height="35" as="geometry" />
         </mxCell>
-        <mxCell id="l13" value="ResourceNotFoundException" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
+        <mxCell id="l13" value="BookingRejectionException: SLOT_UNAVAILABLE" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="700" y="575" as="sourcePoint" />
             <mxPoint x="420" y="575" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="l14" value="404 ApiResponseDto.error; stop" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
+        <mxCell id="l14" value="404 SLOT_UNAVAILABLE; clear selection and reload slots" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="420" y="630" as="sourcePoint" />
             <mxPoint x="140" y="630" as="targetPoint" />
@@ -146,13 +146,13 @@
         <mxCell id="unavailable-label" value="break [slot or doctor unavailable]" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=15;spacing=5;" vertex="1" parent="1">
           <mxGeometry x="40" y="885" width="1500" height="35" as="geometry" />
         </mxCell>
-        <mxCell id="l17" value="BookingConflictException" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
+        <mxCell id="l17" value="Slot: BookingRejectionException; doctor: BookingConflictException" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="700" y="955" as="sourcePoint" />
             <mxPoint x="420" y="955" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="l18" value="409 ApiResponseDto.error; stop" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
+        <mxCell id="l18" value="409; SLOT_UNAVAILABLE for slot → clear selection, reload available slots" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="420" y="1015" as="sourcePoint" />
             <mxPoint x="140" y="1015" as="targetPoint" />
@@ -233,7 +233,7 @@
             <mxPoint x="140" y="2000" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="ui-note" value="UI loads pricing-options for the selected patient/slot, then requests the selected quote. Late slot/kind responses are ignored." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+        <mxCell id="ui-note" value="UI loads pricing-options for the selected patient/slot, then requests the selected quote. Late slot/kind responses are ignored. Changed slot date/time requires explicit reselection." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
           <mxGeometry x="30" y="2050" width="2160" height="55" as="geometry" />
         </mxCell>
         <mxCell id="footer" value="No appointment saved, slot reserved, notification sent or payment performed. A quote does not guarantee availability.&#10;Selected Strategy is StandardPricingStrategy / InsurancePricingStrategy / VipPricingStrategy. Admin verification workflow is outside this UML." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=15;spacing=5;" vertex="1" parent="1">

@@ -36,7 +36,7 @@ public class ConsultationQuoteBrowserServer {
                     .isApproved(true).build());
             for (int hour = 9; hour <= 10; hour++) {
                 context.getBean(ScheduleRepository.class).save(Schedule.builder().doctor(doctor)
-                        .workDate(LocalDate.now().plusDays(1)).startTime(LocalTime.of(hour, 0))
+                        .workDate(LocalDate.now(java.time.ZoneId.of("Asia/Ho_Chi_Minh")).plusDays(1)).startTime(LocalTime.of(hour, 0))
                         .endTime(LocalTime.of(hour, 30)).isAvailable(true).build());
             }
         }

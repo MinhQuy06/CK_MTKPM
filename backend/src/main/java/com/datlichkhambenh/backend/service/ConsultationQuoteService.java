@@ -25,7 +25,7 @@ public class ConsultationQuoteService {
   if(!"STANDARD".equals(key)&&benefits.eligible(patientId,key,schedule.getWorkDate()).isEmpty())
    throw new BookingRejectionException("BENEFIT_UNAVAILABLE","Bạn không đủ điều kiện hưởng loại phí này cho ngày khám đã chọn",HttpStatus.FORBIDDEN);
   PricingAmounts amount=pricing.calculate(key,schedule.getDoctor().getConsultationFee());
-  return new ConsultationQuoteDto(scheduleId,amount.strategyKey(),amount.strategyName(),amount.basePrice(),amount.discountRate(),amount.finalPrice(),"VND",false);
+  return new ConsultationQuoteDto(scheduleId,amount.strategyKey(),amount.strategyName(),amount.basePrice(),amount.discountRate(),amount.finalPrice(),"VND",false,schedule.getWorkDate(),schedule.getStartTime(),schedule.getEndTime());
  }
  @Transactional(readOnly=true)
  public List<PricingChoice> options(Long patientId,Long scheduleId) {
@@ -33,11 +33,11 @@ public class ConsultationQuoteService {
   return pricing.choices().stream().filter(c->"STANDARD".equals(c.key())||benefits.eligible(patientId,c.key(),schedule.getWorkDate()).isPresent()).toList();
  }
  private Schedule bookableSchedule(Long id) {
-  var schedule=schedules.findById(id).orElseThrow(()->new ResourceNotFoundException("Ca khám không tồn tại"));
+  var schedule=schedules.findById(id).orElseThrow(()->new BookingRejectionException("SLOT_UNAVAILABLE","Ca khám không tồn tại. Vui lòng chọn lại ca.",HttpStatus.NOT_FOUND));
   if(!Boolean.TRUE.equals(schedule.getIsAvailable())||appointments.existsByScheduleId(id))
-   throw new BookingConflictException("Ca khám không còn khả dụng. Vui lòng chọn ca khác.");
+   throw new BookingRejectionException("SLOT_UNAVAILABLE","Ca khám không còn khả dụng. Vui lòng chọn ca khác.",HttpStatus.CONFLICT);
   if(!LocalDateTime.of(schedule.getWorkDate(),schedule.getStartTime()).isAfter(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"))))
-   throw new BookingConflictException("Không thể báo giá ca khám đã qua");
+   throw new BookingRejectionException("SLOT_UNAVAILABLE","Không thể báo giá ca khám đã qua",HttpStatus.CONFLICT);
   Doctor doctor=schedule.getDoctor();
   if(doctor==null||doctor.getUser()==null||!Boolean.TRUE.equals(doctor.getIsApproved())||!Boolean.TRUE.equals(doctor.getUser().getIsActive()))
    throw new BookingConflictException("Bác sĩ hiện không nhận lịch khám");
