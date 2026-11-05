@@ -183,7 +183,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="changed" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fillColor=none;" vertex="1" parent="1">
-          <mxGeometry x="30" y="1370" width="2765" height="190" as="geometry" />
+          <mxGeometry x="30" y="1370" width="2765" height="240" as="geometry" />
         </mxCell>
         <mxCell id="changed-label" value="break [expected base/rate/final amount differs]" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=15;spacing=5;" vertex="1" parent="1">
           <mxGeometry x="40" y="1375" width="2715" height="35" as="geometry" />
@@ -199,6 +199,9 @@
             <mxPoint x="415" y="1530" as="sourcePoint" />
             <mxPoint x="140" y="1530" as="targetPoint" />
           </mxGeometry>
+        </mxCell>
+        <mxCell id="reconfirm" value="UI: retain symptoms; GET fresh quote for same slot/key; display old/new base, rate and total.&#10;Wait for explicit confirmation; repeat this branch on every subsequent price change. Never auto-POST." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1560" width="2715" height="45" as="geometry" />
         </mxCell>
         <mxCell id="l25" value="save(Appointment with pricing snapshot and grant ID)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=0;verticalAlign=bottom;">
           <mxGeometry relative="1" as="geometry">

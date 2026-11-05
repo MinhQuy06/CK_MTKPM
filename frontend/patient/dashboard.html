@@ -208,6 +208,7 @@
                 <dt class="col-6">Giá báo trước</dt><dd class="col-6 text-end fw-bold" id="quote-final"></dd>
                 <dt class="col-6">Đơn vị</dt><dd class="col-6 text-end" id="quote-currency"></dd>
               </dl>
+              <p id="price-change-notice" class="alert alert-warning small" role="alert" hidden></p>
               <button type="button" id="quote-retry" class="btn btn-outline-primary btn-sm mb-2" hidden>Thử lại báo giá</button>
               <p class="small text-muted mb-0">Xem báo giá chưa giữ chỗ. Ca khám chỉ được giữ sau khi đặt lịch thành công.</p>
             </section>
@@ -286,6 +287,35 @@
     let detailBsModal = null;
     let slotsRequestVersion = 0;
     let pricingOptionsVersion = 0;
+    let bookingSubmitting = false;
+    let previousQuoteForReconfirmation = null;
+    const bookingControlState = new Map();
+
+    function updateBookingButton() {
+      const btn = document.getElementById('btn-confirm-booking');
+      btn.disabled = bookingSubmitting || consultationQuote.getState().status !== 'ready';
+      btn.textContent = bookingSubmitting ? 'Đang xử lý đặt lịch…'
+        : previousQuoteForReconfirmation ? 'Xác nhận giá mới và đặt lịch' : 'Xác Nhận Đặt Lịch';
+    }
+
+    function setBookingSubmitting(pending) {
+      bookingSubmitting = pending;
+      if (pending) {
+        document.querySelectorAll('#booking-modal input, #booking-modal select, #booking-modal textarea, #booking-modal button').forEach(control => {
+          bookingControlState.set(control, control.disabled);
+          control.disabled = true;
+        });
+      } else {
+        bookingControlState.forEach((disabled, control) => { control.disabled = disabled; });
+        bookingControlState.clear();
+      }
+      updateBookingButton();
+    }
+
+    function clearPriceReconfirmation() {
+      previousQuoteForReconfirmation = null;
+      document.getElementById('price-change-notice').hidden = true;
+    }
 
     const consultationQuote = ConsultationQuote.create({
       fetchQuote: (id, kind) => Api.appointments.quote(id, kind).then(response => response.data),
@@ -297,7 +327,13 @@
       const ready = state.status === 'ready';
       document.getElementById('quote-details').hidden = !ready;
       document.getElementById('quote-retry').hidden = state.status !== 'error';
-      document.getElementById('btn-confirm-booking').disabled = !ready;
+      updateBookingButton();
+      const notice = document.getElementById('price-change-notice');
+      notice.hidden = !ready || !previousQuoteForReconfirmation;
+      if (!notice.hidden) {
+        const old = previousQuoteForReconfirmation, current = state.quote;
+        notice.textContent = `Giá đã thay đổi: ${Utils.formatCurrency(old.finalPrice)} → ${Utils.formatCurrency(current.finalPrice)}. Phí gốc: ${Utils.formatCurrency(old.basePrice)} → ${Utils.formatCurrency(current.basePrice)}; tỷ lệ giảm: ${old.discountRate * 100}% → ${current.discountRate * 100}%. Vui lòng kiểm tra và xác nhận giá mới để đặt lịch.`;
+      }
       status.className = state.status === 'error' ? 'small text-danger mb-2' : 'small text-muted mb-2';
       status.textContent = state.status === 'loading' ? 'Đang lấy báo giá từ hệ thống…'
         : state.status === 'error' ? state.error
@@ -343,9 +379,11 @@
       consultationQuote.select(Number(id), document.getElementById('pricing-kind').value);
     }
 
-    document.getElementById('pricing-kind').addEventListener('change', refreshQuote);
+    document.getElementById('pricing-kind').addEventListener('change', () => { clearPriceReconfirmation(); refreshQuote(); });
     document.getElementById('quote-retry').addEventListener('click', refreshPricingOptions);
+    document.getElementById('booking-modal').addEventListener('hide.bs.modal', event => { if (bookingSubmitting) event.preventDefault(); });
     document.getElementById('booking-modal').addEventListener('hidden.bs.modal', () => {
+      clearPriceReconfirmation();
       slotsRequestVersion++;
       pricingOptionsVersion++;
       document.getElementById('selected-schedule-id').value = '';
@@ -561,6 +599,7 @@
     }
 
     async function loadSlots() {
+      clearPriceReconfirmation();
       const requestVersion = ++slotsRequestVersion;
       pricingOptionsVersion++;
       const docId = document.getElementById('selected-doctor-id').value;
@@ -612,6 +651,8 @@
     }
 
     function selectSlot(btn, scheduleId) {
+      if (bookingSubmitting) return;
+      clearPriceReconfirmation();
       document.querySelectorAll('.slot-btn').forEach(b => {
         if (!b.classList.contains('unavailable')) {
           b.classList.remove('selected', 'btn-success');
@@ -629,16 +670,14 @@
       e.preventDefault();
       const scheduleId = document.getElementById('selected-schedule-id').value;
       const symptoms = document.getElementById('symptoms').value;
-      const btn = document.getElementById('btn-confirm-booking');
       const docName = document.getElementById('modal-doc-detail-name').innerText;
       const dateVal = document.getElementById('booking-date').value;
 
-      if (!scheduleId || consultationQuote.getState().status !== 'ready') return;
-      btn.disabled = true;
-      btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Đang xử lý đặt lịch...';
+      if (bookingSubmitting || !scheduleId || consultationQuote.getState().status !== 'ready') return;
+      const quote = { ...consultationQuote.getState().quote };
+      setBookingSubmitting(true);
 
       try {
-        const quote=consultationQuote.getState().quote;
         const res = await Api.appointments.create({
           scheduleId: parseInt(scheduleId),
           symptoms: symptoms,
@@ -648,6 +687,7 @@
           expectedPrice: quote.finalPrice
         });
 
+        setBookingSubmitting(false);
         bookingBsModal.hide();
         Utils.showToast('Đặt lịch khám thành công!', 'success');
 
@@ -662,14 +702,11 @@
       } catch (err) {
         Utils.showToast(err.message, 'error');
         if(err.code==='PRICE_CHANGED') {
-          consultationQuote.reset();
-          document.getElementById('quote-status').textContent=err.message;
-          document.getElementById('quote-retry').textContent='Xem lại báo giá';
-          document.getElementById('quote-retry').hidden=false;
+          previousQuoteForReconfirmation = quote;
+          await consultationQuote.select(Number(scheduleId), quote.strategyKey);
         }
       } finally {
-        btn.disabled = consultationQuote.getState().status !== 'ready';
-        btn.innerHTML = '<i class="bi bi-check-circle me-1"></i> Xác Nhận Đặt Lịch';
+        setBookingSubmitting(false);
       }
     });
 

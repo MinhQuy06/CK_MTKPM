@@ -192,4 +192,22 @@ abstract class BookingPricingContract {
    var response=holder.get().get(20,TimeUnit.SECONDS);assertEquals(409,response.getResponse().getStatus());noBookingOrEmail();
   }finally{pool.shutdownNow();}
  }
+
+ @Test void stalePolicyRateRequiresFreshQuoteEvenWhenBaseUnchanged() throws Exception {
+  grant("INSURANCE",day.minusDays(5),day.plusDays(30));
+  var stale=discounted("INSURANCE");stale.put("expectedDiscountRate",new BigDecimal("0.7"));stale.put("expectedPrice",90000);
+  var rejected=book(stale,patient);assertEquals(409,rejected.getResponse().getStatus());
+  assertEquals("PRICE_CHANGED",json.readTree(rejected.getResponse().getContentAsString()).path("code").asText());noBookingOrEmail();
+  assertEquals(201,book(discounted("INSURANCE"),patient).getResponse().getStatus());assertEquals(0,new BigDecimal(email().price()).compareTo(new BigDecimal("60000")));
+ }
+ @Test void repeatedFeeChangesRequireEachFreshConfirmation() throws Exception {
+  new TransactionTemplate(tm).executeWithoutResult(tx->{var d=doctors.findById(doctorId).orElseThrow();d.setConsultationFee(new BigDecimal("350000"));doctors.save(d);});
+  assertEquals(409,book(confirmed(),patient).getResponse().getStatus());noBookingOrEmail();
+  var second=confirmed();second.put("expectedBasePrice",350000);second.put("expectedPrice",350000);
+  new TransactionTemplate(tm).executeWithoutResult(tx->{var d=doctors.findById(doctorId).orElseThrow();d.setConsultationFee(new BigDecimal("360000"));doctors.save(d);});
+  assertEquals(409,book(second,patient).getResponse().getStatus());noBookingOrEmail();
+  second.put("expectedBasePrice",360000);second.put("expectedPrice",360000);
+  var response=book(second,patient);assertEquals(201,response.getResponse().getStatus());
+  assertEquals(360000,json.readTree(response.getResponse().getContentAsString()).path("data").path("price").asInt());email();
+ }
 }

@@ -15,3 +15,11 @@ Class + Sequence đặt lịch nằm trong docs/diagrams/consultation-booking-*.
 ## Bảo hiểm/VIP — ticket #15
 
 Cả ba Strategy được dùng khi đặt lịch. Ưu đãi yêu cầu quyền đã duyệt hợp lệ cả hôm nay/ngày khám; server khóa Schedule → Doctor → BenefitRequest và kiểm tra trạng thái/ngày dưới khóa. Đọc ứng viên bằng ID trước khi khóa tránh dùng entity cũ trong persistence context. Thu hồi dùng cùng khóa quyền; phí bác sĩ được giữ ổn định đến commit. BENEFIT_UNAVAILABLE trả 403, không tự chuyển loại. Snapshot thêm benefitRequestId, vẫn giữ nguyên sau khi quyền bị thu hồi. Chạy migration 005 sau 004. Các test race điều khiển một cập nhật đang giữ khóa rồi xác nhận booking phải đợi và xét dữ liệu sau commit, chạy cả H2/MySQL.
+
+## Xác nhận lại giá — ticket #16
+
+PRICE_CHANGED làm giao diện lấy lại báo giá cùng ca/loại, hiển thị phí gốc, tỷ lệ và tiền cũ → mới. Nút chuyển thành “Xác nhận giá mới và đặt lịch”; không tự gửi POST lần nữa. Nếu giá tiếp tục đổi, lặp lại bước xem/xác nhận, giữ triệu chứng. Trong khi POST đang xử lý, khóa các lựa chọn và đóng modal để tránh người dùng đổi ca nhưng nhận kết quả của ca trước. GET báo giá có phiên bản request để bỏ response cũ.
+
+Strategy tách ba thuật toán khỏi luồng đặt lịch: PricingContext nhận registry theo interface, nên thêm thuật toán không cần sửa phép tính của Context (OCP), controller/service phụ thuộc abstraction (DIP), mỗi Strategy chỉ giữ chính sách tính phí (SRP). Eligibility là điều kiện sử dụng, không phải thuật toán thứ tư; không gộp Bảo hiểm và VIP. Với phí gốc 300.000đ: Tiêu chuẩn 300.000đ, Bảo hiểm 60.000đ, VIP 270.000đ.
+
+Lợi ích: dùng chung phép tính giữa báo giá/đặt, kiểm thử từng chính sách, snapshot giải thích được giá lịch sử. Hạn chế: thêm lớp/điều phối; phải cấu hình tỷ lệ nhất quán giữa instance; xác minh quyền là quy trình nội bộ thủ công; khóa bác sĩ làm các booking cùng bác sĩ chờ nhau ngắn hạn. Không phải hệ thống thanh toán hoặc kết nối cơ quan bảo hiểm.

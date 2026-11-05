@@ -51,3 +51,5 @@ Primary seam: HTTP APIs with real Spring/H2/MockMvc JWT; browser smoke for rende
 
 - Ruling: lock existing Doctor row as well as Schedule before pricing, so an in-flight fee update cannot leave a booking using a pre-wait fee; cost is brief serialization of bookings for one doctor while the transaction runs.
 - #15 complete: locked benefit revalidation, snapshot grant reference, Insurance/VIP booking, synchronized revocation and fee updates; CLEAN build 107 H2/MySQL tests (0 failed/skipped) + 10 Node tests passed. Five MySQL upgrades and real Chrome two-policy booking/readback passed; later revocation leaves historical fees intact.
+
+- #16 complete: 111 H2/MySQL tests, 10 Node tests and Chrome reconfirmation passed. Real fee changes twice plus cached old-policy rate scenario; no automatic POST, old/new price shown, symptoms retained, explicit final booking snapshot. Sequence and SOLID/explanation updated. Browser regression initially failed waiting for the absent reconfirmation notice, then passed.
