@@ -50,6 +50,15 @@
         <mxCell id="e2" value="implements" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;endArrow=block;endFill=0;exitX=0.5;exitY=0;entryX=0.77;entryY=1;" edge="1" parent="1" source="INSURANCE" target="strategy">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
+        <mxCell id="VIP" value="«Concrete Strategy»&#10;VipPricingStrategy" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1700" y="870" width="350" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="VIP-body" value="+ key(): String = VIP&#10;+ name(): String&#10;+ discountRate(): BigDecimal&#10;+ calculate(basePrice): BigDecimal&#10;+ simulated(): boolean = false&#10;&#10;Formula: base × (1 − rate)&#10;Default discount rate = 0.1&#10;Configured rate must be in [0,1]." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="VIP">
+          <mxGeometry x="0" y="52" width="350" height="248" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="implements" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;endArrow=block;endFill=0;exitX=1;exitY=0.1;entryX=1;entryY=0.5;" edge="1" parent="1" source="VIP" target="strategy">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
         <mxCell id="repositories" value="«Repository interfaces»&#10;ScheduleRepository / AppointmentRepository" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="40" y="870" width="510" height="200" as="geometry" />
         </mxCell>
@@ -68,22 +77,22 @@
         <mxCell id="dto-body" value="scheduleId, strategyKey, strategyName&#10;basePrice, discountRate, finalPrice&#10;currency = VND; simulated = false&#10;&#10;PricingAmounts: Context result&#10;PricingChoice: available key/name" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="dto">
           <mxGeometry x="0" y="52" width="350" height="178" as="geometry" />
         </mxCell>
-        <mxCell id="e3" value="uses" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="controller" target="service">
+        <mxCell id="e4" value="uses" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="controller" target="service">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e4" value="uses" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=1;exitY=0.25;entryX=0;entryY=0.25;" edge="1" parent="1" source="service" target="context">
+        <mxCell id="e5" value="uses" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=1;exitY=0.25;entryX=0;entryY=0.25;" edge="1" parent="1" source="service" target="context">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e5" value="1..* registered" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=0.7;exitY=0;entryX=0;entryY=0.6;" edge="1" parent="1" source="context" target="strategy">
+        <mxCell id="e6" value="1..* registered" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=0.7;exitY=0;entryX=0;entryY=0.6;" edge="1" parent="1" source="context" target="strategy">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e6" value="reads" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=0.3;exitY=1;entryX=0.3;entryY=0;" edge="1" parent="1" source="service" target="repositories">
+        <mxCell id="e7" value="reads" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=0.3;exitY=1;entryX=0.3;entryY=0;" edge="1" parent="1" source="service" target="repositories">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e7" value="checks eligibility" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=1;exitY=0.9;entryX=0;entryY=0.3;" edge="1" parent="1" source="service" target="eligibility">
+        <mxCell id="e8" value="checks eligibility" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=1;exitY=0.9;entryX=0;entryY=0.3;" edge="1" parent="1" source="service" target="eligibility">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e8" value="«create»" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;exitX=0.8;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="service" target="dto">
+        <mxCell id="e9" value="«create»" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;exitX=0.8;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="service" target="dto">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="scope" value="Scope: quote and its pricing options only. BenefitService is shown solely as a collaborator for the Strategy eligibility check.&#10;No separate Admin workflow UML. No appointment write, reservation, notification or payment in this interaction." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=15;spacing=5;" vertex="1" parent="1">

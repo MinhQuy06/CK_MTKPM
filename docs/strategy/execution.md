@@ -38,3 +38,5 @@ Primary seam: HTTP APIs with real Spring/H2/MockMvc JWT; browser smoke for rende
 - #11 complete: admin-only revocation, derived expiry state, linked new renewal requests, unchanged original history; 69 Maven + 9 Node tests and Chrome full benefit lifecycle passed.
 
 - #12 complete: operative Insurance Strategy, authenticated patient/date eligibility, pricing-options API/UI; today and appointment-day inclusive boundaries, revoked/other-patient denial tested; 79 Maven + 9 Node and Chrome insurance quote smoke passed.
+
+- #13 complete: VipPricingStrategy registered without changing Context algorithm; 81 Maven + 9 Node tests and fresh-fixture Chrome VIP quote passed. Initial browser timeout after host sleep/clock leaps cleared on a clean fixture rerun; no product change made to mask it.

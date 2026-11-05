@@ -67,4 +67,23 @@ class EligibilityQuoteIntegrationTests {
   right.setPatient(patients.save(Patient.builder().user(other).fullName("Other").build()));benefits.saveAndFlush(right);
   mvc.perform(quote("INSURANCE")).andExpect(status().isForbidden());
  }
+
+ @Test void verifiedVipQuotesNinetyPercent() throws Exception {
+  grant("VIP","APPROVED",0,1);
+  mvc.perform(quote("VIP")).andExpect(status().isOk()).andExpect(jsonPath("$.data.finalPrice").value(270000))
+   .andExpect(jsonPath("$.data.discountRate").value(.1)).andExpect(jsonPath("$.data.simulated").value(false));
+  String p="/api/v1/appointments/pricing-options";
+  mvc.perform(get(p).servletPath(p).param("scheduleId",schedule.getId().toString()).header("Authorization","Bearer "+token))
+   .andExpect(status().isOk()).andExpect(jsonPath("$.data[*].key",hasItem("VIP")));
+ }
+ @Test void simultaneousGrantsDoNotStackDiscounts() throws Exception {
+  grant("INSURANCE","APPROVED",-1,2);grant("VIP","APPROVED",-1,2);
+  mvc.perform(quote("VIP")).andExpect(status().isOk()).andExpect(jsonPath("$.data.finalPrice").value(270000));
+  mvc.perform(quote("INSURANCE")).andExpect(status().isOk()).andExpect(jsonPath("$.data.finalPrice").value(60000));
+  mvc.perform(quote("STANDARD")).andExpect(status().isOk()).andExpect(jsonPath("$.data.finalPrice").value(300000));
+ }
+ @Test void unverifiedAndRevokedVipAreDenied() throws Exception {
+  mvc.perform(quote("VIP")).andExpect(status().isForbidden());
+  grant("VIP","REVOKED",-1,2);mvc.perform(quote("VIP")).andExpect(status().isForbidden());
+ }
 }

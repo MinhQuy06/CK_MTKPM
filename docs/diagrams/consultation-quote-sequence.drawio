@@ -236,7 +236,7 @@
         <mxCell id="ui-note" value="UI loads pricing-options for the selected patient/slot, then requests the selected quote. Late slot/kind responses are ignored." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
           <mxGeometry x="30" y="2050" width="2160" height="55" as="geometry" />
         </mxCell>
-        <mxCell id="footer" value="No appointment saved, slot reserved, notification sent or payment performed. A quote does not guarantee availability.&#10;Selected Strategy is StandardPricingStrategy / InsurancePricingStrategy. Admin verification workflow is outside this UML." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=15;spacing=5;" vertex="1" parent="1">
+        <mxCell id="footer" value="No appointment saved, slot reserved, notification sent or payment performed. A quote does not guarantee availability.&#10;Selected Strategy is StandardPricingStrategy / InsurancePricingStrategy / VipPricingStrategy. Admin verification workflow is outside this UML." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=15;spacing=5;" vertex="1" parent="1">
           <mxGeometry x="30" y="2160" width="2160" height="65" as="geometry" />
         </mxCell>
       </root>

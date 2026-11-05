@@ -15,3 +15,7 @@ Kiểm tra: bash scripts/maven.sh -q -f backend/pom.xml test; npm --prefix front
 ## Bảo hiểm đã xác minh — ticket #12
 
 InsurancePricingStrategy giảm mặc định 80%, tỷ lệ INSURANCE_DISCOUNT_RATE cấu hình trong [0,1]. Với phí 300000, giá phải trả là 60000 VND. BenefitService kiểm tra hồ sơ đã duyệt, chưa thu hồi và khoảng ngày bao gồm hôm nay lẫn ngày khám theo giờ Việt Nam. Danh tính lấy từ JWT. API pricing-options chỉ trả loại hiện đủ điều kiện; chọn bằng request sửa tay vẫn phải qua kiểm tra server. Không giới hạn demo/test và không cam kết khoản bảo hiểm hoàn trả. UML chỉ hiển thị BenefitService như cộng tác viên cần cho việc chọn Strategy.
+
+## VIP đã xác minh — ticket #13
+
+VipPricingStrategy giảm mặc định 10% (VIP_DISCOUNT_RATE), người bệnh trả 90%. Với phí 300000, giá VIP là 270000 VND. Registry nhận thêm Concrete Strategy mà không sửa thuật toán điều phối. Nếu có cả hai quyền, bệnh nhân chọn một loại; không cộng dồn Bảo hiểm/VIP. Mọi loại ưu đãi đều qua cùng kiểm tra người bệnh, trạng thái duyệt và ngày hiệu lực.

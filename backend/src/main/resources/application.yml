@@ -99,6 +99,7 @@ server:
 # ─── JWT ─────────────────────────────────────────────────────────────
 app:
   pricing:
+    vip-discount-rate: ${VIP_DISCOUNT_RATE:0.1}
     insurance-discount-rate: ${INSURANCE_DISCOUNT_RATE:0.8}
     # Discount fraction [0, 1]; Standard pays 100% by default.
     standard-discount-rate: ${STANDARD_DISCOUNT_RATE:0}
