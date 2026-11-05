@@ -105,6 +105,7 @@ const Api = {
 
   // ── Appointments ──
   appointments: {
+    pricingOptions: id => Api.get('/appointments/pricing-options?scheduleId=' + encodeURIComponent(id)),
     quote: (scheduleId, strategyKey = 'STANDARD') => {
       const params = new URLSearchParams({ scheduleId, strategyKey });
       return Api.get(`/appointments/quote?${params}`);

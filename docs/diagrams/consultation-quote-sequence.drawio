@@ -1,183 +1,243 @@
 <?xml version='1.0' encoding='utf-8'?>
 <mxfile host="app.diagrams.net" type="device">
   <diagram id="Consultation quote — Sequence" name="Consultation quote — Sequence">
-    <mxGraphModel grid="0" page="1" pageScale="1" pageWidth="1830" pageHeight="1560" background="#FFFFFF">
+    <mxGraphModel grid="0" page="1" pageScale="1" pageWidth="2250" pageHeight="2240" background="#FFFFFF">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="title" value="STANDARD CONSULTATION QUOTE — SEQUENCE DIAGRAM" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=23;spacing=5;" vertex="1" parent="1">
-          <mxGeometry x="30" y="10" width="1750" height="40" as="geometry" />
+        <mxCell id="title" value="CONSULTATION QUOTE — STRATEGY SEQUENCE DIAGRAM" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=23;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="30" y="10" width="2160" height="45" as="geometry" />
         </mxCell>
-        <mxCell id="ui" value="Patient dashboard&#10;«Browser»" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=16;" vertex="1" parent="1">
-          <mxGeometry x="23" y="80" width="224" height="70" as="geometry" />
+        <mxCell id="p0" value="Patient dashboard" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="20" y="80" width="240" height="70" as="geometry" />
         </mxCell>
         <mxCell id="l1" value="" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=none;dashed=1;verticalAlign=bottom;">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="135" y="150" as="sourcePoint" />
-            <mxPoint x="135" y="1480" as="targetPoint" />
+            <mxPoint x="140" y="150" as="sourcePoint" />
+            <mxPoint x="140" y="2140" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="controller" value="ConsultationQuote&#10;Controller" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=16;" vertex="1" parent="1">
-          <mxGeometry x="278" y="80" width="224" height="70" as="geometry" />
+        <mxCell id="p1" value="ConsultationQuoteController" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="300" y="80" width="240" height="70" as="geometry" />
         </mxCell>
         <mxCell id="l2" value="" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=none;dashed=1;verticalAlign=bottom;">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="390" y="150" as="sourcePoint" />
-            <mxPoint x="390" y="1480" as="targetPoint" />
+            <mxPoint x="420" y="150" as="sourcePoint" />
+            <mxPoint x="420" y="2140" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="service" value="ConsultationQuote&#10;Service" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=16;" vertex="1" parent="1">
-          <mxGeometry x="533" y="80" width="224" height="70" as="geometry" />
+        <mxCell id="p2" value="ConsultationQuoteService" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="580" y="80" width="240" height="70" as="geometry" />
         </mxCell>
         <mxCell id="l3" value="" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=none;dashed=1;verticalAlign=bottom;">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="645" y="150" as="sourcePoint" />
-            <mxPoint x="645" y="1480" as="targetPoint" />
+            <mxPoint x="700" y="150" as="sourcePoint" />
+            <mxPoint x="700" y="2140" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="schedules" value="ScheduleRepository" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=16;" vertex="1" parent="1">
-          <mxGeometry x="788" y="80" width="224" height="70" as="geometry" />
+        <mxCell id="p3" value="ScheduleRepository" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="860" y="80" width="240" height="70" as="geometry" />
         </mxCell>
         <mxCell id="l4" value="" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=none;dashed=1;verticalAlign=bottom;">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="900" y="150" as="sourcePoint" />
-            <mxPoint x="900" y="1480" as="targetPoint" />
+            <mxPoint x="980" y="150" as="sourcePoint" />
+            <mxPoint x="980" y="2140" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="appointments" value="AppointmentRepository" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=16;" vertex="1" parent="1">
-          <mxGeometry x="1043" y="80" width="224" height="70" as="geometry" />
+        <mxCell id="p4" value="AppointmentRepository" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="1140" y="80" width="240" height="70" as="geometry" />
         </mxCell>
         <mxCell id="l5" value="" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=none;dashed=1;verticalAlign=bottom;">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1155" y="150" as="sourcePoint" />
-            <mxPoint x="1155" y="1480" as="targetPoint" />
+            <mxPoint x="1260" y="150" as="sourcePoint" />
+            <mxPoint x="1260" y="2140" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="context" value="PricingContext&#10;«Context»" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=16;" vertex="1" parent="1">
-          <mxGeometry x="1298" y="80" width="224" height="70" as="geometry" />
+        <mxCell id="p5" value="BenefitService" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="1420" y="80" width="240" height="70" as="geometry" />
         </mxCell>
         <mxCell id="l6" value="" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=none;dashed=1;verticalAlign=bottom;">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1410" y="150" as="sourcePoint" />
-            <mxPoint x="1410" y="1480" as="targetPoint" />
+            <mxPoint x="1540" y="150" as="sourcePoint" />
+            <mxPoint x="1540" y="2140" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="strategy" value="StandardPricingStrategy&#10;«Concrete Strategy»" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=16;" vertex="1" parent="1">
-          <mxGeometry x="1553" y="80" width="224" height="70" as="geometry" />
+        <mxCell id="p6" value="PricingContext" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="1700" y="80" width="240" height="70" as="geometry" />
         </mxCell>
         <mxCell id="l7" value="" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=none;dashed=1;verticalAlign=bottom;">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1665" y="150" as="sourcePoint" />
-            <mxPoint x="1665" y="1480" as="targetPoint" />
+            <mxPoint x="1820" y="150" as="sourcePoint" />
+            <mxPoint x="1820" y="2140" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="security" value="Precondition: JWT filter authenticates the patient; controller requires PATIENT.&#10;401: missing/invalid JWT; 403: other role; 400: @Valid query binding fails. These stop before the service." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=15;spacing=5;" vertex="1" parent="1">
-          <mxGeometry x="35" y="170" width="1740" height="70" as="geometry" />
+        <mxCell id="p7" value="selectedStrategy&#10;: ConsultationPricingStrategy" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="1980" y="80" width="240" height="70" as="geometry" />
         </mxCell>
-        <mxCell id="l8" value="GET /quote?scheduleId&amp;strategyKey" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=0;verticalAlign=bottom;">
+        <mxCell id="l8" value="" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=none;dashed=1;verticalAlign=bottom;">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="135" y="280" as="sourcePoint" />
-            <mxPoint x="390" y="280" as="targetPoint" />
+            <mxPoint x="2100" y="150" as="sourcePoint" />
+            <mxPoint x="2100" y="2140" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="l9" value="quote(scheduleId, strategyKey)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=0;verticalAlign=bottom;">
+        <mxCell id="auth" value="JWT authenticates PATIENT; query @Valid. 401 / 403 / 400 stop before the application service." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="30" y="175" width="2160" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="l9" value="GET /appointments/quote? scheduleId &amp; strategyKey" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=0;verticalAlign=bottom;">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="390" y="335" as="sourcePoint" />
-            <mxPoint x="645" y="335" as="targetPoint" />
+            <mxPoint x="140" y="280" as="sourcePoint" />
+            <mxPoint x="420" y="280" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="l10" value="findById(scheduleId) — no write lock" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=0;verticalAlign=bottom;">
+        <mxCell id="l10" value="quote(patientId from principal, scheduleId, key)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=0;verticalAlign=bottom;">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="645" y="390" as="sourcePoint" />
-            <mxPoint x="900" y="390" as="targetPoint" />
+            <mxPoint x="420" y="340" as="sourcePoint" />
+            <mxPoint x="700" y="340" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="l11" value="Optional&lt;Schedule&gt; (Doctor → User)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
+        <mxCell id="l11" value="findById(scheduleId) — no write lock" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=0;verticalAlign=bottom;">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="900" y="445" as="sourcePoint" />
-            <mxPoint x="645" y="445" as="targetPoint" />
+            <mxPoint x="700" y="405" as="sourcePoint" />
+            <mxPoint x="980" y="405" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="l12" value="existsByScheduleId(scheduleId)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=0;verticalAlign=bottom;">
+        <mxCell id="l12" value="Optional&lt;Schedule&gt;" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="645" y="510" as="sourcePoint" />
-            <mxPoint x="1155" y="510" as="targetPoint" />
+            <mxPoint x="980" y="465" as="sourcePoint" />
+            <mxPoint x="700" y="465" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="l13" value="boolean" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
+        <mxCell id="missing" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="30" y="500" width="2160" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="missing-label" value="break [schedule absent]" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=15;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="505" width="1400" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="l13" value="ResourceNotFoundException" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1155" y="565" as="sourcePoint" />
-            <mxPoint x="645" y="565" as="targetPoint" />
+            <mxPoint x="700" y="575" as="sourcePoint" />
+            <mxPoint x="420" y="575" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="checks" value="«service checks»  Available flag; no appointment; slot is in the future; doctor approved and user active." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
-          <mxGeometry x="505" y="610" width="820" height="55" as="geometry" />
-        </mxCell>
-        <mxCell id="alt1" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fillColor=none;" vertex="1" parent="1">
-          <mxGeometry x="35" y="700" width="1740" height="170" as="geometry" />
-        </mxCell>
-        <mxCell id="alt1label" value="alt [schedule missing / unavailable / past / doctor unavailable]" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=15;spacing=5;" vertex="1" parent="1">
-          <mxGeometry x="40" y="705" width="1400" height="35" as="geometry" />
-        </mxCell>
-        <mxCell id="l14" value="throw ResourceNotFoundException (404) / BookingConflictException (409)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
+        <mxCell id="l14" value="404 ApiResponseDto.error; stop" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="645" y="775" as="sourcePoint" />
-            <mxPoint x="390" y="775" as="targetPoint" />
+            <mxPoint x="420" y="630" as="sourcePoint" />
+            <mxPoint x="140" y="630" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="l15" value="ApiResponseDto.error — show error, clear quote" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
+        <mxCell id="l15" value="existsByScheduleId(scheduleId)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=0;verticalAlign=bottom;">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="390" y="835" as="sourcePoint" />
-            <mxPoint x="135" y="835" as="targetPoint" />
+            <mxPoint x="700" y="710" as="sourcePoint" />
+            <mxPoint x="1260" y="710" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="continuation" value="[else: schedule is bookable] — continue below" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=15;spacing=5;" vertex="1" parent="1">
+        <mxCell id="l16" value="boolean" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1260" y="770" as="sourcePoint" />
+            <mxPoint x="700" y="770" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bookable" value="Available flag; no existing appointment; future slot in Vietnam time; approved and active doctor." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="510" y="800" width="1150" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="unavailable" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="30" y="880" width="2160" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="unavailable-label" value="break [slot or doctor unavailable]" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=15;spacing=5;" vertex="1" parent="1">
           <mxGeometry x="40" y="885" width="1500" height="35" as="geometry" />
         </mxCell>
-        <mxCell id="l16" value="calculate(strategyKey, doctor.consultationFee)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=0;verticalAlign=bottom;">
+        <mxCell id="l17" value="BookingConflictException" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="645" y="955" as="sourcePoint" />
-            <mxPoint x="1410" y="955" as="targetPoint" />
+            <mxPoint x="700" y="955" as="sourcePoint" />
+            <mxPoint x="420" y="955" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="choose" value="Default absent key → STANDARD; look up registry; validate rate; normalize base fee HALF_UP.&#10;Unknown key / invalid fee / overflow → 400 via exception handler; no quote returned." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=14;" vertex="1" parent="1">
-          <mxGeometry x="1200" y="985" width="560" height="85" as="geometry" />
-        </mxCell>
-        <mxCell id="l17" value="calculate(basePrice)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=0;verticalAlign=bottom;">
+        <mxCell id="l18" value="409 ApiResponseDto.error; stop" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1410" y="1120" as="sourcePoint" />
-            <mxPoint x="1665" y="1120" as="targetPoint" />
+            <mxPoint x="420" y="1015" as="sourcePoint" />
+            <mxPoint x="140" y="1015" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="l18" value="basePrice × (1 − discountRate)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
+        <mxCell id="l19" value="supports(key); absent key defaults to STANDARD" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=0;verticalAlign=bottom;">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1665" y="1180" as="sourcePoint" />
-            <mxPoint x="1410" y="1180" as="targetPoint" />
+            <mxPoint x="700" y="1090" as="sourcePoint" />
+            <mxPoint x="1820" y="1090" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="normalize" value="Context validates and rounds final price HALF_UP; builds PricingAmounts." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=5;" vertex="1" parent="1">
-          <mxGeometry x="1150" y="1200" width="610" height="45" as="geometry" />
-        </mxCell>
-        <mxCell id="l19" value="PricingAmounts" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
+        <mxCell id="l20" value="supported? unknown / blank key → 400 and stop" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1410" y="1285" as="sourcePoint" />
-            <mxPoint x="645" y="1285" as="targetPoint" />
+            <mxPoint x="1820" y="1145" as="sourcePoint" />
+            <mxPoint x="700" y="1145" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="l20" value="ConsultationQuoteDto" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
+        <mxCell id="benefit-opt" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="500" y="1190" width="1690" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="benefit-opt-label" value="opt [key != STANDARD]" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=15;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="510" y="1195" width="1400" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="l21" value="eligible(patientId, key, schedule.workDate)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=0;verticalAlign=bottom;">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="645" y="1350" as="sourcePoint" />
-            <mxPoint x="390" y="1350" as="targetPoint" />
+            <mxPoint x="700" y="1260" as="sourcePoint" />
+            <mxPoint x="1540" y="1260" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="l21" value="200 ApiResponseDto.success(quote); Cache-Control: no-store" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
+        <mxCell id="l22" value="Optional&lt;BenefitRequest&gt;" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="390" y="1415" as="sourcePoint" />
-            <mxPoint x="135" y="1415" as="targetPoint" />
+            <mxPoint x="1540" y="1320" as="sourcePoint" />
+            <mxPoint x="700" y="1320" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="footer" value="UI displays only the current slot/kind response; late results are ignored.&#10;No appointment saved, slot reserved, notification sent or payment performed. A quote does not guarantee availability." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=15;spacing=5;" vertex="1" parent="1">
-          <mxGeometry x="35" y="1495" width="1740" height="55" as="geometry" />
+        <mxCell id="eligibility-note" value="Empty grant → 403 and stop. Approved grant dates must cover today + appointment day; no self-declared privileges." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="550" y="1350" width="1580" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="l23" value="calculate(key, doctor.consultationFee)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=0;verticalAlign=bottom;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="700" y="1480" as="sourcePoint" />
+            <mxPoint x="1820" y="1480" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="normalization" value="Context selects registered Strategy; checks rate [0,1]; normalizes base fee HALF_UP. Invalid money / overflow → 400 and stop." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="1450" y="1510" width="730" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="l24" value="calculate(basePrice)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=0;verticalAlign=bottom;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1820" y="1640" as="sourcePoint" />
+            <mxPoint x="2100" y="1640" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l25" value="basePrice × (1 − discountRate)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="2100" y="1710" as="sourcePoint" />
+            <mxPoint x="1820" y="1710" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="result-note" value="Context validates final money and rounds HALF_UP; creates PricingAmounts." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="1480" y="1740" width="700" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="l26" value="PricingAmounts" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1820" y="1850" as="sourcePoint" />
+            <mxPoint x="700" y="1850" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l27" value="ConsultationQuoteDto" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="700" y="1920" as="sourcePoint" />
+            <mxPoint x="420" y="1920" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l28" value="200 ApiResponseDto.success(quote); Cache-Control: no-store" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="420" y="2000" as="sourcePoint" />
+            <mxPoint x="140" y="2000" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ui-note" value="UI loads pricing-options for the selected patient/slot, then requests the selected quote. Late slot/kind responses are ignored." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="30" y="2050" width="2160" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="footer" value="No appointment saved, slot reserved, notification sent or payment performed. A quote does not guarantee availability.&#10;Selected Strategy is StandardPricingStrategy / InsurancePricingStrategy. Admin verification workflow is outside this UML." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=15;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="30" y="2160" width="2160" height="65" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>

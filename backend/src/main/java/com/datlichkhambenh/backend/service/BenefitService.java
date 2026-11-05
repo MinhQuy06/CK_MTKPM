@@ -79,6 +79,15 @@ public class BenefitService {
         decisions.saveAndFlush(new BenefitDecision(request,"REVOKE",input.reason().trim(),adminId));
         return view(request);
     }
+    @Transactional(readOnly=true)
+    public java.util.Optional<BenefitRequest> eligible(Long patientId,String kind,java.time.LocalDate appointmentDay) {
+        var today=java.time.LocalDate.now(java.time.ZoneId.of("Asia/Ho_Chi_Minh"));
+        return requests.findByPatientUserIdAndKindAndStatusOrderByIdDesc(patientId,kind,"APPROVED").stream()
+                .filter(r->r.getApprovedFrom()!=null && r.getApprovedUntil()!=null
+                        && !today.isBefore(r.getApprovedFrom()) && !today.isAfter(r.getApprovedUntil())
+                        && !appointmentDay.isBefore(r.getApprovedFrom()) && !appointmentDay.isAfter(r.getApprovedUntil()))
+                .findFirst();
+    }
     private String effectiveStatus(BenefitRequest r) {
         if(!"APPROVED".equals(r.getStatus())) return r.getStatus();
         if(r.getApprovedFrom()==null || r.getApprovedUntil()==null) return "INVALID";

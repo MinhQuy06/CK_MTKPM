@@ -9,6 +9,7 @@ public interface BenefitRequestRepository extends JpaRepository<BenefitRequest,L
     @org.springframework.data.jpa.repository.Query("select r from BenefitRequest r where r.id = :id")
     Optional<BenefitRequest> findForUpdate(@org.springframework.data.repository.query.Param("id") Long id);
     List<BenefitRequest> findAllByOrderByCreatedAtDescIdDesc();
+    List<BenefitRequest> findByPatientUserIdAndKindAndStatusOrderByIdDesc(Long patientId,String kind,String status);
     List<BenefitRequest> findByPatientUserIdOrderByCreatedAtDescIdDesc(Long patientId);
     Optional<BenefitRequest> findByIdAndPatientUserId(Long id,Long patientId);
 }

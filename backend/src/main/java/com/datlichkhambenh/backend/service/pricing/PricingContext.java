@@ -24,6 +24,12 @@ public class PricingContext {
         this.strategies = Map.copyOf(registered);
     }
 
+    public boolean supports(String key) { return key!=null && strategies.containsKey(key); }
+    public List<PricingChoice> choices() {
+        return strategies.values().stream().map(s->new PricingChoice(s.key(),s.name()))
+                .sorted(java.util.Comparator.comparing((PricingChoice c)->!"STANDARD".equals(c.key())).thenComparing(PricingChoice::key)).toList();
+    }
+
     public PricingAmounts calculate(String key, BigDecimal fee) {
         ConsultationPricingStrategy strategy = strategies.get(key == null ? "STANDARD" : key);
         if (strategy == null) {

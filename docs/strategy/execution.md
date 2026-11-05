@@ -36,3 +36,5 @@ Primary seam: HTTP APIs with real Spring/H2/MockMvc JWT; browser smoke for rende
 - #10 complete: Admin review/decision UI/API and append-only decision history; request pessimistic lock; 65 Maven + 9 Node tests and real Chrome approval smoke passed, including conflicting-decision concurrency.
 
 - #11 complete: admin-only revocation, derived expiry state, linked new renewal requests, unchanged original history; 69 Maven + 9 Node tests and Chrome full benefit lifecycle passed.
+
+- #12 complete: operative Insurance Strategy, authenticated patient/date eligibility, pricing-options API/UI; today and appointment-day inclusive boundaries, revoked/other-patient denial tested; 79 Maven + 9 Node and Chrome insurance quote smoke passed.

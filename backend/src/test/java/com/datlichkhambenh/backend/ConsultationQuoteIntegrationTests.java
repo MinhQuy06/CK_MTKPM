@@ -157,7 +157,7 @@ class ConsultationQuoteIntegrationTests {
     }
 
     @ParameterizedTest
-    @CsvSource({"UNKNOWN", "INSURANCE", "VIP", "' '", "''"})
+    @CsvSource({"UNKNOWN", "VIP", "' '", "''"})
     void unsupportedOrBlankKeyIsRejected(String key) throws Exception {
         mvc.perform(quoteRequest().param("scheduleId", schedule.getId().toString())
                 .param("strategyKey", key).header("Authorization", "Bearer " + token))

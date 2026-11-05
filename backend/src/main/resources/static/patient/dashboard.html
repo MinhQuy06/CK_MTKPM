@@ -285,6 +285,7 @@
     let successBsModal = null;
     let detailBsModal = null;
     let slotsRequestVersion = 0;
+    let pricingOptionsVersion = 0;
 
     const consultationQuote = ConsultationQuote.create({
       fetchQuote: (id, kind) => Api.appointments.quote(id, kind).then(response => response.data),
@@ -310,6 +311,32 @@
       document.getElementById('quote-currency').textContent = quote.currency;
     }
 
+    async function refreshPricingOptions() {
+      const id=document.getElementById('selected-schedule-id').value;
+      const version=++pricingOptionsVersion;
+      consultationQuote.reset();
+      if(!id)return;
+      document.getElementById('quote-status').textContent='Đang kiểm tra loại phí đủ điều kiện…';
+      const select=document.getElementById('pricing-kind'),previous=select.value||'STANDARD';
+      select.disabled=true;
+      try {
+        const result=await Api.appointments.pricingOptions(id);
+        if(version!==pricingOptionsVersion||document.getElementById('selected-schedule-id').value!==id)return;
+        select.disabled=false;
+        select.replaceChildren();
+        result.data.forEach(choice=>{const option=document.createElement('option');option.value=choice.key;option.textContent=choice.name;select.append(option);});
+        if(result.data.some(choice=>choice.key===previous)){select.value=previous;refreshQuote();}
+        else {
+          const option=document.createElement('option');option.value='';option.textContent='Chọn lại loại phí hợp lệ';option.disabled=true;option.selected=true;select.prepend(option);
+          document.getElementById('quote-status').textContent='Loại phí trước đó không còn hợp lệ cho ca này. Vui lòng chọn lại.';
+        }
+      } catch(error) {
+        if(version!==pricingOptionsVersion)return;
+        document.getElementById('quote-status').textContent=error.message;
+        document.getElementById('quote-retry').hidden=false;
+      }
+    }
+
     function refreshQuote() {
       const id = document.getElementById('selected-schedule-id').value;
       if (!id) { consultationQuote.reset(); return; }
@@ -317,9 +344,10 @@
     }
 
     document.getElementById('pricing-kind').addEventListener('change', refreshQuote);
-    document.getElementById('quote-retry').addEventListener('click', refreshQuote);
+    document.getElementById('quote-retry').addEventListener('click', refreshPricingOptions);
     document.getElementById('booking-modal').addEventListener('hidden.bs.modal', () => {
       slotsRequestVersion++;
+      pricingOptionsVersion++;
       document.getElementById('selected-schedule-id').value = '';
       consultationQuote.reset();
     });
@@ -534,6 +562,7 @@
 
     async function loadSlots() {
       const requestVersion = ++slotsRequestVersion;
+      pricingOptionsVersion++;
       const docId = document.getElementById('selected-doctor-id').value;
       const date = document.getElementById('booking-date').value;
       const container = document.getElementById('slots-container');
@@ -593,7 +622,7 @@
       btn.classList.remove('btn-outline-success');
       btn.classList.add('selected', 'btn-success');
       document.getElementById('selected-schedule-id').value = scheduleId;
-      refreshQuote();
+      refreshPricingOptions();
     }
 
     document.getElementById('booking-form').addEventListener('submit', async (e) => {

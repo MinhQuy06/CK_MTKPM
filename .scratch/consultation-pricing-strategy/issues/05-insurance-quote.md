@@ -1,6 +1,6 @@
 # 05: Báo giá Bảo hiểm theo quyền đã được duyệt
 
-Status: ready-for-agent
+Status: completed
 
 **Parent:** https://github.com/MinhQuy06/CK_MTKPM/issues/1
 
@@ -12,11 +12,13 @@ Thực hiện trong repository MinhQuy06/CK_MTKPM, branch thaihoa, tại checkou
 
 **Blocked by:** 01: Báo giá Tiêu chuẩn qua Strategy, 03: Admin duyệt hoặc từ chối yêu cầu quyền hưởng
 
-- [ ] Concrete Strategy Bảo hiểm đăng ký qua giao diện/Context hiện có, không đưa công thức riêng vào cây if/switch trong service đặt lịch.
-- [ ] Mặc định giảm 80%, bệnh nhân trả 20%: 300.000đ → 60.000đ. Tỷ lệ cấu hình được, BigDecimal/HALF_UP và giới hạn tiền thống nhất với Tiêu chuẩn.
-- [ ] API trả các loại bệnh nhân đủ điều kiện cho ca; giao diện cho chọn Bảo hiểm khi hợp lệ và hiển thị đầy đủ báo giá mới.
-- [ ] Quyền phải đã duyệt, chưa thu hồi, có hiệu lực cả hiện tại và ngày khám theo Asia/Ho_Chi_Minh; quyền chờ/từ chối/chưa đến hạn/hết hạn bị loại.
-- [ ] Request sửa tay sang Bảo hiểm khi không hợp lệ bị từ chối rõ ràng; không âm thầm chuyển Tiêu chuẩn. Quyền xét theo bệnh nhân xác thực.
-- [ ] Không giữ giới hạn chỉ demo/test: quyền hợp lệ dùng được ở môi trường vận hành, theo chính sách nội bộ phòng khám; không tuyên bố khoản bảo hiểm sẽ hoàn trả.
-- [ ] Kiểm thử API kết quả, phân quyền, ngày biên, hết hạn trước ngày khám, chưa hiệu lực lúc đặt, quyền không hợp lệ và response giao diện về muộn; báo giá vẫn không giữ chỗ.
-- [ ] Cập nhật cùng cặp Class/Sequence báo giá và PNG đen trắng đã có để thể hiện chọn Strategy Bảo hiểm và bước kiểm tra quyền cần thiết; không sinh bộ UML Admin riêng.
+- [x] Concrete Strategy Bảo hiểm đăng ký qua giao diện/Context hiện có, không đưa công thức riêng vào cây if/switch trong service đặt lịch.
+- [x] Mặc định giảm 80%, bệnh nhân trả 20%: 300.000đ → 60.000đ. Tỷ lệ cấu hình được, BigDecimal/HALF_UP và giới hạn tiền thống nhất với Tiêu chuẩn.
+- [x] API trả các loại bệnh nhân đủ điều kiện cho ca; giao diện cho chọn Bảo hiểm khi hợp lệ và hiển thị đầy đủ báo giá mới.
+- [x] Quyền phải đã duyệt, chưa thu hồi, có hiệu lực cả hiện tại và ngày khám theo Asia/Ho_Chi_Minh; quyền chờ/từ chối/chưa đến hạn/hết hạn bị loại.
+- [x] Request sửa tay sang Bảo hiểm khi không hợp lệ bị từ chối rõ ràng; không âm thầm chuyển Tiêu chuẩn. Quyền xét theo bệnh nhân xác thực.
+- [x] Không giữ giới hạn chỉ demo/test: quyền hợp lệ dùng được ở môi trường vận hành, theo chính sách nội bộ phòng khám; không tuyên bố khoản bảo hiểm sẽ hoàn trả.
+- [x] Kiểm thử API kết quả, phân quyền, ngày biên, hết hạn trước ngày khám, chưa hiệu lực lúc đặt, quyền không hợp lệ và response giao diện về muộn; báo giá vẫn không giữ chỗ.
+- [x] Cập nhật cùng cặp Class/Sequence báo giá và PNG đen trắng đã có để thể hiện chọn Strategy Bảo hiểm và bước kiểm tra quyền cần thiết; không sinh bộ UML Admin riêng.
+
+Verification: 79 Maven + 9 Node tests passed; Chrome verified-rights→eligible Insurance→60000 VND quote passed; updated draw.io/PNGs exported offline and inspected.
