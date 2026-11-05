@@ -23,7 +23,9 @@ Mục lục chung cho mã nguồn, tài liệu, UML, kiểm thử và công cụ
 - [Báo giá](standard-quote.md) · [Xác nhận đặt lịch](booking-pricing.md)
 - [Bốn UML draw.io và PNG đen trắng](diagrams/)
 - [Ảnh kiểm thử](evidence/) · [Nhật ký thực hiện](execution.md)
-- [Spec](../../.scratch/consultation-pricing-strategy/spec.md) · [Các ticket](../../.scratch/consultation-pricing-strategy/issues/)
+- [Spec nghiệp vụ](../../.scratch/consultation-pricing-strategy/spec.md) · [Các ticket](../../.scratch/consultation-pricing-strategy/issues/)
+
+- [Spec tổ chức mã nguồn và tài liệu](../../.scratch/strategy-feature-organization/spec.md)
 
 ## Điểm tích hợp dùng chung
 
