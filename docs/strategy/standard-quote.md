@@ -8,7 +8,7 @@ Tỷ lệ giảm STANDARD_DISCOUNT_RATE là số trong [0,1]. BigDecimal chuẩn
 
 Giao diện bỏ kết quả cũ sau khi đổi ca/ngày/bác sĩ/loại hoặc đóng modal. Chỉ bật xác nhận khi báo giá hiện tại đã tải xong. Giai đoạn #8 giữ nguyên booking payload; ticket #14 tích hợp xác nhận giá và snapshot.
 
-Class và Sequence cho báo giá ở docs/diagrams/consultation-quote-class.drawio và consultation-quote-sequence.drawio, cùng PNG đen trắng. Mở bằng draw.io để chỉnh sửa. Xuất PNG cục bộ bằng DRAWIO_BIN=/đường/dẫn/draw.io bash scripts/export-diagrams.sh; không tải XML lên dịch vụ ngoài.
+Class và Sequence cho báo giá ở docs/strategy/diagrams/consultation-quote-class.drawio và consultation-quote-sequence.drawio, cùng PNG đen trắng. Mở bằng draw.io để chỉnh sửa. Xuất PNG cục bộ bằng DRAWIO_BIN=/đường/dẫn/draw.io bash scripts/strategy/export-diagrams.sh; không tải XML lên dịch vụ ngoài.
 
 Kiểm tra: bash scripts/maven.sh -q -f backend/pom.xml test; npm --prefix frontend test. Smoke trình duyệt dùng fixture H2 độc lập, xem hướng dẫn kiểm thử trong báo cáo chung sau khi hoàn thành chuỗi ticket.
 

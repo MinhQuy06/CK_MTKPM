@@ -42,12 +42,12 @@ Các nhánh thất bại rollback, chưa tiêu thụ ca hoặc phát email. GET 
 
 Chỉ hai chức năng trực tiếp dùng Strategy; quyền hưởng chỉ là cộng tác viên cần thiết trong luồng. Mỗi `.drawio` là XML mxGraph chỉnh sửa được, đen trắng; PNG xuất bằng draw.io desktop cục bộ và kiểm tra hình.
 
-- [Class báo giá](../diagrams/consultation-quote-class.drawio) · [PNG](../diagrams/consultation-quote-class.png)
-- [Sequence báo giá](../diagrams/consultation-quote-sequence.drawio) · [PNG](../diagrams/consultation-quote-sequence.png)
-- [Class đặt lịch](../diagrams/consultation-booking-class.drawio) · [PNG](../diagrams/consultation-booking-class.png)
-- [Sequence đặt lịch](../diagrams/consultation-booking-sequence.drawio) · [PNG](../diagrams/consultation-booking-sequence.png)
+- [Class báo giá](diagrams/consultation-quote-class.drawio) · [PNG](diagrams/consultation-quote-class.png)
+- [Sequence báo giá](diagrams/consultation-quote-sequence.drawio) · [PNG](diagrams/consultation-quote-sequence.png)
+- [Class đặt lịch](diagrams/consultation-booking-class.drawio) · [PNG](diagrams/consultation-booking-class.png)
+- [Sequence đặt lịch](diagrams/consultation-booking-sequence.drawio) · [PNG](diagrams/consultation-booking-sequence.png)
 
-Tổng đúng 4 draw.io + 4 PNG; không có sơ đồ quy trình Admin riêng. Tái sinh: `python3 scripts/generate-quote-diagrams.py`, `python3 scripts/generate-booking-diagrams.py`; xuất bằng `DRAWIO_BIN=/path/to/draw.io bash scripts/export-diagrams.sh`. Không đưa XML lên dịch vụ xuất ảnh bên ngoài.
+Tổng đúng 4 draw.io + 4 PNG; không có sơ đồ quy trình Admin riêng. Tái sinh: `python3 scripts/strategy/generate-quote-diagrams.py`, `python3 scripts/strategy/generate-booking-diagrams.py`; xuất bằng `DRAWIO_BIN=/path/to/draw.io bash scripts/strategy/export-diagrams.sh`. Không đưa XML lên dịch vụ xuất ảnh bên ngoài.
 
 ## Cách kiểm thử và demo
 
@@ -57,9 +57,9 @@ Yêu cầu JDK21, Maven (script hỗ trợ Maven của VS Code), Node, Google Ch
 bash scripts/maven.sh -q -f backend/pom.xml clean test
 npm --prefix frontend test
 # Mỗi browser test có H2 riêng; runner dùng port 18082, có thể đổi CK_BROWSER_PORT.
-python3 scripts/test-browser.py
+python3 scripts/strategy/test-browser.py
 # Hoặc mở fixture để demo thủ công, port 18081:
-bash scripts/run-browser-fixture.sh
+bash scripts/strategy/run-browser-fixture.sh
 ```
 
 Test profile tạo H2 tạm, không kết nối database vận hành. Fixture có `quote-patient@test.vn` và `quote-admin@test.vn`, mật khẩu `BrowserTest123!`, hai bác sĩ giá 300.000/450.000đ và ca ngày mai. Đây là tài khoản tổng hợp chỉ trong test classpath. Đăng nhập bệnh nhân → Quyền hưởng → gửi Bảo hiểm/VIP; đăng nhập Admin ở profile trình duyệt khác → Quyền hưởng → đối chiếu, ghi lý do và duyệt; quay lại bệnh nhân chọn ca/loại, xem giá, đặt, đọc snapshot. Thu hồi trước đặt để xem phục hồi; cập nhật phí bác sĩ giữa báo giá và đặt để xem bước xác nhận lại.
@@ -72,10 +72,10 @@ docker run --name ck-mtkpm-strategy-mysql -e MYSQL_ROOT_PASSWORD=ck-test-only \
 # Đợi mysqladmin ping thành công trước khi chạy.
 CK_MYSQL_URL='jdbc:mysql://127.0.0.1:13317/ck_mtkpm_tests?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Ho_Chi_Minh' \
   bash scripts/maven.sh -q -f backend/pom.xml clean test
-python3 scripts/test-mysql-upgrades.py
+python3 scripts/strategy/test-mysql-upgrades.py
 ```
 
-Chỉ tạo container khi tên/port còn trống; nếu container tổng hợp này đã có, dùng lại. Suite MySQL dùng schema test create-drop. Script nâng cấp chỉ xóa/tạo schema `ck_mtkpm_upgrade_test` trong container này, kiểm tra đủ 5 SQL nâng cấp và giữ phí lịch cũ/metadata NULL. Với database hiện hữu, áp SQL `backend/src/main/resources/db/upgrade/001` đến `005` theo thứ tự sau sao lưu; không coi ddl-auto là cơ chế nâng cấp dữ liệu.
+Chỉ tạo container khi tên/port còn trống; nếu container tổng hợp này đã có, dùng lại. Suite MySQL dùng schema test create-drop. Script nâng cấp chỉ xóa/tạo schema `ck_mtkpm_upgrade_test` trong container này, kiểm tra đủ 5 SQL nâng cấp và giữ phí lịch cũ/metadata NULL. Với database hiện hữu, áp SQL `backend/src/main/resources/db/upgrade/strategy/001` đến `005` theo thứ tự sau sao lưu; không coi ddl-auto là cơ chế nâng cấp dữ liệu.
 
 Bằng chứng được ghi trong [execution.md](execution.md): API H2 + MySQL thật, tranh ca, cập nhật phí/thu hồi đang giữ khóa, rollback không email, commit có snapshot email; Node kiểm tra response trễ; Chrome toàn luồng ba loại, yêu cầu/duyệt UI, thu hồi/gia hạn, xác nhận giá đổi, mất quyền/mất ca. Test tỷ lệ thay đổi dùng response quote cũ mô phỏng deployment chính sách trước, còn POST từ chối và GET giá mới đi server thật; test riêng chạy server với tỷ lệ 18 chữ số và đặt thành công.
 

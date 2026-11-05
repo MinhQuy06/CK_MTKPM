@@ -8,9 +8,9 @@ Lịch mới lưu pricingKey/basePrice/discountRate/price; lịch cũ giữ meta
 
 Tiền HALF_UP đến đồng. Tỷ lệ dùng DECIMAL(19,18), tối đa 18 chữ số thập phân để không làm sai snapshot. Chạy upgrade SQL theo thứ tự 001–004 trước triển khai trên database hiện hữu; không backfill dữ liệu lịch sử không biết.
 
-Kiểm tra nhanh: bash scripts/maven.sh -q -f backend/pom.xml test; npm --prefix frontend test. MySQL contract: đặt CK_MYSQL_URL trỏ tới database tổng hợp kiểm thử rồi chạy MySqlBookingPricingIntegrationTests. Script scripts/test-mysql-upgrades.py chỉ dùng container ck-mtkpm-strategy-mysql và schema tổng hợp ck_mtkpm_upgrade_test để kiểm tra giữ giá lịch sử qua nâng cấp.
+Kiểm tra nhanh: bash scripts/maven.sh -q -f backend/pom.xml test; npm --prefix frontend test. MySQL contract: đặt CK_MYSQL_URL trỏ tới database tổng hợp kiểm thử rồi chạy MySqlBookingPricingIntegrationTests. Script scripts/strategy/test-mysql-upgrades.py chỉ dùng container ck-mtkpm-strategy-mysql và schema tổng hợp ck_mtkpm_upgrade_test để kiểm tra giữ giá lịch sử qua nâng cấp.
 
-Class + Sequence đặt lịch nằm trong docs/diagrams/consultation-booking-*.drawio, cùng PNG đen trắng xuất cục bộ. Hai sơ đồ này bổ sung cặp báo giá, tổng cộng đúng 4 draw.io và 4 PNG.
+Class + Sequence đặt lịch nằm trong docs/strategy/diagrams/consultation-booking-*.drawio, cùng PNG đen trắng xuất cục bộ. Hai sơ đồ này bổ sung cặp báo giá, tổng cộng đúng 4 draw.io và 4 PNG.
 
 ## Bảo hiểm/VIP — ticket #15
 

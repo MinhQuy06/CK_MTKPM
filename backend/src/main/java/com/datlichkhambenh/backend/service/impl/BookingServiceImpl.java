@@ -8,8 +8,8 @@ import com.datlichkhambenh.backend.entity.Patient;
 import com.datlichkhambenh.backend.entity.Schedule;
 import com.datlichkhambenh.backend.exception.AppException;
 import com.datlichkhambenh.backend.exception.BookingRejectionException;
-import com.datlichkhambenh.backend.service.pricing.PricingContext;
-import com.datlichkhambenh.backend.service.pricing.PricingAmounts;
+import com.datlichkhambenh.backend.strategy.pricing.PricingContext;
+import com.datlichkhambenh.backend.strategy.pricing.PricingAmounts;
 import org.springframework.http.HttpStatus;
 import com.datlichkhambenh.backend.exception.BookingConflictException;
 import com.datlichkhambenh.backend.exception.ResourceNotFoundException;
@@ -42,7 +42,7 @@ public class BookingServiceImpl implements BookingService {
     private final AsyncEmailNotificationService emailNotificationService;
     private final RedisCacheService redisCacheService;
     private final PricingContext pricing;
-    private final com.datlichkhambenh.backend.service.BenefitService benefits;
+    private final com.datlichkhambenh.backend.strategy.service.BenefitService benefits;
 
     @Override
     @Transactional
@@ -91,7 +91,7 @@ public class BookingServiceImpl implements BookingService {
 
         String selectedKey=request.getStrategyKey()==null?"STANDARD":request.getStrategyKey();
         if(!pricing.supports(selectedKey)) throw new BookingRejectionException("UNSUPPORTED_STRATEGY","Loại phí không được hỗ trợ",HttpStatus.BAD_REQUEST);
-        com.datlichkhambenh.backend.entity.BenefitRequest grant=null;
+        com.datlichkhambenh.backend.strategy.entity.BenefitRequest grant=null;
         if(!"STANDARD".equals(selectedKey)) grant=benefits.lockedEligible(patientUserId,selectedKey,schedule.getWorkDate());
         PricingAmounts amount=confirmedPrice(request,doctor);
 

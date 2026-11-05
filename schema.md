@@ -107,7 +107,7 @@ APPOINTMENTS (1) ────── (1) MEDICAL_RECORDS
 | created_at | datetime(6) | Thời điểm gửi |
 | version | bigint | Phiên bản chống cập nhật xung đột |
 
-Nâng cấp MySQL hiện hữu: thực thi script 001-benefit-requests.sql trong bộ db/upgrade trước triển khai. Không xóa hoặc ghi đè dữ liệu cũ. Yêu cầu chờ không tự cấp quyền hưởng.
+Nâng cấp MySQL hiện hữu: thực thi script 001-benefit-requests.sql trong bộ backend/src/main/resources/db/upgrade/strategy trước triển khai. Không xóa hoặc ghi đè dữ liệu cũ. Yêu cầu chờ không tự cấp quyền hưởng.
 
 ### Quyết định quyền hưởng (ticket #10)
 

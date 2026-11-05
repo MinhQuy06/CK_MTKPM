@@ -2,6 +2,10 @@
 
 Ứng dụng web quản lý đặt lịch khám cho ba nhóm người dùng: **Bệnh nhân**, **Bác sĩ** và **Quản trị viên**. Backend được xây dựng bằng Spring Boot theo kiến trúc phân tầng; frontend dùng HTML, CSS và JavaScript thuần, được Spring Boot phục vụ trực tiếp.
 
+## Phần Strategy tính phí khám
+
+Mã nguồn, tài liệu, UML và kiểm thử được gom theo thư mục `strategy`. Xem [mục lục Strategy](docs/strategy/README.md) để mở toàn bộ phần tính năng này từ một nơi.
+
 ## Chức năng chính
 
 ### Bệnh nhân

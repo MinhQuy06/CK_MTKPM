@@ -2,8 +2,8 @@
   "name": "ck-mtkpm-frontend-tests",
   "private": true,
   "scripts": {
-    "test": "node --test tests/*.test.cjs",
-    "test:browser:quote": "node tests/browser-quote.cjs"
+    "test": "node --test",
+    "test:browser:quote": "node tests/strategy/browser-quote.cjs"
   },
   "devDependencies": {
     "playwright": "1.64.1"

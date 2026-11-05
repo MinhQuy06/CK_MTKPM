@@ -67,3 +67,9 @@ Primary seam: HTTP APIs with real Spring/H2/MockMvc JWT; browser smoke for rende
 - Final: fixed deleted-slot recovery — deletedQuotedSlotReturnsRecoveryCodeWithoutBookingOrEmail API and browser-deleted-slot RED→GREEN; full clean suite 118/118.
 - Final: fixed unconfirmed moved slot — shiftedQuotedSlotRequiresFreshSelectionBeforeBooking and strictConfirmationCannotStripQuotedSlotTiming RED→GREEN; browser edited-slot and quote-slot-change confirm explicit reselection; full clean suite 118/118.
 - #17 complete: 118 H2/MySQL tests (0 failures/errors/skips), 11 Node tests, all 16 isolated Chrome scripts and 5 MySQL upgrade migrations passed. Exactly 4 editable mxGraph draw.io +4 offline PNG verified monochrome and visually inspected; frontend/static copies identical. Final fresh review material findings fixed in one pass; deferred Minor documented. All ten tickets complete.
+
+## Sắp xếp thư mục Strategy (2026-11-05)
+
+Theo yêu cầu tiếp theo, gom cả mã nguồn và tài liệu. Backend riêng thuộc package `backend.strategy` (pricing/controller/service/entity/repository/dto); các điểm tích hợp Booking/Appointment dùng chung giữ vị trí. Frontend JS, Java/Node/browser tests, SQL nâng cấp và scripts có thư mục Strategy riêng. UML chuyển vào docs/strategy/diagrams; README tại docs/strategy là mục lục chung. Giữ URL trang/API và nội dung SQL; cập nhật package/import, đường dẫn công cụ và liên kết.
+
+Xác minh cấu trúc mới: clean build 118 test H2/MySQL, 11 test Node, 16 kịch bản Chrome và 5 SQL nâng cấp đều qua; file SQL, 4 draw.io/4 PNG không đổi nội dung; kiểm tra liên kết và package đúng đường dẫn, frontend/static đồng bộ. Lệnh sinh/xuất UML chạy được từ scripts/strategy.
