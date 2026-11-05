@@ -192,6 +192,25 @@
               </div>
             </div>
 
+            <!-- Server consultation quote (does not reserve the selected slot) -->
+            <section class="mb-4 border rounded-3 p-3" aria-labelledby="quote-heading">
+              <h6 class="fw-bold" id="quote-heading">Báo giá khám</h6>
+              <label for="pricing-kind" class="form-label">Loại tính phí</label>
+              <select id="pricing-kind" class="form-select mb-3">
+                <option value="STANDARD" selected>Tiêu chuẩn</option>
+              </select>
+              <p id="quote-status" class="small text-muted mb-2" role="status" aria-live="polite">Chọn khung giờ để xem báo giá.</p>
+              <dl id="quote-details" class="row mb-2" hidden>
+                <dt class="col-6">Loại khám</dt><dd class="col-6 text-end" id="quote-kind"></dd>
+                <dt class="col-6">Phí gốc</dt><dd class="col-6 text-end" id="quote-base"></dd>
+                <dt class="col-6">Tỷ lệ giảm</dt><dd class="col-6 text-end" id="quote-discount"></dd>
+                <dt class="col-6">Giá báo trước</dt><dd class="col-6 text-end fw-bold" id="quote-final"></dd>
+                <dt class="col-6">Đơn vị</dt><dd class="col-6 text-end" id="quote-currency"></dd>
+              </dl>
+              <button type="button" id="quote-retry" class="btn btn-outline-primary btn-sm mb-2" hidden>Thử lại báo giá</button>
+              <p class="small text-muted mb-0">Xem báo giá chưa giữ chỗ. Ca khám chỉ được giữ sau khi đặt lịch thành công.</p>
+            </section>
+
             <!-- Symptoms Input -->
             <div class="mb-3">
               <label class="form-label fw-semibold text-dark"><i class="bi bi-file-earmark-medical me-2 text-primary"></i>Mô tả triệu chứng bệnh / Lý do khám</label>
@@ -251,6 +270,7 @@
   <script src="../js/api.js"></script>
   <script src="../js/utils.js"></script>
   <script src="../js/auth.js"></script>
+  <script src="../js/consultation-quote.js"></script>
   <script>
     const user = Auth.checkAuth(['PATIENT']);
     if (user) {
@@ -263,6 +283,45 @@
     let bookingBsModal = null;
     let successBsModal = null;
     let detailBsModal = null;
+    let slotsRequestVersion = 0;
+
+    const consultationQuote = ConsultationQuote.create({
+      fetchQuote: (id, kind) => Api.appointments.quote(id, kind).then(response => response.data),
+      onChange: renderQuote
+    });
+
+    function renderQuote(state) {
+      const status = document.getElementById('quote-status');
+      const ready = state.status === 'ready';
+      document.getElementById('quote-details').hidden = !ready;
+      document.getElementById('quote-retry').hidden = state.status !== 'error';
+      document.getElementById('btn-confirm-booking').disabled = !ready;
+      status.className = state.status === 'error' ? 'small text-danger mb-2' : 'small text-muted mb-2';
+      status.textContent = state.status === 'loading' ? 'Đang lấy báo giá từ hệ thống…'
+        : state.status === 'error' ? state.error
+        : ready ? 'Báo giá cho khung giờ đang chọn.' : 'Chọn khung giờ để xem báo giá.';
+      if (!ready) return;
+      const quote = state.quote;
+      document.getElementById('quote-kind').textContent = quote.strategyName;
+      document.getElementById('quote-base').textContent = Utils.formatCurrency(quote.basePrice);
+      document.getElementById('quote-discount').textContent = new Intl.NumberFormat('vi-VN', { style: 'percent', maximumFractionDigits: 2 }).format(quote.discountRate);
+      document.getElementById('quote-final').textContent = Utils.formatCurrency(quote.finalPrice);
+      document.getElementById('quote-currency').textContent = quote.currency;
+    }
+
+    function refreshQuote() {
+      const id = document.getElementById('selected-schedule-id').value;
+      if (!id) { consultationQuote.reset(); return; }
+      consultationQuote.select(Number(id), document.getElementById('pricing-kind').value);
+    }
+
+    document.getElementById('pricing-kind').addEventListener('change', refreshQuote);
+    document.getElementById('quote-retry').addEventListener('click', refreshQuote);
+    document.getElementById('booking-modal').addEventListener('hidden.bs.modal', () => {
+      slotsRequestVersion++;
+      document.getElementById('selected-schedule-id').value = '';
+      consultationQuote.reset();
+    });
 
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
@@ -462,6 +521,7 @@
     }
 
     function openBookingModal(docId, docName, specName) {
+      document.getElementById('pricing-kind').value = 'STANDARD';
       document.getElementById('selected-doctor-id').value = docId;
       document.getElementById('modal-doc-name').innerText = `Đặt lịch khám với ${docName}`;
       document.getElementById('modal-doc-detail-name').innerText = docName;
@@ -472,12 +532,16 @@
     }
 
     async function loadSlots() {
+      const requestVersion = ++slotsRequestVersion;
       const docId = document.getElementById('selected-doctor-id').value;
       const date = document.getElementById('booking-date').value;
       const container = document.getElementById('slots-container');
-      if (!date || !docId) return;
       document.getElementById('selected-schedule-id').value = '';
-      document.getElementById('btn-confirm-booking').disabled = true;
+      consultationQuote.reset();
+      if (!date || !docId) {
+        container.textContent = 'Vui lòng chọn ngày khám để tải khung giờ.';
+        return;
+      }
 
       container.innerHTML = `
         <div class="d-flex align-items-center gap-2 text-primary py-2">
@@ -488,6 +552,7 @@
 
       try {
         const res = await Api.doctors.slots(docId, date);
+        if (requestVersion !== slotsRequestVersion) return;
         const slots = res.data || [];
 
         if (slots.length === 0) {
@@ -511,6 +576,7 @@
           `;
         }).join('');
       } catch (err) {
+        if (requestVersion !== slotsRequestVersion) return;
         container.innerHTML = `<div class="alert alert-danger py-2 px-3 small mb-0">${err.message}</div>`;
       }
     }
@@ -526,7 +592,7 @@
       btn.classList.remove('btn-outline-success');
       btn.classList.add('selected', 'btn-success');
       document.getElementById('selected-schedule-id').value = scheduleId;
-      document.getElementById('btn-confirm-booking').disabled = false;
+      refreshQuote();
     }
 
     document.getElementById('booking-form').addEventListener('submit', async (e) => {
@@ -537,7 +603,7 @@
       const docName = document.getElementById('modal-doc-detail-name').innerText;
       const dateVal = document.getElementById('booking-date').value;
 
-      if (!scheduleId) return;
+      if (!scheduleId || consultationQuote.getState().status !== 'ready') return;
       btn.disabled = true;
       btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Đang xử lý đặt lịch...';
 

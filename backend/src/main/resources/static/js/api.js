@@ -2,7 +2,7 @@
 // api.js — HTTP client với auto Bearer token & error handling
 // ============================================================
 const API_BASE = window.CLINIC_API_BASE
-  || (window.location.port === '8080' ? '/api/v1' : 'http://localhost:8080/api/v1');
+  || (window.location.protocol === 'file:' ? 'http://localhost:18081/api/v1' : '/api/v1');
 
 const Api = {
   _getToken() { return localStorage.getItem('accessToken'); },
@@ -95,6 +95,10 @@ const Api = {
 
   // ── Appointments ──
   appointments: {
+    quote: (scheduleId, strategyKey = 'STANDARD') => {
+      const params = new URLSearchParams({ scheduleId, strategyKey });
+      return Api.get(`/appointments/quote?${params}`);
+    },
     create: (body) => Api.post('/appointments', body),
     cancel: (id) => Api.delete(`/appointments/${id}/cancel`),
     get: (id) => Api.get(`/appointments/${id}`),
