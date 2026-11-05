@@ -93,3 +93,18 @@ APPOINTMENTS (1) ────── (1) MEDICAL_RECORDS
 2. Một `SCHEDULES` chỉ được gắn với tối đa 1 `APPOINTMENTS` còn hiệu lực (1-1) — đây chính là điểm cần Pessimistic Lock khi đặt lịch để tránh 2 người cùng đặt 1 schedule_id.
 3. `booking_code`, `email`, `phone` (DOCTORS & PATIENTS) đều phải UNIQUE ở tầng DB, không chỉ validate ở tầng Service.
 4. `MEDICAL_RECORDS.appointment_id` UNIQUE — mỗi lịch hẹn chỉ có tối đa 1 hồ sơ khám.
+
+## BENEFIT_REQUESTS (bổ sung theo spec Strategy đã duyệt)
+
+| Cột | Kiểu | Ý nghĩa |
+|---|---|---|
+| id | bigint PK | Mã yêu cầu |
+| patient_id | bigint FK PATIENTS.user_id | Người gửi |
+| kind | varchar(20) | INSURANCE / VIP |
+| reference_code | varchar(120) | Mã hồ sơ đối chiếu, không ảnh hồ sơ |
+| requested_from / requested_until | date | Khoảng ngày đề nghị |
+| status | varchar(20) | PENDING khi gửi, chỉ Admin có thể quyết định |
+| created_at | datetime(6) | Thời điểm gửi |
+| version | bigint | Phiên bản chống cập nhật xung đột |
+
+Nâng cấp MySQL hiện hữu: thực thi script 001-benefit-requests.sql trong bộ db/upgrade trước triển khai. Không xóa hoặc ghi đè dữ liệu cũ. Yêu cầu chờ không tự cấp quyền hưởng.

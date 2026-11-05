@@ -30,3 +30,5 @@ Primary seam: HTTP APIs with real Spring/H2/MockMvc JWT; browser smoke for rende
 - Ruling: execute inline with tests and one fresh review at the end, since the tickets already have approved scope and order; do not ask for another plan approval.
 
 - #8 complete: 51 Maven tests + 9 Node tests + real Chrome quote smoke; UTC regression RED→GREEN. Two native draw.io PNGs exported offline and visually inspected. No reservation/booking POST during quote.
+
+- #9 complete: patient request/list/detail API and UI; ownership and self-approval guards; 60 Maven + 9 Node tests and real Chrome smoke passed. Additive upgrade 001 supplied.

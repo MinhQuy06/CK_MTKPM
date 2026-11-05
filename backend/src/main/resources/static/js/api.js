@@ -93,6 +93,12 @@ const Api = {
     completedPatients: () => Api.get('/doctors/my-patients/completed'),
   },
 
+  benefits: {
+    submit: body => Api.post('/patients/me/benefit-requests', body),
+    mine: () => Api.get('/patients/me/benefit-requests'),
+    get: id => Api.get('/patients/me/benefit-requests/' + id),
+  },
+
   // ── Appointments ──
   appointments: {
     quote: (scheduleId, strategyKey = 'STANDARD') => {
