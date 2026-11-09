@@ -93,3 +93,34 @@ APPOINTMENTS (1) ────── (1) MEDICAL_RECORDS
 2. Một `SCHEDULES` chỉ được gắn với tối đa 1 `APPOINTMENTS` còn hiệu lực (1-1) — đây chính là điểm cần Pessimistic Lock khi đặt lịch để tránh 2 người cùng đặt 1 schedule_id.
 3. `booking_code`, `email`, `phone` (DOCTORS & PATIENTS) đều phải UNIQUE ở tầng DB, không chỉ validate ở tầng Service.
 4. `MEDICAL_RECORDS.appointment_id` UNIQUE — mỗi lịch hẹn chỉ có tối đa 1 hồ sơ khám.
+
+## BENEFIT_REQUESTS (bổ sung theo spec Strategy đã duyệt)
+
+| Cột | Kiểu | Ý nghĩa |
+|---|---|---|
+| id | bigint PK | Mã yêu cầu |
+| patient_id | bigint FK PATIENTS.user_id | Người gửi |
+| kind | varchar(20) | INSURANCE / VIP |
+| reference_code | varchar(120) | Mã hồ sơ đối chiếu, không ảnh hồ sơ |
+| requested_from / requested_until | date | Khoảng ngày đề nghị |
+| status | varchar(20) | PENDING khi gửi, chỉ Admin có thể quyết định |
+| created_at | datetime(6) | Thời điểm gửi |
+| version | bigint | Phiên bản chống cập nhật xung đột |
+
+Nâng cấp MySQL hiện hữu: thực thi script 001-benefit-requests.sql trong bộ backend/src/main/resources/db/upgrade/strategy trước triển khai. Không xóa hoặc ghi đè dữ liệu cũ. Yêu cầu chờ không tự cấp quyền hưởng.
+
+### Quyết định quyền hưởng (ticket #10)
+
+BENEFIT_REQUESTS bổ sung approved_from/approved_until (date, nullable); chỉ được ghi khi Admin duyệt. BENEFIT_DECISIONS lưu id (bigint PK), request_id (FK BENEFIT_REQUESTS), action (APPROVE/REJECT), reason (varchar 1000), decided_by (FK USERS), decided_at (datetime). Lịch sử chỉ thêm, không sửa/xóa qua API. Quyết định khóa bản ghi yêu cầu; yêu cầu đã xử lý không được duyệt lại. Chạy upgrade 002 sau 001 trên MySQL hiện hữu.
+
+### Gia hạn/thu hồi (ticket #11)
+
+BENEFIT_REQUESTS bổ sung renewal_of_id (nullable FK tới yêu cầu gốc). Gia hạn tạo bản ghi PENDING mới cùng người bệnh/loại; không sửa hồ sơ gốc. Thu hồi chuyển APPROVED → REVOKED dưới khóa yêu cầu và thêm quyết định REVOKE vào BENEFIT_DECISIONS. Hết hạn/chưa hiệu lực được suy ra theo ngày Việt Nam, không sửa mất trạng thái quyết định. Chạy upgrade 003 sau 002.
+
+### Snapshot giá lịch hẹn (ticket #14)
+
+APPOINTMENTS bổ sung pricing_key (varchar 20), base_price (decimal 12,2), discount_rate (decimal 19,18). Các cột cho phép null để giữ lịch cũ đúng dữ liệu gốc; không backfill loại quyền hoặc tỷ lệ chưa từng ghi nhận. price tiếp tục là giá cuối đã chốt. Chạy upgrade 004 sau 003. Tỷ lệ có tối đa 18 chữ số phần thập phân để lưu chính xác; chuẩn hóa tiền HALF_UP đến đồng.
+
+### Tham chiếu quyền hưởng (ticket #15)
+
+APPOINTMENTS bổ sung benefit_request_id (nullable FK BENEFIT_REQUESTS.id). Chỉ đặt ưu đãi lưu quyền đã xác minh; Tiêu chuẩn/lịch cũ giữ null. Thứ tự khóa đặt lịch: Schedule → Doctor (giữ phí hiện tại) → BenefitRequest khi áp ưu đãi. Thu hồi khóa cùng BenefitRequest nên được tuần tự hóa với đặt lịch. Truy vấn ứng viên chỉ lấy ID trước khi khóa để tránh entity trạng thái cũ; kiểm tra lại điều kiện dưới khóa. Chạy upgrade 005 sau 004.

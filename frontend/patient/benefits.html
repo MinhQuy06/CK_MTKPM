@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Quyền hưởng Bảo hiểm/VIP</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="../css/style.css" rel="stylesheet"></head>
+<body class="bg-light"><main class="container py-4" style="max-width:1000px">
+<a href="dashboard.html" class="btn btn-outline-primary mb-3">← Đặt lịch khám</a>
+<h1 class="h3">Quyền hưởng Bảo hiểm/VIP</h1>
+<p>Gửi mã hồ sơ để phòng khám đối chiếu. Chỉ quyền đã được duyệt và còn hiệu lực mới được áp dụng khi tính phí.</p>
+<section class="card p-4 mb-4"><h2 class="h5">Gửi yêu cầu xác minh</h2>
+<form id="benefit-form" class="row g-3"><input type="hidden" id="benefit-renewal">
+<div class="col-md-6"><label for="benefit-kind" class="form-label">Loại quyền</label>
+<select id="benefit-kind" class="form-select"><option value="INSURANCE">Bảo hiểm</option><option value="VIP">VIP</option></select></div>
+<div class="col-md-6"><label for="benefit-reference" class="form-label">Mã hồ sơ / mã thành viên</label>
+<input id="benefit-reference" class="form-control" required maxlength="120" autocomplete="off"></div>
+<div class="col-md-6"><label for="benefit-from" class="form-label">Ngày bắt đầu đề nghị</label><input id="benefit-from" type="date" class="form-control" required></div>
+<div class="col-md-6"><label for="benefit-until" class="form-label">Ngày kết thúc đề nghị</label><input id="benefit-until" type="date" class="form-control" required></div>
+<div><button id="benefit-submit" class="btn btn-primary" type="submit">Gửi yêu cầu</button></div>
+</form><p id="benefit-message" class="mt-3 mb-0" role="status" aria-live="polite"></p></section>
+<section class="card p-4"><h2 class="h5">Yêu cầu của tôi</h2><div id="benefit-list" aria-live="polite">Đang tải…</div>
+<button id="benefit-reload" class="btn btn-outline-secondary mt-3 align-self-start">Tải lại</button></section>
+</main><script src="../js/api.js"></script><script src="../js/auth.js"></script><script src="../strategy/benefits.js"></script></body></html>

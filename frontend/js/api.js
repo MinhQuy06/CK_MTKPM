@@ -2,7 +2,7 @@
 // api.js — HTTP client với auto Bearer token & error handling
 // ============================================================
 const API_BASE = window.CLINIC_API_BASE
-  || (window.location.port === '8080' ? '/api/v1' : 'http://localhost:8080/api/v1');
+  || (window.location.protocol === 'file:' ? 'http://localhost:18081/api/v1' : '/api/v1');
 
 const Api = {
   _getToken() { return localStorage.getItem('accessToken'); },
@@ -29,7 +29,9 @@ const Api = {
       }
       if (!res.ok) {
         const msg = data.message || data.error || `Lỗi ${res.status}`;
-        throw new Error(msg);
+        const error = new Error(msg);
+        error.status = res.status; error.code = data.code; error.data = data.data;
+        throw error;
       }
       return data;
     } catch (err) {
@@ -93,9 +95,24 @@ const Api = {
     completedPatients: () => Api.get('/doctors/my-patients/completed'),
   },
 
+  benefits: {
+    revoke: (id,body) => Api.post('/admin/benefit-requests/' + id + '/revoke', body),
+    adminList: () => Api.get('/admin/benefit-requests'),
+    adminGet: id => Api.get('/admin/benefit-requests/' + id),
+    decide: (id,body) => Api.post('/admin/benefit-requests/' + id + '/decision', body),
+    submit: body => Api.post('/patients/me/benefit-requests', body),
+    mine: () => Api.get('/patients/me/benefit-requests'),
+    get: id => Api.get('/patients/me/benefit-requests/' + id),
+  },
+
   // ── Appointments ──
   appointments: {
-    create: (body) => Api.post('/appointments', body),
+    pricingOptions: id => Api.get('/appointments/pricing-options?scheduleId=' + encodeURIComponent(id)),
+    quote: (scheduleId, strategyKey = 'STANDARD') => {
+      const params = new URLSearchParams({ scheduleId, strategyKey });
+      return Api.get(`/appointments/quote?${params}`);
+    },
+    create: (body) => Api.post('/appointments/confirm', body),
     cancel: (id) => Api.delete(`/appointments/${id}/cancel`),
     get: (id) => Api.get(`/appointments/${id}`),
     mine: () => Api.get('/appointments/my-appointments'),

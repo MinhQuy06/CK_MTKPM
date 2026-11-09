@@ -92,12 +92,17 @@ spring:
 
 # ─── Server ──────────────────────────────────────────────────────────
 server:
-  port: ${SERVER_PORT:8080}
+  port: ${SERVER_PORT:18081}
   servlet:
     context-path: /
 
 # ─── JWT ─────────────────────────────────────────────────────────────
 app:
+  pricing:
+    vip-discount-rate: ${VIP_DISCOUNT_RATE:0.1}
+    insurance-discount-rate: ${INSURANCE_DISCOUNT_RATE:0.8}
+    # Discount fraction [0, 1]; Standard pays 100% by default.
+    standard-discount-rate: ${STANDARD_DISCOUNT_RATE:0}
   jwt:
     secret: ${JWT_SECRET:9a4f2c8d7e1b3a5f6c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b}
     expiration-ms: ${JWT_EXPIRATION_MS:86400000}         # 24 giờ

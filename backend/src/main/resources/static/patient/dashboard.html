@@ -46,6 +46,7 @@
         </div>
 
         <ul class="nav nav-pills flex-column mb-auto">
+          <li class="nav-item"><a href="benefits.html" class="nav-link">Quyền hưởng Bảo hiểm/VIP</a></li>
           <li class="nav-item">
             <a href="dashboard.html" class="nav-link active d-flex align-items-center gap-2">
               <i class="bi bi-search fs-5"></i> Tìm & Đặt Bác Sĩ
@@ -192,6 +193,27 @@
               </div>
             </div>
 
+            <!-- Server consultation quote (does not reserve the selected slot) -->
+            <section class="mb-4 border rounded-3 p-3" aria-labelledby="quote-heading">
+              <h6 class="fw-bold" id="quote-heading">Báo giá khám</h6>
+              <label for="pricing-kind" class="form-label">Loại tính phí</label>
+              <select id="pricing-kind" class="form-select mb-3">
+                <option value="STANDARD" selected>Tiêu chuẩn</option>
+              </select>
+              <p id="quote-status" class="small text-muted mb-2" role="status" aria-live="polite">Chọn khung giờ để xem báo giá.</p>
+              <dl id="quote-details" class="row mb-2" hidden>
+                <dt class="col-6">Loại khám</dt><dd class="col-6 text-end" id="quote-kind"></dd>
+                <dt class="col-6">Phí gốc</dt><dd class="col-6 text-end" id="quote-base"></dd>
+                <dt class="col-6">Tỷ lệ giảm</dt><dd class="col-6 text-end" id="quote-discount"></dd>
+                <dt class="col-6">Giá báo trước</dt><dd class="col-6 text-end fw-bold" id="quote-final"></dd>
+                <dt class="col-6">Đơn vị</dt><dd class="col-6 text-end" id="quote-currency"></dd>
+              </dl>
+              <p id="booking-recovery-notice" class="alert alert-warning small" role="alert" hidden></p>
+              <p id="price-change-notice" class="alert alert-warning small" role="alert" hidden></p>
+              <button type="button" id="quote-retry" class="btn btn-outline-primary btn-sm mb-2" hidden>Thử lại báo giá</button>
+              <p class="small text-muted mb-0">Xem báo giá chưa giữ chỗ. Ca khám chỉ được giữ sau khi đặt lịch thành công.</p>
+            </section>
+
             <!-- Symptoms Input -->
             <div class="mb-3">
               <label class="form-label fw-semibold text-dark"><i class="bi bi-file-earmark-medical me-2 text-primary"></i>Mô tả triệu chứng bệnh / Lý do khám</label>
@@ -224,7 +246,7 @@
           <div class="bg-light border rounded-3 p-3 text-start mb-4">
             <div class="d-flex justify-content-between mb-2">
               <span class="text-muted">Mã đặt chỗ:</span>
-              <strong class="text-primary font-monospace" id="success-booking-code">BK-0000</strong>
+              <strong class="text-primary font-monospace" id="success-booking-code">BK-0000</strong><p class="mt-2 mb-0">Giá khám đã chốt: <strong id="success-price"></strong> · <span id="success-pricing-kind"></span></p>
             </div>
             <div class="d-flex justify-content-between mb-2">
               <span class="text-muted">Bác sĩ khám:</span>
@@ -251,6 +273,7 @@
   <script src="../js/api.js"></script>
   <script src="../js/utils.js"></script>
   <script src="../js/auth.js"></script>
+  <script src="../strategy/consultation-quote.js"></script>
   <script>
     const user = Auth.checkAuth(['PATIENT']);
     if (user) {
@@ -263,9 +286,145 @@
     let bookingBsModal = null;
     let successBsModal = null;
     let detailBsModal = null;
+    let slotsRequestVersion = 0;
+    let pricingOptionsVersion = 0;
+    let bookingSubmitting = false;
+    let previousQuoteForReconfirmation = null;
+    const bookingControlState = new Map();
 
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
+    function updateBookingButton() {
+      const btn = document.getElementById('btn-confirm-booking');
+      btn.disabled = bookingSubmitting || consultationQuote.getState().status !== 'ready';
+      btn.textContent = bookingSubmitting ? 'Đang xử lý đặt lịch…'
+        : previousQuoteForReconfirmation ? 'Xác nhận giá mới và đặt lịch' : 'Xác Nhận Đặt Lịch';
+    }
+
+    function setBookingSubmitting(pending) {
+      bookingSubmitting = pending;
+      if (pending) {
+        document.querySelectorAll('#booking-modal input, #booking-modal select, #booking-modal textarea, #booking-modal button').forEach(control => {
+          bookingControlState.set(control, control.disabled);
+          control.disabled = true;
+        });
+      } else {
+        bookingControlState.forEach((disabled, control) => { control.disabled = disabled; });
+        bookingControlState.clear();
+      }
+      updateBookingButton();
+    }
+
+    function clearPriceReconfirmation() {
+      previousQuoteForReconfirmation = null;
+      document.getElementById('price-change-notice').hidden = true;
+    }
+
+    const consultationQuote = ConsultationQuote.create({
+      fetchQuote: (id, kind) => Api.appointments.quote(id, kind).then(response => response.data),
+      onChange: renderQuote
+    });
+
+    async function recoverBooking(code, message) {
+      setBookingSubmitting(false);
+      clearPriceReconfirmation();
+      consultationQuote.reset();
+      const notice = document.getElementById('booking-recovery-notice');
+      notice.hidden = false;
+      notice.textContent = code === 'BENEFIT_UNAVAILABLE'
+        ? 'Không còn quyền hưởng loại phí đã chọn. Vui lòng chọn lại loại phí đủ điều kiện và xem báo giá mới. ' + message
+        : 'Mất ca khám đã chọn. Vui lòng chọn ca còn trống và xem lại báo giá. ' + message;
+      if (code === 'BENEFIT_UNAVAILABLE') await refreshPricingOptions(true);
+      else await loadSlots(true);
+    }
+
+    function clearRecoveryNotice() {
+      document.getElementById('booking-recovery-notice').hidden = true;
+    }
+
+    function renderQuote(state) {
+      if (state.status === 'error' && ['BENEFIT_UNAVAILABLE', 'SLOT_UNAVAILABLE'].includes(state.errorCode)) {
+        void recoverBooking(state.errorCode, state.error);
+        return;
+      }
+      if (state.status === 'ready') {
+        const selected = document.querySelector('#slots-container .slot-btn.selected');
+        if (!selected || state.quote.workDate !== document.getElementById('booking-date').value
+            || state.quote.startTime !== selected.dataset.startTime || state.quote.endTime !== selected.dataset.endTime) {
+          void recoverBooking('SLOT_UNAVAILABLE', 'Thông tin ngày/giờ ca đã thay đổi trong lúc lấy báo giá.');
+          return;
+        }
+      }
+      const status = document.getElementById('quote-status');
+      const ready = state.status === 'ready';
+      document.getElementById('quote-details').hidden = !ready;
+      document.getElementById('quote-retry').hidden = state.status !== 'error';
+      updateBookingButton();
+      const notice = document.getElementById('price-change-notice');
+      notice.hidden = !ready || !previousQuoteForReconfirmation;
+      if (!notice.hidden) {
+        const old = previousQuoteForReconfirmation, current = state.quote;
+        notice.textContent = `Giá đã thay đổi: ${Utils.formatCurrency(old.finalPrice)} → ${Utils.formatCurrency(current.finalPrice)}. Phí gốc: ${Utils.formatCurrency(old.basePrice)} → ${Utils.formatCurrency(current.basePrice)}; tỷ lệ giảm: ${old.discountRate * 100}% → ${current.discountRate * 100}%. Vui lòng kiểm tra và xác nhận giá mới để đặt lịch.`;
+      }
+      status.className = state.status === 'error' ? 'small text-danger mb-2' : 'small text-muted mb-2';
+      status.textContent = state.status === 'loading' ? 'Đang lấy báo giá từ hệ thống…'
+        : state.status === 'error' ? state.error
+        : ready ? 'Báo giá cho khung giờ đang chọn.' : 'Chọn khung giờ để xem báo giá.';
+      if (!ready) return;
+      const quote = state.quote;
+      document.getElementById('quote-kind').textContent = quote.strategyName;
+      document.getElementById('quote-base').textContent = Utils.formatCurrency(quote.basePrice);
+      document.getElementById('quote-discount').textContent = new Intl.NumberFormat('vi-VN', { style: 'percent', maximumFractionDigits: 2 }).format(quote.discountRate);
+      document.getElementById('quote-final').textContent = Utils.formatCurrency(quote.finalPrice);
+      document.getElementById('quote-currency').textContent = quote.currency;
+    }
+
+    async function refreshPricingOptions(requireChoice = false) {
+      const id=document.getElementById('selected-schedule-id').value;
+      const version=++pricingOptionsVersion;
+      consultationQuote.reset();
+      if(!id)return;
+      document.getElementById('quote-status').textContent='Đang kiểm tra loại phí đủ điều kiện…';
+      const select=document.getElementById('pricing-kind'),previous=select.value||'STANDARD';
+      select.disabled=true;
+      try {
+        const result=await Api.appointments.pricingOptions(id);
+        if(version!==pricingOptionsVersion||document.getElementById('selected-schedule-id').value!==id)return;
+        select.disabled=false;
+        select.replaceChildren();
+        result.data.forEach(choice=>{const option=document.createElement('option');option.value=choice.key;option.textContent=choice.name;select.append(option);});
+        if(!requireChoice && result.data.some(choice=>choice.key===previous)){select.value=previous;refreshQuote();}
+        else {
+          const option=document.createElement('option');option.value='';option.textContent='Chọn lại loại phí hợp lệ';option.disabled=true;option.selected=true;select.prepend(option);
+          document.getElementById('quote-status').textContent='Loại phí trước đó không còn hợp lệ cho ca này. Vui lòng chọn lại.';
+        }
+      } catch(error) {
+        if(version!==pricingOptionsVersion)return;
+        if (error.code === 'SLOT_UNAVAILABLE') { await recoverBooking(error.code, error.message); return; }
+        document.getElementById('quote-status').textContent=error.message;
+        document.getElementById('quote-retry').hidden=false;
+      }
+    }
+
+    function refreshQuote() {
+      const id = document.getElementById('selected-schedule-id').value;
+      if (!id) { consultationQuote.reset(); return; }
+      consultationQuote.select(Number(id), document.getElementById('pricing-kind').value);
+    }
+
+    document.getElementById('pricing-kind').addEventListener('change', () => { clearRecoveryNotice(); clearPriceReconfirmation(); refreshQuote(); });
+    document.getElementById('quote-retry').addEventListener('click', () => refreshPricingOptions());
+    document.getElementById('booking-modal').addEventListener('hide.bs.modal', event => { if (bookingSubmitting) event.preventDefault(); });
+    document.getElementById('booking-modal').addEventListener('hidden.bs.modal', () => {
+      clearRecoveryNotice();
+      clearPriceReconfirmation();
+      slotsRequestVersion++;
+      pricingOptionsVersion++;
+      document.getElementById('selected-schedule-id').value = '';
+      consultationQuote.reset();
+    });
+
+    const todayVietnam = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Ho_Chi_Minh', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
+    const tomorrow = new Date(todayVietnam + 'T00:00:00Z');
+    tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
     document.getElementById('booking-date').value = tomorrow.toISOString().split('T')[0];
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -462,6 +621,7 @@
     }
 
     function openBookingModal(docId, docName, specName) {
+      document.getElementById('pricing-kind').value = 'STANDARD';
       document.getElementById('selected-doctor-id').value = docId;
       document.getElementById('modal-doc-name').innerText = `Đặt lịch khám với ${docName}`;
       document.getElementById('modal-doc-detail-name').innerText = docName;
@@ -471,13 +631,20 @@
       loadSlots();
     }
 
-    async function loadSlots() {
+    async function loadSlots(keepRecoveryNotice = false) {
+      if (!keepRecoveryNotice) clearRecoveryNotice();
+      clearPriceReconfirmation();
+      const requestVersion = ++slotsRequestVersion;
+      pricingOptionsVersion++;
       const docId = document.getElementById('selected-doctor-id').value;
       const date = document.getElementById('booking-date').value;
       const container = document.getElementById('slots-container');
-      if (!date || !docId) return;
       document.getElementById('selected-schedule-id').value = '';
-      document.getElementById('btn-confirm-booking').disabled = true;
+      consultationQuote.reset();
+      if (!date || !docId) {
+        container.textContent = 'Vui lòng chọn ngày khám để tải khung giờ.';
+        return;
+      }
 
       container.innerHTML = `
         <div class="d-flex align-items-center gap-2 text-primary py-2">
@@ -488,6 +655,7 @@
 
       try {
         const res = await Api.doctors.slots(docId, date);
+        if (requestVersion !== slotsRequestVersion) return;
         const slots = res.data || [];
 
         if (slots.length === 0) {
@@ -505,17 +673,21 @@
           }
           return `
             <button type="button" class="btn btn-outline-success rounded-3 px-3 py-2 fw-semibold slot-btn" 
-              onclick="selectSlot(this, ${s.id})">
+              data-start-time="${s.startTime}" data-end-time="${s.endTime}" onclick="selectSlot(this, ${s.id})">
               <i class="bi bi-clock me-1"></i>${Utils.formatTime(s.startTime)} - ${Utils.formatTime(s.endTime)}
             </button>
           `;
         }).join('');
       } catch (err) {
+        if (requestVersion !== slotsRequestVersion) return;
         container.innerHTML = `<div class="alert alert-danger py-2 px-3 small mb-0">${err.message}</div>`;
       }
     }
 
     function selectSlot(btn, scheduleId) {
+      if (bookingSubmitting) return;
+      clearRecoveryNotice();
+      clearPriceReconfirmation();
       document.querySelectorAll('.slot-btn').forEach(b => {
         if (!b.classList.contains('unavailable')) {
           b.classList.remove('selected', 'btn-success');
@@ -526,41 +698,54 @@
       btn.classList.remove('btn-outline-success');
       btn.classList.add('selected', 'btn-success');
       document.getElementById('selected-schedule-id').value = scheduleId;
-      document.getElementById('btn-confirm-booking').disabled = false;
+      refreshPricingOptions();
     }
 
     document.getElementById('booking-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const scheduleId = document.getElementById('selected-schedule-id').value;
       const symptoms = document.getElementById('symptoms').value;
-      const btn = document.getElementById('btn-confirm-booking');
       const docName = document.getElementById('modal-doc-detail-name').innerText;
-      const dateVal = document.getElementById('booking-date').value;
 
-      if (!scheduleId) return;
-      btn.disabled = true;
-      btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Đang xử lý đặt lịch...';
+      if (bookingSubmitting || !scheduleId || consultationQuote.getState().status !== 'ready') return;
+      const quote = { ...consultationQuote.getState().quote };
+      setBookingSubmitting(true);
 
       try {
         const res = await Api.appointments.create({
           scheduleId: parseInt(scheduleId),
-          symptoms: symptoms
+          symptoms: symptoms,
+          strategyKey: quote.strategyKey,
+          expectedWorkDate: quote.workDate,
+          expectedStartTime: quote.startTime,
+          expectedEndTime: quote.endTime,
+          expectedBasePrice: quote.basePrice,
+          expectedDiscountRate: quote.discountRateExact ?? quote.discountRate,
+          expectedPrice: quote.finalPrice
         });
 
+        setBookingSubmitting(false);
         bookingBsModal.hide();
         Utils.showToast('Đặt lịch khám thành công!', 'success');
 
         const createdApp = res.data || {};
+        document.getElementById('success-price').textContent = Utils.formatCurrency(createdApp.price);
+        document.getElementById('success-pricing-kind').textContent = ({STANDARD:'Tiêu chuẩn',INSURANCE:'Bảo hiểm',VIP:'VIP'})[createdApp.pricingKey] || '';
         document.getElementById('success-booking-code').innerText = createdApp.bookingCode || 'BK-SUCCESS';
         document.getElementById('success-doctor-name').innerText = docName;
-        document.getElementById('success-date-time').innerText = Utils.formatDate(dateVal);
+        document.getElementById('success-date-time').innerText = Utils.formatDate(createdApp.workDate) + ' · ' + Utils.formatTime(createdApp.startTime) + ' - ' + Utils.formatTime(createdApp.endTime);
         successBsModal.show();
 
       } catch (err) {
         Utils.showToast(err.message, 'error');
+        if(err.code==='PRICE_CHANGED') {
+          previousQuoteForReconfirmation = quote;
+          await consultationQuote.select(Number(scheduleId), quote.strategyKey);
+        } else if (['BENEFIT_UNAVAILABLE', 'SLOT_UNAVAILABLE'].includes(err.code)) {
+          await recoverBooking(err.code, err.message);
+        }
       } finally {
-        btn.disabled = false;
-        btn.innerHTML = '<i class="bi bi-check-circle me-1"></i> Xác Nhận Đặt Lịch';
+        setBookingSubmitting(false);
       }
     });
 

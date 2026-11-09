@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" type="device">
+  <diagram id="Consultation quote — Class" name="Consultation quote — Class">
+    <mxGraphModel grid="0" page="1" pageScale="1" pageWidth="2130" pageHeight="1300" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="CONSULTATION QUOTE — STRATEGY CLASS DIAGRAM" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=23;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="15" width="2000" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="controller" value="«REST Controller»&#10;ConsultationQuoteController" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="110" width="510" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="controller-body" value="+ quote(actor, request): ResponseEntity&lt;ApiResponseDto&lt;ConsultationQuoteDto&gt;&gt;&#10;+ options(actor, request): ResponseEntity&lt;ApiResponseDto&lt;List&lt;PricingChoice&gt;&gt;&gt;&#10;JWT + PATIENT; @Valid; Cache-Control: no-store" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="controller">
+          <mxGeometry x="0" y="52" width="510" height="178" as="geometry" />
+        </mxCell>
+        <mxCell id="service" value="«Client / Application service»&#10;ConsultationQuoteService" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="430" width="510" height="295" as="geometry" />
+        </mxCell>
+        <mxCell id="service-body" value="- schedules: ScheduleRepository&#10;- appointments: AppointmentRepository&#10;- pricing: PricingContext&#10;- benefits: BenefitService&#10;&#10;+ quote(patientId, scheduleId, strategyKey): ConsultationQuoteDto&#10;+ options(patientId, scheduleId): List&lt;PricingChoice&gt;&#10;- bookableSchedule(id): Schedule&#10;@Transactional(readOnly=true)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="service">
+          <mxGeometry x="0" y="52" width="510" height="243" as="geometry" />
+        </mxCell>
+        <mxCell id="context" value="«Context»&#10;PricingContext" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="700" y="430" width="460" height="270" as="geometry" />
+        </mxCell>
+        <mxCell id="context-body" value="- strategies: Map&lt;String, ConsultationPricingStrategy&gt;&#10;&#10;+ supports(key): boolean&#10;+ choices(): List&lt;PricingChoice&gt;&#10;+ calculate(key, fee: BigDecimal): PricingAmounts&#10;- wholeVnd(amount: BigDecimal): BigDecimal&#10;&#10;Immutable registry; HALF_UP and storage limits." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="context">
+          <mxGeometry x="0" y="52" width="460" height="218" as="geometry" />
+        </mxCell>
+        <mxCell id="strategy" value="«interface / Strategy»&#10;ConsultationPricingStrategy" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1300" y="110" width="750" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="strategy-body" value="+ key(): String&#10;+ name(): String&#10;+ discountRate(): BigDecimal&#10;+ calculate(basePrice: BigDecimal): BigDecimal&#10;+ simulated(): boolean" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="strategy">
+          <mxGeometry x="0" y="52" width="750" height="188" as="geometry" />
+        </mxCell>
+        <mxCell id="STANDARD" value="«Concrete Strategy»&#10;StandardPricingStrategy" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1300" y="460" width="350" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="STANDARD-body" value="+ key(): String = STANDARD&#10;+ name(): String&#10;+ discountRate(): BigDecimal&#10;+ calculate(basePrice): BigDecimal&#10;+ simulated(): boolean = false&#10;&#10;Formula: base × (1 − rate)&#10;Default discount rate = 0&#10;Configured rate must be in [0,1]." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="STANDARD">
+          <mxGeometry x="0" y="52" width="350" height="248" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" value="implements" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;endArrow=block;endFill=0;exitX=0.5;exitY=0;entryX=0.23;entryY=1;" edge="1" parent="1" source="STANDARD" target="strategy">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="INSURANCE" value="«Concrete Strategy»&#10;InsurancePricingStrategy" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1700" y="460" width="350" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="INSURANCE-body" value="+ key(): String = INSURANCE&#10;+ name(): String&#10;+ discountRate(): BigDecimal&#10;+ calculate(basePrice): BigDecimal&#10;+ simulated(): boolean = false&#10;&#10;Formula: base × (1 − rate)&#10;Default discount rate = 0.8&#10;Configured rate must be in [0,1]." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="INSURANCE">
+          <mxGeometry x="0" y="52" width="350" height="248" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="implements" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;endArrow=block;endFill=0;exitX=0.5;exitY=0;entryX=0.77;entryY=1;" edge="1" parent="1" source="INSURANCE" target="strategy">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="VIP" value="«Concrete Strategy»&#10;VipPricingStrategy" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1700" y="870" width="350" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="VIP-body" value="+ key(): String = VIP&#10;+ name(): String&#10;+ discountRate(): BigDecimal&#10;+ calculate(basePrice): BigDecimal&#10;+ simulated(): boolean = false&#10;&#10;Formula: base × (1 − rate)&#10;Default discount rate = 0.1&#10;Configured rate must be in [0,1]." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="VIP">
+          <mxGeometry x="0" y="52" width="350" height="248" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="implements" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;endArrow=block;endFill=0;exitX=1;exitY=0.1;entryX=1;entryY=0.5;" edge="1" parent="1" source="VIP" target="strategy">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="repositories" value="«Repository interfaces»&#10;ScheduleRepository / AppointmentRepository" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="870" width="510" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="repositories-body" value="+ findById(id): Optional&lt;Schedule&gt;&#10;+ existsByScheduleId(id): boolean&#10;&#10;Reads Schedule → Doctor → User.&#10;No write lock or reservation during quote." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="repositories">
+          <mxGeometry x="0" y="52" width="510" height="148" as="geometry" />
+        </mxCell>
+        <mxCell id="eligibility" value="«Supporting service»&#10;BenefitService" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="700" y="870" width="460" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="eligibility-body" value="+ eligible(patientId, kind, appointmentDay)&#10;  : Optional&lt;BenefitRequest&gt;&#10;&#10;APPROVED, not revoked; dates must include&#10;today AND appointment day (Vietnam time).&#10;STANDARD does not require a grant." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="eligibility">
+          <mxGeometry x="0" y="52" width="460" height="168" as="geometry" />
+        </mxCell>
+        <mxCell id="dto" value="«Immutable response»&#10;ConsultationQuoteDto" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1300" y="870" width="350" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="dto-body" value="scheduleId, strategyKey, strategyName&#10;basePrice, discountRate, finalPrice&#10;discountRateExact: String (confirmation)&#10;workDate, startTime, endTime&#10;currency = VND; simulated = false&#10;&#10;PricingAmounts: Context result&#10;PricingChoice: available key/name" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="dto">
+          <mxGeometry x="0" y="52" width="350" height="178" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="uses" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="controller" target="service">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" value="uses" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=1;exitY=0.25;entryX=0;entryY=0.25;" edge="1" parent="1" source="service" target="context">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" value="1..* registered" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=0.7;exitY=0;entryX=0;entryY=0.6;" edge="1" parent="1" source="context" target="strategy">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" value="reads" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=0.3;exitY=1;entryX=0.3;entryY=0;" edge="1" parent="1" source="service" target="repositories">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" value="checks eligibility" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=1;exitY=0.9;entryX=0;entryY=0.3;" edge="1" parent="1" source="service" target="eligibility">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" value="«create»" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;exitX=0.8;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="service" target="dto">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="scope" value="Scope: quote and its pricing options only. BenefitService is shown solely as a collaborator for the Strategy eligibility check.&#10;No separate Admin workflow UML. No appointment write, reservation, notification or payment in this interaction." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=15;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1180" width="2000" height="70" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
