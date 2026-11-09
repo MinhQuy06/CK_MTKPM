@@ -7,8 +7,8 @@ import com.datlichkhambenh.backend.entity.Doctor;
 import com.datlichkhambenh.backend.entity.Patient;
 import com.datlichkhambenh.backend.entity.Schedule;
 import com.datlichkhambenh.backend.exception.AppException;
-import com.datlichkhambenh.backend.exception.BookingConflictException;
 import com.datlichkhambenh.backend.exception.ResourceNotFoundException;
+import com.datlichkhambenh.backend.facade.BookingFacade;
 import com.datlichkhambenh.backend.repository.AppointmentRepository;
 import com.datlichkhambenh.backend.repository.DoctorRepository;
 import com.datlichkhambenh.backend.repository.PatientRepository;
@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.UUID;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
@@ -31,6 +30,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
 
+    private final BookingFacade bookingFacade;
     private final ScheduleRepository scheduleRepository;
     private final AppointmentRepository appointmentRepository;
     private final PatientRepository patientRepository;
@@ -41,64 +41,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public AppointmentDto createBooking(Long patientUserId, CreateBookingDto request) {
-        // 1. Pessimistic Write Lock trên bản ghi Schedule để tránh Race Condition khi 2 bệnh nhân đặt cùng 1 slot
-        Schedule schedule = scheduleRepository.findByIdForUpdate(request.getScheduleId())
-                .orElseThrow(() -> new ResourceNotFoundException("Ca khám (Schedule) không tồn tại"));
-
-        // 2. Kiểm tra slot còn khả dụng hay không
-        if (!Boolean.TRUE.equals(schedule.getIsAvailable())) {
-            throw new BookingConflictException("Ca khám này đã được đặt bởi người khác hoặc không còn khả dụng");
-        }
-        if (appointmentRepository.existsByScheduleId(schedule.getId())) {
-            throw new BookingConflictException("Ca khám này đã có lịch hẹn");
-        }
-
-        LocalDateTime slotTime = LocalDateTime.of(schedule.getWorkDate(), schedule.getStartTime());
-        if (!slotTime.isAfter(LocalDateTime.now())) {
-            throw new AppException("Không thể đặt ca khám đã qua");
-        }
-
-        Patient patient = patientRepository.findById(patientUserId)
-                .orElseThrow(() -> new ResourceNotFoundException("Hồ sơ bệnh nhân không tồn tại"));
-
-        Doctor doctor = schedule.getDoctor();
-        if (doctor == null) {
-            throw new ResourceNotFoundException("Bác sĩ phụ trách ca khám không tồn tại");
-        }
-        if (!Boolean.TRUE.equals(doctor.getIsApproved()) || !Boolean.TRUE.equals(doctor.getUser().getIsActive())) {
-            throw new AppException("Bác sĩ hiện không nhận lịch khám");
-        }
-
-        // 3. Tạo Appointment mới với booking_code ngẫu nhiên
-        String bookingCode = "BK-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
-
-        Appointment appointment = Appointment.builder()
-                .bookingCode(bookingCode)
-                .patient(patient)
-                .doctor(doctor)
-                .schedule(schedule)
-                .symptoms(request.getSymptoms())
-                .status("CONFIRMED")
-                .price(doctor.getConsultationFee())
-                .build();
-
-        Appointment savedAppointment = appointmentRepository.save(appointment);
-
-        // 4. Cập nhật trạng thái slot thành không khả dụng
-        schedule.setIsAvailable(false);
-        scheduleRepository.save(schedule);
-
-        // 5. Invalidate slot cache trong Redis
-        redisCacheService.evictSlotCache(doctor.getUserId(), schedule.getWorkDate());
-
-        // 6. Trigger sự kiện gửi mail bất đồng bộ (Async task, KHÔNG block response)
-        try {
-            emailNotificationService.sendBookingConfirmation(savedAppointment);
-        } catch (Exception e) {
-            log.error("Lỗi khi trigger gửi mail xác nhận đặt lịch: {}", e.getMessage());
-        }
-
-        return mapToDto(savedAppointment);
+        return bookingFacade.createBooking(patientUserId, request);
     }
 
     @Override

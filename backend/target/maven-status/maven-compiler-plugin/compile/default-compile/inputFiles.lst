@@ -46,6 +46,8 @@ D:\dat-lich-kham-benh-main\backend\src\main\java\com\datlichkhambenh\backend\exc
 D:\dat-lich-kham-benh-main\backend\src\main\java\com\datlichkhambenh\backend\exception\BookingConflictException.java
 D:\dat-lich-kham-benh-main\backend\src\main\java\com\datlichkhambenh\backend\exception\GlobalExceptionHandler.java
 D:\dat-lich-kham-benh-main\backend\src\main\java\com\datlichkhambenh\backend\exception\ResourceNotFoundException.java
+D:\dat-lich-kham-benh-main\backend\src\main\java\com\datlichkhambenh\backend\facade\BookingFacade.java
+D:\dat-lich-kham-benh-main\backend\src\main\java\com\datlichkhambenh\backend\facade\impl\BookingFacadeImpl.java
 D:\dat-lich-kham-benh-main\backend\src\main\java\com\datlichkhambenh\backend\messaging\EmailNotificationMessage.java
 D:\dat-lich-kham-benh-main\backend\src\main\java\com\datlichkhambenh\backend\messaging\EmailNotificationRequestedEvent.java
 D:\dat-lich-kham-benh-main\backend\src\main\java\com\datlichkhambenh\backend\messaging\EmailQueueConsumer.java

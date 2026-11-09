@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.datlichkhambenh.backend.service.BookingServiceImplTests
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.170 s -- in com.datlichkhambenh.backend.service.BookingServiceImplTests

@@ -21,6 +21,7 @@ com\datlichkhambenh\backend\security\JwtTokenFilter.class
 com\datlichkhambenh\backend\dto\request\LoginRequestDto.class
 com\datlichkhambenh\backend\dto\response\DoctorDto$DoctorDtoBuilder.class
 com\datlichkhambenh\backend\dto\response\PatientDto.class
+com\datlichkhambenh\backend\facade\BookingFacade.class
 com\datlichkhambenh\backend\service\impl\MedicalServiceServiceImpl.class
 com\datlichkhambenh\backend\dto\request\UpdateDoctorProfileDto.class
 com\datlichkhambenh\backend\service\impl\RedisCacheServiceImpl$2.class
@@ -74,6 +75,7 @@ com\datlichkhambenh\backend\entity\MedicalRecord.class
 com\datlichkhambenh\backend\dto\request\SpecialtyRequestDto$SpecialtyRequestDtoBuilder.class
 com\datlichkhambenh\backend\service\impl\AsyncEmailNotificationServiceImpl.class
 com\datlichkhambenh\backend\service\impl\AdminManagementServiceImpl.class
+com\datlichkhambenh\backend\facade\impl\BookingFacadeImpl.class
 com\datlichkhambenh\backend\entity\MedicalService$MedicalServiceBuilder.class
 com\datlichkhambenh\backend\service\DoctorService.class
 com\datlichkhambenh\backend\service\DoctorScheduleService.class

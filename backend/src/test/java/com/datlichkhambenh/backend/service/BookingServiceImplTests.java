@@ -1,10 +1,13 @@
 package com.datlichkhambenh.backend.service;
 
+import com.datlichkhambenh.backend.dto.request.CreateBookingDto;
+import com.datlichkhambenh.backend.dto.response.AppointmentDto;
 import com.datlichkhambenh.backend.entity.Appointment;
 import com.datlichkhambenh.backend.entity.Doctor;
 import com.datlichkhambenh.backend.entity.Patient;
 import com.datlichkhambenh.backend.entity.Schedule;
 import com.datlichkhambenh.backend.exception.AppException;
+import com.datlichkhambenh.backend.facade.BookingFacade;
 import com.datlichkhambenh.backend.repository.AppointmentRepository;
 import com.datlichkhambenh.backend.repository.DoctorRepository;
 import com.datlichkhambenh.backend.repository.PatientRepository;
@@ -31,6 +34,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class BookingServiceImplTests {
+    @Mock BookingFacade bookingFacade;
     @Mock ScheduleRepository scheduleRepository;
     @Mock AppointmentRepository appointmentRepository;
     @Mock PatientRepository patientRepository;
@@ -38,6 +42,18 @@ class BookingServiceImplTests {
     @Mock AsyncEmailNotificationService emailNotificationService;
     @Mock RedisCacheService redisCacheService;
     @InjectMocks BookingServiceImpl bookingService;
+
+    @Test
+    void createBookingDelegatesToBookingFacade() {
+        CreateBookingDto request = new CreateBookingDto(30L, "Sốt cao");
+        AppointmentDto expected = AppointmentDto.builder().id(100L).bookingCode("BK-12345").build();
+        when(bookingFacade.createBooking(10L, request)).thenReturn(expected);
+
+        AppointmentDto result = bookingService.createBooking(10L, request);
+
+        assertEquals(expected, result);
+        verify(bookingFacade).createBooking(10L, request);
+    }
 
     @Test
     void unrelatedPatientCannotReadAppointment() {

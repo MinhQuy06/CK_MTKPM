@@ -53,10 +53,11 @@ Controller chỉ nhận request, validate, gọi Service tương ứng, KHÔNG c
 - **DoctorScheduleService**: Tạo / Bật / Tắt Slot khám
 - **Redis Cache Service**: Cache danh sách Bác sĩ & Slot rảnh (đọc/ghi Redis Memory Database)
 
-### Booking Processing Engine (khối xử lý đặt lịch — quan trọng nhất hệ thống)
-- **BookingServiceImpl**: Xử lý Đặt / Hủy lịch, khóa tranh chấp (concurrency control)
-- **Locking Mechanism**: Pessimistic Lock — dùng `SELECT ... FOR UPDATE` trên bản ghi Schedule để tránh 2 bệnh nhân đặt trùng 1 slot
-- Sau khi đặt lịch thành công → **trigger sự kiện gửi mail** sang Async Email Notification Service
+### Booking Processing Engine (khối xử lý đặt lịch — áp dụng Facade Pattern)
+- **BookingServiceImpl**: Nhận ủy nhiệm nghiệp vụ đặt/hủy lịch từ Controller, chuyển giao điều phối đặt lịch cho `BookingFacade`.
+- **BookingFacade (BookingFacadeImpl)**: Đóng vai trò Facade Pattern, điều phối thống nhất toàn bộ các hệ thống con: khóa slot bằng Pessimistic Lock, kiểm tra tính hợp lệ, lưu Appointment, cập nhật trạng thái Schedule, xóa cache Redis và kích hoạt gửi email bất đồng bộ.
+- **Locking Mechanism**: Pessimistic Lock — dùng `SELECT ... FOR UPDATE` trên bản ghi Schedule để tránh 2 bệnh nhân đặt trùng 1 slot.
+- Sau khi đặt lịch thành công → **trigger sự kiện gửi mail** sang Async Email Notification Service.
 
 ### Async Email Notification Service
 - Gửi mail xác nhận đặt lịch & nhắc lịch
@@ -75,13 +76,15 @@ Controller chỉ nhận request, validate, gọi Service tương ứng, KHÔNG c
 Client → Security (JWT → Role check → Validate) → Controller → Service → Repository → Database
 ```
 
-Riêng luồng đặt lịch (Booking):
+Riêng luồng đặt lịch (Booking) áp dụng Facade Pattern:
 ```
-BookingController → BookingServiceImpl
-  → Locking Mechanism (SELECT FOR UPDATE trên Schedule)
-  → Ghi Appointment vào DB
-  → Trigger gửi mail → đẩy Task vào Message Queue
-  → Async Email Notification Service xử lý gửi mail
+BookingController → BookingService (BookingServiceImpl)
+  → BookingFacade (BookingFacadeImpl)
+      → ScheduleRepository (SELECT FOR UPDATE trên Schedule)
+      → PatientRepository (Kiểm tra hồ sơ bệnh nhân)
+      → AppointmentRepository (Lưu Appointment mới)
+      → RedisCacheService (Xóa cache slot khám)
+      → AsyncEmailNotificationService (Gửi mail bất đồng bộ qua RabbitMQ)
 ```
 
 ## Quy tắc bắt buộc khi agent code (áp dụng cho AI trong IDE)
