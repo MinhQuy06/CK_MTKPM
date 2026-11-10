@@ -47,7 +47,7 @@
         <mxCell id="err2" value="409 SLOT_UNAVAILABLE:&#10;bỏ chọn, tải lại khung giờ" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;rounded=1;arcSize=30;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
           <mxGeometry x="1250" y="1000" width="390" height="80" as="geometry" />
         </mxCell>
-        <mxCell id="s4" value="Nếu loại ≠ STANDARD: khóa và kiểm tra&#10;quyền hưởng (lockedEligible)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;rounded=1;arcSize=30;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+        <mxCell id="s4" value="Nếu loại ≠ STANDARD: khóa và kiểm tra&#10;quyền hưởng (lockCovering)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;rounded=1;arcSize=30;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
           <mxGeometry x="790" y="1130" width="400" height="80" as="geometry" />
         </mxCell>
         <mxCell id="d3" value="quyền hưởng&#10;còn hiệu lực?" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;rhombus;whiteSpace=wrap;fontSize=14;" vertex="1" parent="1">

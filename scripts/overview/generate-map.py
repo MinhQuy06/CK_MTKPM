@@ -58,11 +58,11 @@ def main():
     frame(d, 'f-strategy', '«Strategy»', 560, 330, 480, 400)
     d.box('context', 'PricingContext\ncalculate(key, fee)', 590, 370, 420, 80, BOX)
     d.box('strategies', 'ConsultationPricingStrategy\nStandard · Insurance · VIP', 590, 500, 420, 80, BOX)
-    d.box('benefit', 'BenefitService\n(điều kiện dùng Insurance/VIP)', 590, 620, 420, 80, BOX)
-    d.edge('quotectl', 'context', 'ConsultationQuoteService', 'exitX=0.5;exitY=1;entryX=0.5;entryY=0;')
+    d.box('benefit', 'BookingOffer «Client»\nca đặt được · quyền hưởng · lý do từ chối', 590, 620, 420, 80, BOX)
+    d.edge('quotectl', 'context', 'BookingOffer.quote', 'exitX=0.5;exitY=1;entryX=0.5;entryY=0;')
     d.edge('context', 'strategies', 'chọn theo key', 'exitX=0.5;exitY=1;entryX=0.5;entryY=0;')
     d.edge('booking', 'context', 'tính giá', 'exitX=1;exitY=0.2;entryX=0;entryY=0.6;', [(530, 642), (530, 418)])
-    d.edge('booking', 'benefit', 'khóa quyền hưởng', 'exitX=1;exitY=0.6;entryX=0;entryY=0.6;')
+    d.edge('booking', 'benefit', 'lockAndConfirm', 'exitX=1;exitY=0.6;entryX=0;entryY=0.6;')
 
     # Observer
     frame(d, 'f-observer', '«Observer»', 40, 780, 1000, 230)

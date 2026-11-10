@@ -37,7 +37,7 @@ Controller vừa lo HTTP vừa lo cách dùng dịch vụ; đổi cách xác đ�
 | Vai trò | Lớp | Ghi chú |
 |---|---|---|
 | Client | [`BookingController`](../../backend/src/main/java/com/datlichkhambenh/backend/controller/BookingController.java) | Chỉ tiêm `BookingFacade`; giữ `@PreAuthorize`, mã trạng thái, thông điệp |
-| Facade | [`BookingFacade`](../../backend/src/main/java/com/datlichkhambenh/backend/facade/BookingFacade.java) | `confirm`, `bookWithoutQuote`, `cancel`, `details`, `myAppointments` |
+| Facade | [`BookingFacade`](../../backend/src/main/java/com/datlichkhambenh/backend/facade/BookingFacade.java) | `confirm` (tạo `ConfirmedQuote`), `bookWithoutQuote` (tạo `LegacyQuote` / `LegacyStandard`), `cancel`, `details`, `myAppointments` |
 | Subsystem | `CurrentUserService` | `UserDetails` → userId |
 | Subsystem | `BookingService` / `BookingServiceImpl` | Khóa ca, quyền hưởng, tính giá (Strategy), lưu, phát sự kiện (Observer) |
 
@@ -57,10 +57,11 @@ Nguồn `.drawio` trong [diagrams/](diagrams/), sinh bằng `python3 scripts/fac
 
 ## 5. Quyết định thiết kế
 
-1. **Facade nhận `UserDetails`, dịch vụ nhận userId.** Phụ thuộc Spring Security dừng ở Facade; `BookingService` giữ nguyên chữ ký.
-2. **Lỗi đi xuyên Facade.** `BookingRejectionException` (409/403) không bị bọc lại, để `GlobalExceptionHandler` trả đúng mã như trước.
-3. **Facade không thay thế hệ thống con.** Code khác (test, job sau này) vẫn gọi `BookingService` trực tiếp được.
-4. **Phủ cả 5 endpoint**, gồm `POST /appointments` cũ cho client chưa gửi báo giá.
+1. **Facade nhận `UserDetails`, dịch vụ nhận userId.** Phụ thuộc Spring Security dừng ở Facade.
+2. **Facade quyết định kỳ vọng của bệnh nhân** (từ 11/11/2026): route `/confirm` luôn thành `ConfirmedQuote`, route cũ thành `LegacyQuote` hoặc `LegacyStandard`; `BookingOffer` kiểm tra theo kỳ vọng đó. Thay cho cờ `quoteRequired` trên DTO trước đây.
+3. **Lỗi đi xuyên Facade.** `BookingRejectionException` (409/403) không bị bọc lại, để `GlobalExceptionHandler` trả đúng mã như trước.
+4. **Facade không thay thế hệ thống con.** Code khác (test, job sau này) vẫn gọi `BookingService` trực tiếp được.
+5. **Phủ cả 5 endpoint**, gồm `POST /appointments` cũ cho client chưa gửi báo giá.
 
 ## 6. Kiểm thử
 
@@ -71,5 +72,5 @@ Nguồn `.drawio` trong [diagrams/](diagrams/), sinh bằng `python3 scripts/fac
 
 ## 7. Hạn chế
 
-- Facade mỏng: phần lớn là chuyển tiếp; giá trị nằm ở chỗ gom kiến thức "dùng dịch vụ thế nào" ra khỏi controller.
+- Ngoài việc tạo kỳ vọng, các hàm còn lại chủ yếu chuyển tiếp; giá trị nằm ở chỗ gom kiến thức "dùng dịch vụ thế nào" ra khỏi controller.
 - Nếu Facade phình ra (thêm báo giá, quyền hưởng…) nó dễ thành "god object"; vì vậy giữ phạm vi đúng 5 thao tác lịch hẹn.

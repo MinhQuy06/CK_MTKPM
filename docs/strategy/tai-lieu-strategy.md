@@ -101,7 +101,7 @@ Một người khác — **lễ tân** — mới là người kiểm tra thẻ t
 | Strategy | `strategy/pricing/ConsultationPricingStrategy` | `key()`, `name()`, `discountRate()`, `calculate(basePrice)` |
 | Concrete Strategy | `StandardPricingStrategy`, `InsurancePricingStrategy`, `VipPricingStrategy` | Mỗi lớp một công thức, tỷ lệ đọc từ cấu hình |
 | Context | `strategy/pricing/PricingContext` | Registry bất biến, chọn theo key, kiểm tra tỷ lệ, làm tròn VND, chặn giá vượt gốc |
-| Client | `strategy/service/ConsultationQuoteService`, `service/impl/BookingServiceImpl` | Báo giá; chốt giá khi đặt |
+| Client | `strategy/offer/BookingOffer` (gọi bởi báo giá và `BookingServiceImpl`) | Một nơi cho luật ca đặt được, quyền hưởng, giá và lý do từ chối |
 | Cộng tác viên | `strategy/service/BenefitService` | Kiểm tra quyền hưởng đã được Admin duyệt |
 
 ### 3.2 Ba thuật toán (phí gốc 300.000đ)
@@ -193,7 +193,7 @@ Sinh lại bằng `generate-quote-diagrams.py`, `generate-booking-diagrams.py`, 
 ### QĐ8. Endpoint `/confirm` mới + giữ `POST /appointments` cũ
 
 - **Vấn đề**: Nếu thêm trường báo giá vào endpoint cũ dưới dạng tùy chọn, client có thể bỏ hết trường để vượt kiểm tra giá.
-- **Giải pháp**: Controller `/confirm` tự gắn cờ `quoteRequired` nội bộ; JSON client không tắt được. Endpoint cũ giữ cho client chưa cập nhật.
+- **Giải pháp**: `BookingFacade` tạo kỳ vọng theo route: `/confirm` luôn là `ConfirmedQuote` (thiếu phần nào thì `QUOTE_REQUIRED`), nên JSON client không thể hạ cấp xuống luồng cũ. Endpoint cũ tạo `LegacyQuote` hoặc `LegacyStandard` cho client chưa cập nhật. (Trước 11/11/2026 việc này dùng cờ nội bộ `quoteRequired` trên DTO; đã bỏ khi gom luật về `BookingOffer`.)
 
 ### QĐ9. Không cộng dồn; bệnh nhân tự chọn khi có cả Bảo hiểm và VIP
 

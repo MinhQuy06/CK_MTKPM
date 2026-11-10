@@ -14,7 +14,7 @@ def class_diagram():
     d.title('MẪU OBSERVER — PHẢN ỨNG KHI ĐẶT / HỦY LỊCH — SƠ ĐỒ LỚP', 2600)
     d.uml('subject', '«ConcreteSubject»\nBookingServiceImpl', [
         '- events: ApplicationEventPublisher', '- pricing: PricingContext', '- …repositories', '',
-        '+ createBooking(patientId, request): AppointmentDto', '  … lưu lịch hẹn, khóa ca …',
+        '+ createBooking(patientId, scheduleId, symptoms, expectation)', '  … lưu lịch hẹn, khóa ca …',
         '  events.publishEvent(new AppointmentBookedEvent(saved))',
         '+ cancelBooking(appointmentId, patientId)', '  … đổi trạng thái, mở ca thay thế …',
         '  events.publishEvent(new AppointmentCancelledEvent(a))'], 40, 110, 640)
@@ -56,8 +56,8 @@ def sequence():
         'AppointmentEmail\nObserver', 'SlotCache\nObserver', 'AsyncEmailNotification\nService «decorated»',
         'RedisCacheService'], OUT, col=260)
     s.call(0, 1, 'POST /appointments/confirm')
-    s.call(1, 2, 'createBooking(patientId, request)')
-    s.step(2, 'Khóa ca + bác sĩ, tính giá (Strategy),\nlưu Appointment, đánh dấu ca đã kín', 380, 56)
+    s.call(1, 2, 'createBooking(patientId, scheduleId, symptoms, expectation)')
+    s.step(2, 'BookingOffer khóa + tính giá (Strategy),\nlưu Appointment, đánh dấu ca đã kín', 380, 56)
     s.begin('alt [ca đã kín / giá đổi / mất quyền hưởng]')
     s.reply(2, 1, 'BookingRejectionException → rollback, KHÔNG phát sự kiện')
     s.end()

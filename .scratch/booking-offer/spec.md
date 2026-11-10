@@ -1,8 +1,8 @@
 # Spec: Gom luật giá chào thành module BookingOffer
 
-Status: ready-for-agent
+Status: done (11/11/2026, nhánh `booking-offer-design`)
 
-> Không bắt đầu trước 12/11/2026 (ngày nộp bài). Code đang chạy phải khớp sơ đồ và kịch bản thuyết trình đến hết ngày đó.
+> Ban đầu dự định làm sau 12/11; người dùng quyết định làm luôn ngày 11/11, kèm sinh lại sơ đồ và cập nhật tài liệu.
 
 ## Problem Statement
 
@@ -47,16 +47,18 @@ Người dùng không thấy khác biệt ngoài hai mã lỗi được thống 
   - *xem loại phí*: cho một bệnh nhân và một ca, trả các loại phí áp dụng được (Tiêu chuẩn luôn có; Bảo hiểm/VIP khi có quyền hưởng còn hiệu lực cho ngày khám). Chỉ đọc.
   - *báo giá*: cho bệnh nhân, ca, loại phí (mặc định Tiêu chuẩn); trả **giá chào** (phí gốc, tỷ lệ giảm, giá cuối, ngày giờ ca). Chỉ đọc, không khóa.
   - *khóa và xác nhận*: cho bệnh nhân, ca, loại phí và một **kỳ vọng**; khóa ca → bác sĩ → quyền hưởng (nếu có), kiểm tra lại mọi luật, so với kỳ vọng, trả **giá chào đã khóa** (ca, bác sĩ, quyền hưởng đã dùng hoặc không, số tiền). Bắt buộc chạy trong giao dịch của caller; gọi ngoài giao dịch là lỗi.
-- **Kỳ vọng** có đúng hai dạng:
-  - *giá đã đồng ý*: phí gốc, tỷ lệ giảm, giá cuối, ngày, giờ bắt đầu, giờ kết thúc. Lệch số tiền → giá đã đổi; lệch ngày giờ → ca không còn đặt được.
+- **Kỳ vọng** có ba dạng (dạng thứ ba phát hiện khi đọc code: route cũ gửi kèm giá thì giá được so nhưng ngày giờ không):
+  - *giá đã đồng ý* (route xác nhận): loại phí, phí gốc, tỷ lệ giảm, giá cuối, ngày, giờ bắt đầu, giờ kết thúc. Thiếu phần nào → `QUOTE_REQUIRED`; lệch số tiền → giá đã đổi; lệch ngày giờ → ca không còn đặt được.
+  - *route cũ có kèm giá*: so số tiền, không so ngày giờ; loại phí vắng mặt là Tiêu chuẩn.
   - *đặt lịch kiểu cũ*: chỉ cho phép Tiêu chuẩn.
-- **Facade** tạo kỳ vọng: xác nhận có báo giá tạo *giá đã đồng ý*; đặt kiểu cũ tạo *đặt lịch kiểu cũ*. Cờ "bắt buộc báo giá" trên dữ liệu request bị bỏ; việc chặn hạ cấp từ đường xác nhận xuống kiểu cũ đúng theo cấu trúc.
+- **Facade** tạo kỳ vọng: xác nhận có báo giá tạo *giá đã đồng ý*; route cũ tạo *route cũ có kèm giá* nếu có loại phí hoặc giá, ngược lại *đặt lịch kiểu cũ*. Cờ "bắt buộc báo giá" trên dữ liệu request bị bỏ; việc chặn hạ cấp từ đường xác nhận xuống kiểu cũ đúng theo cấu trúc.
 - **Lý do từ chối** là một tập đóng do module sở hữu, mỗi lý do có mã, HTTP status và thông điệp mặc định:
   - `SLOT_UNAVAILABLE`: 404 khi ca không tồn tại, 409 khi đã kín, đã qua hoặc đổi ngày giờ.
   - `PRICE_CHANGED`: 409.
   - `BENEFIT_UNAVAILABLE`: 403.
   - `UNSUPPORTED_STRATEGY`: 400, áp dụng cho cả báo giá.
   - `DOCTOR_UNAVAILABLE` *(mới)*: 409, cho cả báo giá và đặt lịch.
+  - `QUOTE_REQUIRED`: 400, route xác nhận thiếu một phần giá đã đồng ý (đã có từ trước, nay nằm trong cùng tập).
 - **Ca đặt được** (một định nghĩa, dùng cho cả ba thao tác): tồn tại, còn trống, chưa có lịch hẹn, giờ bắt đầu sau hiện tại theo giờ Việt Nam, bác sĩ đã duyệt và tài khoản đang hoạt động.
 - **Quyền hưởng còn hiệu lực**: module quyền hưởng giữ đúng một quy tắc ngày (chứa cả hôm nay và ngày khám, giờ Việt Nam, kể cả biên), dùng cho tìm thường, tìm có khóa và trạng thái hiển thị.
 - **Tính giá** vẫn qua Context Strategy hiện có (không đổi).

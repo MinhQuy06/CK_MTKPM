@@ -73,3 +73,11 @@ Primary seam: HTTP APIs with real Spring/H2/MockMvc JWT; browser smoke for rende
 Theo yêu cầu tiếp theo, gom cả mã nguồn và tài liệu. Backend riêng thuộc package `backend.strategy` (pricing/controller/service/entity/repository/dto); các điểm tích hợp Booking/Appointment dùng chung giữ vị trí. Frontend JS, Java/Node/browser tests, SQL nâng cấp và scripts có thư mục Strategy riêng. UML chuyển vào docs/strategy/diagrams; README tại docs/strategy là mục lục chung. Giữ URL trang/API và nội dung SQL; cập nhật package/import, đường dẫn công cụ và liên kết.
 
 Xác minh cấu trúc mới: clean build 118 test H2/MySQL, 11 test Node, 16 kịch bản Chrome và 5 SQL nâng cấp đều qua; file SQL, 4 draw.io/4 PNG không đổi nội dung; kiểm tra liên kết và package đúng đường dẫn, frontend/static đồng bộ. Lệnh sinh/xuất UML chạy được từ scripts/strategy.
+
+## 11/11/2026: gom luật giá chào về `BookingOffer`
+
+- Kết quả rà soát kiến trúc (spec `.scratch/booking-offer/spec.md`, thuật ngữ `GLOSSARY.md`): báo giá và đặt lịch từng chép lại luật ca đặt được, loại phí, quyền hưởng và đã lệch mã lỗi.
+- `strategy/offer/BookingOffer` là Client duy nhất của Strategy: `pricingTypes`, `quote`, `lockAndConfirm` (MANDATORY, khóa ca → bác sĩ → quyền hưởng). `ConsultationQuoteService` bị xóa; `BenefitService` còn một quy tắc quyền hưởng còn hiệu lực (`covering` / `lockCovering`).
+- `BookingFacade` tạo `Expectation` (`ConfirmedQuote` / `LegacyQuote` / `LegacyStandard`); bỏ cờ `quoteRequired` trên DTO.
+- Thay đổi hành vi có chủ đích: báo giá với loại phí không hỗ trợ trả `UNSUPPORTED_STRATEGY` (400, trước đó 400 không mã); bác sĩ không nhận lịch trả `DOCTOR_UNAVAILABLE` (409) ở cả báo giá và đặt lịch (trước đó 409 không mã / 400 không mã).
+- Kiểm thử: 187 Java H2 (17 bỏ qua là nhóm MySQL), 188 Java với MySQL 8.0 thật, nâng cấp MySQL pass, 14 Node, 17/17 trình duyệt; 17 test mới qua interface `BookingOffer`.

@@ -13,9 +13,9 @@ Thư mục gốc backend: `backend/src/main/java/com/datlichkhambenh/backend/` (
 1. [ConsultationPricingStrategy.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/pricing/ConsultationPricingStrategy.java): interface, chỉ 12 dòng.
 2. [StandardPricingStrategy.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/pricing/StandardPricingStrategy.java): một Concrete Strategy mẫu.
 3. [PricingContext.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/pricing/PricingContext.java): Context, hàm `calculate` ở dòng 33.
-4. [ConsultationQuoteService.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/service/ConsultationQuoteService.java): Client báo giá.
-5. [BookingServiceImpl.java](../../backend/src/main/java/com/datlichkhambenh/backend/service/impl/BookingServiceImpl.java): Client đặt lịch, dòng 49–128 và 251–267.
-6. [BenefitService.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/service/BenefitService.java): điều kiện sử dụng, dòng 84–102.
+4. [BookingOffer.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/offer/BookingOffer.java): Client duy nhất của Strategy (giá chào): `quote` dòng 62, `lockAndConfirm` dòng 80.
+5. [BookingServiceImpl.java](../../backend/src/main/java/com/datlichkhambenh/backend/service/impl/BookingServiceImpl.java): đặt lịch gọi `lockAndConfirm` rồi lưu, dòng 50–85.
+6. [BenefitService.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/service/BenefitService.java): điều kiện sử dụng (quyền hưởng còn hiệu lực), dòng 88–112.
 
 ---
 
@@ -71,11 +71,12 @@ Muốn thêm loại giá mới: tạo một lớp `@Component` implement interfa
 
 | File | Vai trò | Nội dung chính | Dòng |
 | --- | --- | --- | --- |
-| [strategy/service/ConsultationQuoteService.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/service/ConsultationQuoteService.java) | ⭐ Client (báo giá) | `quote(patientId, scheduleId, strategyKey)`: kiểm tra ca, kiểm tra quyền, gọi `pricing.calculate` | 26–34 |
-| | | `options(patientId, scheduleId)`: chỉ trả loại phí đủ điều kiện | 36–39 |
-| | | `bookableSchedule`: ca tồn tại, còn trống, chưa qua, bác sĩ đang hoạt động | 40–50 |
-| [service/impl/BookingServiceImpl.java](../../backend/src/main/java/com/datlichkhambenh/backend/service/impl/BookingServiceImpl.java) | 🔗 Client (đặt lịch) | `createBooking`: khóa Schedule (51), so ngày/giờ đã báo (62–72), khóa Doctor (83), khóa quyền hưởng (95), tính giá (96), lưu snapshot (111–112), email sau commit (122–127) | 49–128 |
-| | | `confirmedPrice`: tính lại bằng Strategy, so với giá client gửi, lệch thì `PRICE_CHANGED` | 251–267 |
+| [strategy/offer/BookingOffer.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/offer/BookingOffer.java) | ⭐ Client (giá chào) | `pricingTypes` (52): loại phí áp dụng được; `quote` (62): giá chào chỉ đọc; `lockAndConfirm` (80): khóa ca → bác sĩ → quyền hưởng, kiểm tra lại, so với `Expectation` | 31–193 |
+| | | Luật dùng chung: `bookable` (106), `requireAgreedSlotTime`, `supported`, `pricingKey` (153), `requireUnchangedPrice` (166) | |
+| [strategy/offer/Expectation.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/offer/Expectation.java) | ⭐ Đầu vào | `ConfirmedQuote` (route `/confirm`), `LegacyQuote`, `LegacyStandard`; Facade tạo | |
+| [strategy/offer/BookingRejection.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/offer/BookingRejection.java) | ⭐ Lý do từ chối | 7 hằng: SLOT_MISSING/SLOT_UNAVAILABLE (`SLOT_UNAVAILABLE` 404/409), PRICE_CHANGED, BENEFIT_UNAVAILABLE, UNSUPPORTED_STRATEGY, DOCTOR_UNAVAILABLE, QUOTE_REQUIRED | |
+| [strategy/offer/Offer.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/offer/Offer.java), [LockedOffer.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/offer/LockedOffer.java) | ⭐ Kết quả | Giá chào; giá chào đã khóa (ca, bác sĩ, quyền hưởng, số tiền) | |
+| [service/impl/BookingServiceImpl.java](../../backend/src/main/java/com/datlichkhambenh/backend/service/impl/BookingServiceImpl.java) | 🔗 Điều phối đặt lịch | `createBooking(patientId, scheduleId, symptoms, expectation)`: `lockAndConfirm` (52), lưu snapshot, đóng ca, phát `AppointmentBookedEvent` (83) | 50–85 |
 
 ---
 
@@ -83,10 +84,10 @@ Muốn thêm loại giá mới: tạo một lớp `@Component` implement interfa
 
 | File | Endpoint | Dòng |
 | --- | --- | --- |
-| [strategy/controller/ConsultationQuoteController.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/controller/ConsultationQuoteController.java) | `GET /api/v1/appointments/quote` | 22–26 |
-| | `GET /api/v1/appointments/pricing-options` | 27–31 |
-| [controller/BookingController.java](../../backend/src/main/java/com/datlichkhambenh/backend/controller/BookingController.java) 🔗 | `POST /api/v1/appointments/confirm`: gắn `quoteRequired` nội bộ | 39–45 |
-| | `POST /api/v1/appointments`: luồng cũ, mặc định Tiêu chuẩn | 27–36 |
+| [strategy/controller/ConsultationQuoteController.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/controller/ConsultationQuoteController.java) | `GET /api/v1/appointments/quote` → `BookingOffer.quote`, chuyển `Offer` thành `ConsultationQuoteDto` | 36–44 |
+| | `GET /api/v1/appointments/pricing-options` → `BookingOffer.pricingTypes` | 46–51 |
+| [controller/BookingController.java](../../backend/src/main/java/com/datlichkhambenh/backend/controller/BookingController.java) 🔗 + [facade/BookingFacade.java](../../backend/src/main/java/com/datlichkhambenh/backend/facade/BookingFacade.java) | `POST /api/v1/appointments/confirm`: Facade tạo `ConfirmedQuote` (Facade dòng 30) | 37–44 |
+| | `POST /api/v1/appointments`: luồng cũ, Facade tạo `LegacyQuote`/`LegacyStandard` (Facade dòng 41) | 26–35 |
 | [strategy/controller/PatientBenefitController.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/controller/PatientBenefitController.java) 🛂 | `POST/GET /api/v1/patients/me/benefit-requests`, `GET .../{id}` | 25–37 |
 | [strategy/controller/AdminBenefitController.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/controller/AdminBenefitController.java) 🛂 | `GET /api/v1/admin/benefit-requests`, `GET .../{id}`, `POST .../{id}/decision`, `POST .../{id}/revoke` | 21–32 |
 
@@ -99,9 +100,10 @@ Muốn thêm loại giá mới: tạo một lớp `@Component` implement interfa
 | [strategy/service/BenefitService.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/service/BenefitService.java) | `submit`: bệnh nhân gửi yêu cầu, kiểm tra gia hạn | 29–43 |
 | | `decide`: Admin duyệt/từ chối, khóa dòng, ghi lịch sử | 62–74 |
 | | `revoke`: thu hồi, không xóa lịch sử | 76–82 |
-| | `eligible`: quyền hợp lệ hôm nay và ngày khám (dùng khi báo giá) | 84–91 |
-| | `lockedEligible`: như trên nhưng khóa dòng quyền (dùng khi đặt lịch) | 93–102 |
-| | `effectiveStatus`: suy ra `EXPIRED` / `NOT_YET_VALID` | 109–116 |
+| | `covering`: quyền hưởng còn hiệu lực hôm nay và ngày khám (loại phí, báo giá) | 88–91 |
+| | `lockCovering`: cùng quy tắc, khóa dòng quyền (đặt lịch) | 94–101 |
+| | `covers` / `inWindow`: một quy tắc ngày duy nhất | 106–112 |
+| | `effectiveStatus`: suy ra `EXPIRED` / `NOT_YET_VALID` | 113–120 |
 | [strategy/entity/BenefitRequest.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/entity/BenefitRequest.java) | Bảng `benefit_requests`: loại, mã hồ sơ, thời hạn, trạng thái, `@Version` | 14–27 |
 | [strategy/entity/BenefitDecision.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/entity/BenefitDecision.java) | Lịch sử quyết định: hành động, lý do, người duyệt, thời điểm | 11–21 |
 | [strategy/repository/BenefitRequestRepository.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/repository/BenefitRequestRepository.java) | `findForUpdate` (khóa bi quan, 11), `findApprovedIds` (13) | 8–18 |
@@ -119,7 +121,7 @@ Muốn thêm loại giá mới: tạo một lớp `@Component` implement interfa
 | [strategy/dto/request/BenefitDecisionInput.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/dto/request/BenefitDecisionInput.java) | Admin duyệt: hành động, lý do, khoảng hiệu lực |
 | [strategy/dto/request/BenefitRevokeInput.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/dto/request/BenefitRevokeInput.java) | Lý do thu hồi |
 | [strategy/dto/response/BenefitRequestDto.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/dto/response/BenefitRequestDto.java), [BenefitDecisionDto.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/dto/response/BenefitDecisionDto.java) | Dữ liệu trả về cho UI |
-| 🔗 [dto/request/CreateBookingDto.java](../../backend/src/main/java/com/datlichkhambenh/backend/dto/request/CreateBookingDto.java) | Thêm `strategyKey`, `expectedBasePrice`, `expectedDiscountRate`, `expectedPrice`, `expectedWorkDate/StartTime/EndTime`, `quoteRequired` (dòng 11–18) |
+| 🔗 [dto/request/CreateBookingDto.java](../../backend/src/main/java/com/datlichkhambenh/backend/dto/request/CreateBookingDto.java) | Thêm `strategyKey`, `expectedBasePrice`, `expectedDiscountRate`, `expectedPrice`, `expectedWorkDate/StartTime/EndTime` (dòng 11–16); không còn cờ `quoteRequired` |
 | 🔗 [entity/Appointment.java](../../backend/src/main/java/com/datlichkhambenh/backend/entity/Appointment.java) | Snapshot: `pricingKey`, `basePrice`, `discountRate` DECIMAL(19,18), `benefitRequestId` (dòng 61–65) |
 | 🔗 [dto/response/AppointmentDto.java](../../backend/src/main/java/com/datlichkhambenh/backend/dto/response/AppointmentDto.java) | Trả snapshot cho UI (dòng 31–34) |
 

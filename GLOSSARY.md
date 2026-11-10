@@ -35,7 +35,7 @@ Giá chào mà bệnh nhân đã xem và bấm xác nhận, gồm số tiền v�
 _Avoid_: expected price, giá kỳ vọng
 
 **Đặt lịch kiểu cũ (Legacy booking)**:
-Đặt lịch không kèm giá đã đồng ý, chỉ được phép với loại phí Tiêu chuẩn, giữ cho client cũ.
+Đặt lịch qua đường cũ dành cho client chưa cập nhật: không kèm gì thì chỉ dùng loại phí Tiêu chuẩn; nếu kèm loại phí và số tiền thì số tiền được so như giá đã đồng ý, nhưng ngày giờ ca thì không.
 _Avoid_: đặt nhanh, đặt không báo giá
 
 **Giá chốt (Price snapshot)**:

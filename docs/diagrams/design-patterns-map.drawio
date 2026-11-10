@@ -113,10 +113,10 @@
         <mxCell id="strategies" value="ConsultationPricingStrategy&#10;Standard · Insurance · VIP" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
           <mxGeometry x="590" y="500" width="420" height="80" as="geometry" />
         </mxCell>
-        <mxCell id="benefit" value="BenefitService&#10;(điều kiện dùng Insurance/VIP)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+        <mxCell id="benefit" value="BookingOffer «Client»&#10;ca đặt được · quyền hưởng · lý do từ chối" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
           <mxGeometry x="590" y="620" width="420" height="80" as="geometry" />
         </mxCell>
-        <mxCell id="e12" value="ConsultationQuoteService" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="quotectl" target="context">
+        <mxCell id="e12" value="BookingOffer.quote" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="quotectl" target="context">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="e13" value="chọn theo key" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="context" target="strategies">
@@ -130,7 +130,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="e15" value="khóa quyền hưởng" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=1;exitY=0.6;entryX=0;entryY=0.6;" edge="1" parent="1" source="booking" target="benefit">
+        <mxCell id="e15" value="lockAndConfirm" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=1;exitY=0.6;entryX=0;entryY=0.6;" edge="1" parent="1" source="booking" target="benefit">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="f-observer" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fillColor=none;dashed=1;strokeWidth=2;" vertex="1" parent="1">

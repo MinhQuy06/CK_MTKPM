@@ -26,7 +26,7 @@
             <mxPoint x="420" y="2140" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="p2" value="ConsultationQuoteService" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+        <mxCell id="p2" value="BookingOffer&#10;«Client»" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
           <mxGeometry x="580" y="80" width="240" height="70" as="geometry" />
         </mxCell>
         <mxCell id="l3" value="" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=none;dashed=1;verticalAlign=bottom;">
@@ -89,7 +89,7 @@
             <mxPoint x="420" y="280" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="l10" value="quote(patientId from principal, scheduleId, key)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=0;verticalAlign=bottom;">
+        <mxCell id="l10" value="quote(patientId from principal, scheduleId, key) → Offer" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=0;verticalAlign=bottom;">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="420" y="340" as="sourcePoint" />
             <mxPoint x="700" y="340" as="targetPoint" />
@@ -146,7 +146,7 @@
         <mxCell id="unavailable-label" value="break [slot or doctor unavailable]" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=15;spacing=5;" vertex="1" parent="1">
           <mxGeometry x="40" y="885" width="1500" height="35" as="geometry" />
         </mxCell>
-        <mxCell id="l17" value="Slot: BookingRejectionException; doctor: BookingConflictException" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
+        <mxCell id="l17" value="SLOT_UNAVAILABLE (slot) · DOCTOR_UNAVAILABLE (doctor)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="700" y="955" as="sourcePoint" />
             <mxPoint x="420" y="955" as="targetPoint" />
@@ -164,7 +164,7 @@
             <mxPoint x="1820" y="1090" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="l20" value="supported? unknown / blank key → 400 and stop" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
+        <mxCell id="l20" value="unsupported key → 400 UNSUPPORTED_STRATEGY and stop" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="1820" y="1145" as="sourcePoint" />
             <mxPoint x="700" y="1145" as="targetPoint" />
@@ -176,7 +176,7 @@
         <mxCell id="benefit-opt-label" value="opt [key != STANDARD]" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=15;spacing=5;" vertex="1" parent="1">
           <mxGeometry x="510" y="1195" width="1400" height="35" as="geometry" />
         </mxCell>
-        <mxCell id="l21" value="eligible(patientId, key, schedule.workDate)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=0;verticalAlign=bottom;">
+        <mxCell id="l21" value="covering(patientId, key, schedule.workDate)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=0;verticalAlign=bottom;">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="700" y="1260" as="sourcePoint" />
             <mxPoint x="1540" y="1260" as="targetPoint" />
@@ -188,7 +188,7 @@
             <mxPoint x="700" y="1320" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="eligibility-note" value="Empty grant → 403 and stop. Approved grant dates must cover today + appointment day; no self-declared privileges." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=14;" vertex="1" parent="1">
+        <mxCell id="eligibility-note" value="Empty → 403 BENEFIT_UNAVAILABLE and stop. Approved grant dates must cover today + appointment day; no self-declared privileges." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=14;" vertex="1" parent="1">
           <mxGeometry x="550" y="1350" width="1580" height="45" as="geometry" />
         </mxCell>
         <mxCell id="l23" value="calculate(key, doctor.consultationFee)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=0;verticalAlign=bottom;">
@@ -221,7 +221,7 @@
             <mxPoint x="700" y="1850" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="l27" value="ConsultationQuoteDto" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
+        <mxCell id="l27" value="Offer → controller maps ConsultationQuoteDto" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="700" y="1920" as="sourcePoint" />
             <mxPoint x="420" y="1920" as="targetPoint" />
