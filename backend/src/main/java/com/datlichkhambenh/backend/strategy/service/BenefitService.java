@@ -80,36 +80,40 @@ public class BenefitService {
         decisions.saveAndFlush(new BenefitDecision(request,"REVOKE",input.reason().trim(),adminId));
         return view(request);
     }
+    /**
+     * Covering benefit (see GLOSSARY.md): approved, not revoked, and its date window contains both today and the
+     * appointment day, in Vietnam time, edges included. The one rule used by pricing types, quotes and booking.
+     */
     @Transactional(readOnly=true)
-    public java.util.Optional<BenefitRequest> eligible(Long patientId,String kind,java.time.LocalDate appointmentDay) {
-        var today=java.time.LocalDate.now(java.time.ZoneId.of("Asia/Ho_Chi_Minh"));
+    public java.util.Optional<BenefitRequest> covering(Long patientId,String kind,java.time.LocalDate appointmentDay) {
         return requests.findByPatientUserIdAndKindAndStatusOrderByIdDesc(patientId,kind,"APPROVED").stream()
-                .filter(r->r.getApprovedFrom()!=null && r.getApprovedUntil()!=null
-                        && !today.isBefore(r.getApprovedFrom()) && !today.isAfter(r.getApprovedUntil())
-                        && !appointmentDay.isBefore(r.getApprovedFrom()) && !appointmentDay.isAfter(r.getApprovedUntil()))
-                .findFirst();
+                .filter(r->covers(r,appointmentDay)).findFirst();
     }
+    /** Same rule as {@link #covering}, but row-locked until the caller's transaction ends. */
     @Transactional(propagation=org.springframework.transaction.annotation.Propagation.MANDATORY)
-    public BenefitRequest lockedEligible(Long patientId,String kind,java.time.LocalDate appointmentDay) {
+    public java.util.Optional<BenefitRequest> lockCovering(Long patientId,String kind,java.time.LocalDate appointmentDay) {
         // Query scalar IDs first: do not cache a pre-lock entity snapshot in this transaction.
         for(Long id:requests.findApprovedIds(patientId,kind)) {
             var grant=requests.findForUpdate(id).orElse(null);
             if(grant!=null && grant.getPatient().getUserId().equals(patientId) && grant.getKind().equals(kind)
-                    && "APPROVED".equals(grant.getStatus()) && coversDates(grant,appointmentDay)) return grant;
+                    && "APPROVED".equals(grant.getStatus()) && covers(grant,appointmentDay)) return java.util.Optional.of(grant);
         }
-        throw new com.datlichkhambenh.backend.exception.BookingRejectionException("BENEFIT_UNAVAILABLE",
-                "Quyền hưởng không còn hợp lệ cho ngày khám. Vui lòng chọn lại loại phí.",org.springframework.http.HttpStatus.FORBIDDEN);
+        return java.util.Optional.empty();
     }
-    private boolean coversDates(BenefitRequest grant,java.time.LocalDate day) {
-        var today=java.time.LocalDate.now(java.time.ZoneId.of("Asia/Ho_Chi_Minh"));
+    private static java.time.LocalDate today() {
+        return java.time.LocalDate.now(java.time.ZoneId.of("Asia/Ho_Chi_Minh"));
+    }
+    private static boolean inWindow(BenefitRequest grant,java.time.LocalDate day) {
         return grant.getApprovedFrom()!=null && grant.getApprovedUntil()!=null
-                && !today.isBefore(grant.getApprovedFrom()) && !today.isAfter(grant.getApprovedUntil())
                 && !day.isBefore(grant.getApprovedFrom()) && !day.isAfter(grant.getApprovedUntil());
+    }
+    private static boolean covers(BenefitRequest grant,java.time.LocalDate appointmentDay) {
+        return inWindow(grant,today()) && inWindow(grant,appointmentDay);
     }
     private String effectiveStatus(BenefitRequest r) {
         if(!"APPROVED".equals(r.getStatus())) return r.getStatus();
         if(r.getApprovedFrom()==null || r.getApprovedUntil()==null) return "INVALID";
-        var today=java.time.LocalDate.now(java.time.ZoneId.of("Asia/Ho_Chi_Minh"));
+        var today=today();
         if(today.isAfter(r.getApprovedUntil())) return "EXPIRED";
         if(today.isBefore(r.getApprovedFrom())) return "NOT_YET_VALID";
         return "APPROVED";

@@ -8,7 +8,9 @@ import com.datlichkhambenh.backend.entity.Patient;
 import com.datlichkhambenh.backend.entity.Schedule;
 import com.datlichkhambenh.backend.exception.AppException;
 import com.datlichkhambenh.backend.exception.BookingRejectionException;
-import com.datlichkhambenh.backend.strategy.pricing.PricingContext;
+import com.datlichkhambenh.backend.strategy.offer.BookingOffer;
+import com.datlichkhambenh.backend.strategy.offer.Expectation;
+import com.datlichkhambenh.backend.strategy.offer.LockedOffer;
 import com.datlichkhambenh.backend.strategy.pricing.PricingAmounts;
 import org.springframework.http.HttpStatus;
 import com.datlichkhambenh.backend.exception.BookingConflictException;
@@ -40,60 +42,21 @@ public class BookingServiceImpl implements BookingService {
     private final AppointmentRepository appointmentRepository;
     private final PatientRepository patientRepository;
     private final DoctorRepository doctorRepository;
-    private final PricingContext pricing;
-    private final com.datlichkhambenh.backend.strategy.service.BenefitService benefits;
+    private final BookingOffer offers;
     private final ApplicationEventPublisher events;
 
     @Override
     @Transactional
-    public AppointmentDto createBooking(Long patientUserId, CreateBookingDto request) {
-        // 1. Pessimistic Write Lock trên bản ghi Schedule để tránh Race Condition khi 2 bệnh nhân đặt cùng 1 slot
-        Schedule schedule = scheduleRepository.findByIdForUpdate(request.getScheduleId())
-                .orElseThrow(() -> new BookingRejectionException("SLOT_UNAVAILABLE","Ca khám không tồn tại. Vui lòng chọn lại ca.",HttpStatus.NOT_FOUND));
-
-        // 2. Kiểm tra slot còn khả dụng hay không
-        if (!Boolean.TRUE.equals(schedule.getIsAvailable())) {
-            throw new BookingRejectionException("SLOT_UNAVAILABLE","Ca khám này đã được đặt hoặc không còn khả dụng",HttpStatus.CONFLICT);
-        }
-        if (appointmentRepository.existsByScheduleId(schedule.getId())) {
-            throw new BookingRejectionException("SLOT_UNAVAILABLE","Ca khám này đã có lịch hẹn",HttpStatus.CONFLICT);
-        }
-
-        if (request.isQuoteRequired()) {
-            if (request.getExpectedWorkDate()==null || request.getExpectedStartTime()==null || request.getExpectedEndTime()==null) {
-                throw new BookingRejectionException("QUOTE_REQUIRED","Cần ngày và giờ khám trong báo giá đã xác nhận",HttpStatus.BAD_REQUEST);
-            }
-            if (!schedule.getWorkDate().equals(request.getExpectedWorkDate())
-                    || !schedule.getStartTime().equals(request.getExpectedStartTime())
-                    || !schedule.getEndTime().equals(request.getExpectedEndTime())) {
-                throw new BookingRejectionException("SLOT_UNAVAILABLE","Ngày hoặc giờ của ca đã thay đổi. Vui lòng chọn lại ca và báo giá.",HttpStatus.CONFLICT);
-            }
-        }
-
-        LocalDateTime slotTime = LocalDateTime.of(schedule.getWorkDate(), schedule.getStartTime());
-        if (!slotTime.isAfter(LocalDateTime.now(java.time.ZoneId.of("Asia/Ho_Chi_Minh")))) {
-            throw new BookingRejectionException("SLOT_UNAVAILABLE","Không thể đặt ca khám đã qua",HttpStatus.CONFLICT);
-        }
+    public AppointmentDto createBooking(Long patientUserId, Long scheduleId, String symptoms, Expectation expectation) {
+        // 1–2. Giá chào: khóa ca → bác sĩ → quyền hưởng, kiểm tra mọi luật và so với điều bệnh nhân đã đồng ý
+        LockedOffer offer = offers.lockAndConfirm(patientUserId, scheduleId, expectation);
+        Schedule schedule = offer.slot();
+        Doctor doctor = offer.doctor();
+        PricingAmounts amount = offer.amounts();
+        com.datlichkhambenh.backend.strategy.entity.BenefitRequest grant = offer.benefit();
 
         Patient patient = patientRepository.findById(patientUserId)
                 .orElseThrow(() -> new ResourceNotFoundException("Hồ sơ bệnh nhân không tồn tại"));
-
-        Doctor assignedDoctor=schedule.getDoctor();
-        if(assignedDoctor==null) throw new ResourceNotFoundException("Bác sĩ không tồn tại");
-        Doctor doctor = doctorRepository.findByIdForUpdate(assignedDoctor.getUserId())
-                .orElseThrow(()->new ResourceNotFoundException("Bác sĩ không tồn tại"));
-        if (doctor == null) {
-            throw new ResourceNotFoundException("Bác sĩ phụ trách ca khám không tồn tại");
-        }
-        if (!Boolean.TRUE.equals(doctor.getIsApproved()) || !Boolean.TRUE.equals(doctor.getUser().getIsActive())) {
-            throw new AppException("Bác sĩ hiện không nhận lịch khám");
-        }
-
-        String selectedKey=request.getStrategyKey()==null?"STANDARD":request.getStrategyKey();
-        if(!pricing.supports(selectedKey)) throw new BookingRejectionException("UNSUPPORTED_STRATEGY","Loại phí không được hỗ trợ",HttpStatus.BAD_REQUEST);
-        com.datlichkhambenh.backend.strategy.entity.BenefitRequest grant=null;
-        if(!"STANDARD".equals(selectedKey)) grant=benefits.lockedEligible(patientUserId,selectedKey,schedule.getWorkDate());
-        PricingAmounts amount=confirmedPrice(request,doctor);
 
         // 3. Tạo Appointment mới với booking_code ngẫu nhiên
         String bookingCode = "BK-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
@@ -103,7 +66,7 @@ public class BookingServiceImpl implements BookingService {
                 .patient(patient)
                 .doctor(doctor)
                 .schedule(schedule)
-                .symptoms(request.getSymptoms())
+                .symptoms(symptoms)
                 .status("CONFIRMED")
                 .price(amount.finalPrice())
                 .build();
@@ -234,24 +197,6 @@ public class BookingServiceImpl implements BookingService {
                 appointment.getSchedule().getWorkDate(), appointment.getSchedule().getStartTime());
         if (appointmentTime.isAfter(LocalDateTime.now())) throw new AppException("Chưa đến giờ khám");
         appointment.setStatus(status); appointmentRepository.save(appointment);
-    }
-
-    private PricingAmounts confirmedPrice(CreateBookingDto request,Doctor doctor) {
-        boolean hasExpected=request.getExpectedPrice()!=null || request.getExpectedBasePrice()!=null || request.getExpectedDiscountRate()!=null;
-        boolean legacy=!request.isQuoteRequired() && request.getStrategyKey()==null && !hasExpected;
-        if(request.isQuoteRequired() && request.getStrategyKey()==null)
-            throw new BookingRejectionException("QUOTE_REQUIRED","Cần chọn loại phí và xác nhận báo giá",HttpStatus.BAD_REQUEST);
-        String key=legacy?"STANDARD":request.getStrategyKey();
-        if(!pricing.supports(key)) throw new BookingRejectionException("UNSUPPORTED_STRATEGY","Loại phí không được hỗ trợ",HttpStatus.BAD_REQUEST);
-        PricingAmounts amount=pricing.calculate(key,doctor.getConsultationFee());
-        if(!legacy) {
-            if(request.getExpectedPrice()==null || request.getExpectedBasePrice()==null || request.getExpectedDiscountRate()==null)
-                throw new BookingRejectionException("QUOTE_REQUIRED","Cần báo giá đầy đủ trước khi xác nhận",HttpStatus.BAD_REQUEST);
-            if(amount.finalPrice().compareTo(request.getExpectedPrice())!=0 || amount.basePrice().compareTo(request.getExpectedBasePrice())!=0
-                    || amount.discountRate().compareTo(request.getExpectedDiscountRate())!=0)
-                throw new BookingRejectionException("PRICE_CHANGED","Giá khám đã thay đổi. Vui lòng xem lại và xác nhận giá mới.",HttpStatus.CONFLICT);
-        }
-        return amount;
     }
 
     private AppointmentDto mapToDto(Appointment appointment) {

@@ -10,8 +10,6 @@ public class CreateBookingDto {
     private String symptoms;
     private java.time.LocalDate expectedWorkDate;
     private java.time.LocalTime expectedStartTime, expectedEndTime;
-    @com.fasterxml.jackson.annotation.JsonIgnore
-    private boolean quoteRequired;
     private String strategyKey;
     private java.math.BigDecimal expectedBasePrice;
     private java.math.BigDecimal expectedDiscountRate;
@@ -73,8 +71,4 @@ public class CreateBookingDto {
     public void setExpectedDiscountRate(java.math.BigDecimal value){expectedDiscountRate=value;}
     public java.math.BigDecimal getExpectedPrice(){return expectedPrice;}
     public void setExpectedPrice(java.math.BigDecimal value){expectedPrice=value;}
-    @com.fasterxml.jackson.annotation.JsonIgnore
-    public boolean isQuoteRequired(){return quoteRequired;}
-    @com.fasterxml.jackson.annotation.JsonIgnore
-    public void setQuoteRequired(boolean value){quoteRequired=value;}
 }
