@@ -1,6 +1,6 @@
 # Giá đặt lịch theo Strategy
 
-Luồng mới POST /api/v1/appointments/confirm yêu cầu strategyKey, expectedBasePrice, expectedDiscountRate, expectedPrice và scheduleId. Controller gắn quoteRequired nội bộ; JSON client không thể tắt cờ này. Thiếu thông tin bị từ chối. POST /api/v1/appointments cũ tiếp tục mặc định Tiêu chuẩn khi không gửi loại/báo giá.
+Luồng mới POST /api/v1/appointments/confirm yêu cầu strategyKey, expectedBasePrice, expectedDiscountRate, expectedPrice và scheduleId. BookingFacade biến request thành kỳ vọng ConfirmedQuote (gồm cả ngày giờ ca); JSON client không thể hạ cấp xuống luồng cũ. Thiếu thông tin bị từ chối. POST /api/v1/appointments cũ tiếp tục mặc định Tiêu chuẩn khi không gửi loại/báo giá.
 
 Server khóa Schedule, kiểm tra ca/bác sĩ/người bệnh rồi dùng PricingContext tính lại từ phí bác sĩ. Giá client chỉ dùng đối chiếu: base, rate hoặc giá cuối khác thì trả 409 PRICE_CHANGED, chưa tạo lịch hoặc gửi email. SLOT_UNAVAILABLE phân biệt mất ca.
 

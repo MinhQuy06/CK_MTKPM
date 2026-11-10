@@ -214,7 +214,7 @@ Bản gốc ở `frontend/`; bản giống hệt được Spring Boot phục v�
 | File | Công dụng |
 | --- | --- |
 | [scripts/strategy/run-browser-fixture.sh](../../scripts/strategy/run-browser-fixture.sh) | Chạy server demo H2 ở cổng 18081 |
-| [scripts/strategy/test-browser.py](../../scripts/strategy/test-browser.py) | Chạy 16 kịch bản Chrome |
+| [scripts/strategy/test-browser.py](../../scripts/strategy/test-browser.py) | Chạy 17 kịch bản Chrome |
 | [scripts/strategy/test-mysql-upgrades.py](../../scripts/strategy/test-mysql-upgrades.py) | Kiểm tra 5 SQL nâng cấp trên MySQL |
 | [scripts/strategy/generate-quote-diagrams.py](../../scripts/strategy/generate-quote-diagrams.py), [generate-booking-diagrams.py](../../scripts/strategy/generate-booking-diagrams.py) | Sinh file draw.io |
 | [scripts/strategy/export-diagrams.sh](../../scripts/strategy/export-diagrams.sh) | Xuất PNG bằng draw.io cục bộ |

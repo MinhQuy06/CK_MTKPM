@@ -118,7 +118,7 @@ abstract class BookingPricingContract {
  @Test void confirmRouteCannotBeDowngradedToLegacyByRemovingQuoteFields() throws Exception {
   String path=PATH+"/confirm";
   mvc.perform(post(path).servletPath(path).header("Authorization","Bearer "+patient).contentType(MediaType.APPLICATION_JSON)
-   .content(json.writeValueAsString(Map.of("scheduleId",scheduleId,"quoteRequired",false))))
+   .content(json.writeValueAsString(Map.of("scheduleId",scheduleId))))
    .andExpect(status().isBadRequest());noBookingOrEmail();
  }
 
