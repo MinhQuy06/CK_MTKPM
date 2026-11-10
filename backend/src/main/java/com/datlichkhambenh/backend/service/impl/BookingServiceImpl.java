@@ -17,11 +17,12 @@ import com.datlichkhambenh.backend.repository.AppointmentRepository;
 import com.datlichkhambenh.backend.repository.DoctorRepository;
 import com.datlichkhambenh.backend.repository.PatientRepository;
 import com.datlichkhambenh.backend.repository.ScheduleRepository;
-import com.datlichkhambenh.backend.service.AsyncEmailNotificationService;
 import com.datlichkhambenh.backend.service.BookingService;
-import com.datlichkhambenh.backend.service.RedisCacheService;
+import com.datlichkhambenh.backend.observer.AppointmentBookedEvent;
+import com.datlichkhambenh.backend.observer.AppointmentCancelledEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,10 +40,9 @@ public class BookingServiceImpl implements BookingService {
     private final AppointmentRepository appointmentRepository;
     private final PatientRepository patientRepository;
     private final DoctorRepository doctorRepository;
-    private final AsyncEmailNotificationService emailNotificationService;
-    private final RedisCacheService redisCacheService;
     private final PricingContext pricing;
     private final com.datlichkhambenh.backend.strategy.service.BenefitService benefits;
+    private final ApplicationEventPublisher events;
 
     @Override
     @Transactional
@@ -116,15 +116,8 @@ public class BookingServiceImpl implements BookingService {
         schedule.setIsAvailable(false);
         scheduleRepository.save(schedule);
 
-        // 5. Invalidate slot cache trong Redis
-        redisCacheService.evictSlotCache(doctor.getUserId(), schedule.getWorkDate());
-
-        // 6. Trigger sự kiện gửi mail bất đồng bộ (Async task, KHÔNG block response)
-        try {
-            emailNotificationService.sendBookingConfirmation(savedAppointment);
-        } catch (Exception e) {
-            log.error("Lỗi khi trigger gửi mail xác nhận đặt lịch: {}", e.getMessage());
-        }
+        // 5. Observer: báo cho các observer (email, cache slot…) rằng lịch hẹn đã được đặt
+        events.publishEvent(new AppointmentBookedEvent(savedAppointment));
 
         return mapToDto(savedAppointment);
     }
@@ -167,15 +160,10 @@ public class BookingServiceImpl implements BookingService {
                     .endTime(schedule.getEndTime())
                     .isAvailable(true)
                     .build());
-            redisCacheService.evictSlotCache(schedule.getDoctor().getUserId(), schedule.getWorkDate());
         }
 
-        // Trigger mail hủy lịch bất đồng bộ
-        try {
-            emailNotificationService.sendCancellationNotice(appointment);
-        } catch (Exception e) {
-            log.error("Lỗi khi trigger mail hủy lịch: {}", e.getMessage());
-        }
+        // Observer: báo cho các observer (email, cache slot…) rằng lịch hẹn đã bị hủy
+        events.publishEvent(new AppointmentCancelledEvent(appointment));
     }
 
     @Override

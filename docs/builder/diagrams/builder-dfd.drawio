@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" type="device">
+  <diagram id="Builder — DFD" name="Builder — DFD">
+    <mxGraphModel grid="0" page="1" pageScale="1" pageWidth="2000" pageHeight="900" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="MẪU BUILDER — DFD MỨC 1: TỪ LỊCH HẸN ĐẾN BẢN TIN EMAIL" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=21;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="15" width="1900" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="booking" value="Luồng đặt / hủy lịch&#10;(Observer email)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="330" width="260" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="queue" value="Hàng đợi email&#10;(RabbitMQ → Bệnh nhân)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1700" y="330" width="260" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="p1" value="1.0&#10;Chọn công thức&#10;(Director)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="420" y="300" width="220" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="p2" value="2.0&#10;Dựng &amp; kiểm tra&#10;(Builder)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="830" y="300" width="220" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="p3" value="3.0&#10;Xếp hàng sau&#10;commit" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1260" y="300" width="220" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="d1" value="D1   appointments · schedules" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=partialRectangle;right=0;whiteSpace=wrap;align=left;spacingLeft=14;fontSize=15;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="650" width="380" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="d2" value="D2   patients · users · doctors" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=partialRectangle;right=0;whiteSpace=wrap;align=left;spacingLeft=14;fontSize=15;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="820" y="650" width="400" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" value="lịch hẹn +&#10;loại thông báo" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="booking" target="p1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="mã lịch, ngày,&#10;giờ, giá" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=0.4;exitY=0;entryX=0.4;entryY=1;" edge="1" parent="1" source="d1" target="p1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="email, tên bệnh nhân,&#10;tên bác sĩ" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=0.2;exitY=0;entryX=0.9;entryY=0.85;" edge="1" parent="1" source="d2" target="p1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="các bước dựng&#10;(type, email, …)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="p1" target="p2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" value="EmailNotificationMessage&#10;hợp lệ" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="p2" target="p3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" value="bản tin" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="p3" target="queue">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" value="thiếu trường bắt buộc → lỗi" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;exitX=0.5;exitY=0;entryX=0.5;entryY=0;" edge="1" parent="1" source="p2" target="booking">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="940" y="220" />
+              <mxPoint x="170" y="220" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="note" value="Yourdon/DeMarco: hình chữ nhật = tác nhân ngoài, hình tròn = tiến trình, kho mở một bên = kho dữ liệu. Builder chỉ đọc D1, D2; không ghi kho nào." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="790" width="1900" height="50" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

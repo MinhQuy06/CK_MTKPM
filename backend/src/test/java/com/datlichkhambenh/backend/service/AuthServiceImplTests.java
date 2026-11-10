@@ -21,7 +21,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.junit.jupiter.api.BeforeEach;
 
+import java.util.List;
 import java.util.Optional;
+import com.datlichkhambenh.backend.factory.AccountFactories;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -46,7 +48,8 @@ class AuthServiceImplTests {
         ReflectionTestUtils.setField(jwtTokenProvider, "jwtExpirationMs", 3_600_000L);
         ReflectionTestUtils.setField(jwtTokenProvider, "refreshExpirationMs", 86_400_000L);
         authService = new AuthServiceImpl(userRepository, patientRepository, doctorRepository,
-                specialtyRepository, passwordEncoder, authenticationManager, jwtTokenProvider);
+                specialtyRepository, passwordEncoder, authenticationManager, jwtTokenProvider,
+                new AccountFactories(List.of()));
     }
 
     @Test

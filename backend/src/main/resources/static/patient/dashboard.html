@@ -46,7 +46,6 @@
         </div>
 
         <ul class="nav nav-pills flex-column mb-auto">
-          <li class="nav-item"><a href="benefits.html" class="nav-link">Quyền hưởng Bảo hiểm/VIP</a></li>
           <li class="nav-item">
             <a href="dashboard.html" class="nav-link active d-flex align-items-center gap-2">
               <i class="bi bi-search fs-5"></i> Tìm & Đặt Bác Sĩ
@@ -57,6 +56,7 @@
               <i class="bi bi-calendar-event fs-5"></i> Lịch Hẹn Của Tôi
             </a>
           </li>
+          <li class="nav-item"><a href="benefits.html" class="nav-link d-flex align-items-center gap-2" data-strategy-nav><i class="bi bi-shield-check fs-5"></i> Quyền Hưởng BH/VIP</a></li>
         </ul>
 
         <hr class="text-secondary my-4">
@@ -90,6 +90,17 @@
             </div>
           </div>
         </div>
+
+        <!-- Strategy: pricing policy currently applied to this patient -->
+        <section id="benefit-summary" class="card border-0 rounded-4 p-3 mb-4 shadow-sm bg-white" aria-labelledby="benefit-summary-heading" hidden>
+          <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div>
+              <h6 class="fw-bold mb-2" id="benefit-summary-heading"><i class="bi bi-shield-check text-primary me-1"></i>Chính sách giá của bạn</h6>
+              <div data-benefit-summary-body aria-live="polite"></div>
+            </div>
+            <a href="benefits.html" class="btn btn-outline-primary rounded-pill fw-semibold px-4" data-benefit-summary-link>Quyền hưởng</a>
+          </div>
+        </section>
 
         <!-- Filter & Search Controls -->
         <div class="card border-0 rounded-4 p-3 mb-4 shadow-sm bg-white">
@@ -274,11 +285,14 @@
   <script src="../js/utils.js"></script>
   <script src="../js/auth.js"></script>
   <script src="../strategy/consultation-quote.js"></script>
+  <script src="../strategy/benefit-kinds.js"></script>
+  <script src="../strategy/benefit-summary.js"></script>
   <script>
     const user = Auth.checkAuth(['PATIENT']);
     if (user) {
       document.getElementById('user-name').innerText = user.fullName || user.email.split('@')[0];
       document.getElementById('user-avatar').innerText = (user.fullName || user.email).charAt(0).toUpperCase();
+      BenefitSummary.mount(document.getElementById('benefit-summary'), () => Api.benefits.mine().then(r => r.data));
     }
 
     let allDoctors = [];

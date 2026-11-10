@@ -9,7 +9,9 @@ import com.datlichkhambenh.backend.repository.AppointmentRepository;
 import com.datlichkhambenh.backend.repository.DoctorRepository;
 import com.datlichkhambenh.backend.repository.PatientRepository;
 import com.datlichkhambenh.backend.repository.ScheduleRepository;
+import com.datlichkhambenh.backend.observer.AppointmentCancelledEvent;
 import com.datlichkhambenh.backend.service.impl.BookingServiceImpl;
+import org.springframework.context.ApplicationEventPublisher;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -35,8 +37,7 @@ class BookingServiceImplTests {
     @Mock AppointmentRepository appointmentRepository;
     @Mock PatientRepository patientRepository;
     @Mock DoctorRepository doctorRepository;
-    @Mock AsyncEmailNotificationService emailNotificationService;
-    @Mock RedisCacheService redisCacheService;
+    @Mock ApplicationEventPublisher events;
     @InjectMocks BookingServiceImpl bookingService;
 
     @Test
@@ -58,7 +59,7 @@ class BookingServiceImplTests {
         verify(scheduleRepository, times(2)).save(captor.capture());
         List<Schedule> saved = captor.getAllValues();
         assertTrue(saved.stream().anyMatch(slot -> slot.getId() == null && Boolean.TRUE.equals(slot.getIsAvailable())));
-        verify(emailNotificationService).sendCancellationNotice(appointment);
+        verify(events).publishEvent(new AppointmentCancelledEvent(appointment));
     }
 
     private Appointment appointment(Long patientId, Long doctorId) {

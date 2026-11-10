@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" type="device">
+  <diagram id="Decorator — DFD" name="Decorator — DFD">
+    <mxGraphModel grid="0" page="1" pageScale="1" pageWidth="2200" pageHeight="920" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="MẪU DECORATOR — DFD MỨC 1: MỘT YÊU CẦU THÔNG BÁO ĐI QUA CHUỖI BỌC" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=21;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="15" width="2100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="obs" value="Observer email&#10;(đặt / hủy / nhắc)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="300" width="240" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="p1" value="1.0&#10;Chống gửi&#10;trùng" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="380" y="270" width="210" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="p2" value="2.0&#10;Gửi email&#10;+ ghi lịch sử" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="760" y="270" width="210" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="p3" value="3.0&#10;Gửi SMS&#10;+ ghi kết quả" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1180" y="270" width="210" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="queue" value="Hàng đợi email&#10;(RabbitMQ)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="760" y="90" width="210" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="vendor" value="Kênh SMS&#10;(Adapter → nhà cung cấp)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1600" y="300" width="300" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="d1" value="D1   notification_log" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=partialRectangle;right=0;whiteSpace=wrap;align=left;spacingLeft=14;fontSize=15;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="700" y="680" width="360" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="d2" value="D2   patients (phone)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=partialRectangle;right=0;whiteSpace=wrap;align=left;spacingLeft=14;fontSize=15;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1180" y="680" width="320" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" value="loại + lịch hẹn" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="obs" target="p1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="đã EMAIL SENT?" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=0;exitY=0.3;entryX=0.4;entryY=1;" edge="1" parent="1" source="d1" target="p1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="470" y="697" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e3" value="SKIPPED_DUPLICATE" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;exitX=0.75;exitY=0.95;entryX=0.1;entryY=0;" edge="1" parent="1" source="p1" target="d1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="lần đầu" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="p1" target="p2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" value="bản tin email" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" edge="1" parent="1" source="p2" target="queue">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" value="EMAIL SENT / FAILED" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="p2" target="d1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" value="email xong" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="p2" target="p3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" value="phone" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" edge="1" parent="1" source="d2" target="p3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" value="số + bản tin" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=1;exitY=0.4;entryX=0;entryY=0.4;" edge="1" parent="1" source="p3" target="vendor">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" value="DeliveryResult" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=0;exitY=0.75;entryX=1;entryY=0.75;" edge="1" parent="1" source="vendor" target="p3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" value="SMS SENT /&#10;SKIPPED_NO_PHONE /&#10;FAILED" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=0.2;exitY=0.95;entryX=0.9;entryY=0;" edge="1" parent="1" source="p3" target="d1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1222" y="600" />
+              <mxPoint x="1024" y="600" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="note" value="Yourdon/DeMarco. Thứ tự tiến trình đúng thứ tự lớp bọc: 1.0 chống trùng (ngoài cùng) → 2.0 email (ghi lịch sử nằm sát email) → 3.0 SMS sau email." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="810" width="2100" height="50" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

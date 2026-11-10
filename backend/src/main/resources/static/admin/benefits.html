@@ -1,8 +1,69 @@
-<!DOCTYPE html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Xác minh quyền hưởng</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="../css/style.css" rel="stylesheet"></head><body class="bg-light">
-<main class="container py-4" style="max-width:1100px"><a href="users.html" class="btn btn-outline-primary mb-3">← Quản lý người dùng</a>
-<h1 class="h3">Xác minh quyền hưởng Bảo hiểm/VIP</h1><p>Đối chiếu hồ sơ ngoài hệ thống trước khi quyết định. Mọi quyết định được lưu cùng người duyệt, thời điểm và lý do.</p>
-<p id="admin-benefit-message" role="status" aria-live="polite"></p><button id="admin-benefit-reload" class="btn btn-outline-secondary mb-3">Tải lại</button>
-<div id="admin-benefit-list" aria-live="polite">Đang tải…</div></main>
-<script src="../js/api.js"></script><script src="../js/auth.js"></script><script src="../strategy/admin-benefits.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Xác Minh Quyền Hưởng - DatLichKhamBenh</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    body { background-color: #f8fafc; color: #1e293b; }
+    .sidebar { background: #0f172a; color: #fff; min-height: 100vh; }
+    .sidebar .nav-link { color: #94a3b8; border-radius: 10px; margin-bottom: 4px; padding: 10px 16px; }
+    .sidebar .nav-link:hover, .sidebar .nav-link.active { background: #1e293b; color: #38bdf8; }
+  </style>
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Sidebar Navigation -->
+      <aside class="col-md-3 col-lg-2 d-md-block sidebar collapse p-3">
+        <div class="d-flex align-items-center gap-2 mb-4 px-2">
+          <div class="bg-danger text-white rounded-3 p-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+            <i class="bi bi-shield-lock-fill fs-4"></i>
+          </div>
+          <div>
+            <h6 class="fw-bold mb-0 text-white">Quản Trị Viên</h6>
+            <small class="text-secondary">DatLichKhamBenh</small>
+          </div>
+        </div>
+        <ul class="nav nav-pills flex-column mb-auto">
+          <li class="nav-item"><a href="dashboard.html" class="nav-link d-flex align-items-center gap-2"><i class="bi bi-speedometer2 fs-5"></i> Thống Kê Tổng Quan</a></li>
+          <li class="nav-item"><a href="users.html" class="nav-link d-flex align-items-center gap-2"><i class="bi bi-people fs-5"></i> Quản Lý Người Dùng</a></li>
+          <li class="nav-item"><a href="doctors.html" class="nav-link d-flex align-items-center gap-2"><i class="bi bi-person-check fs-5"></i> Duyệt Bác Sĩ Mới</a></li>
+          <li class="nav-item"><a href="specialties.html" class="nav-link d-flex align-items-center gap-2"><i class="bi bi-hospital fs-5"></i> Quản Lý Chuyên Khoa</a></li>
+          <li class="nav-item"><a href="analytics.html" class="nav-link d-flex align-items-center gap-2"><i class="bi bi-bar-chart-line fs-5"></i> Báo Cáo &amp; Doanh Thu</a></li>
+          <li class="nav-item"><a href="services.html" class="nav-link d-flex align-items-center gap-2"><i class="bi bi-activity fs-5"></i> Dịch Vụ Y Tế</a></li>
+          <li class="nav-item"><a href="benefits.html" class="nav-link active d-flex align-items-center gap-2" data-strategy-nav aria-current="page"><i class="bi bi-shield-check fs-5"></i> Xác Minh Quyền Hưởng</a></li>
+        </ul>
+        <hr class="text-secondary my-4">
+        <div class="d-flex align-items-center justify-content-between px-2">
+          <div class="fw-semibold text-white small"><i class="bi bi-person-circle me-1"></i>Admin</div>
+          <button onclick="Auth.logout()" class="btn btn-outline-danger btn-sm border-0" title="Đăng xuất"><i class="bi bi-box-arrow-right fs-5"></i></button>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+          <div>
+            <h2 class="fw-bold text-dark mb-1"><i class="bi bi-shield-check text-primary me-2"></i>Xác Minh Quyền Hưởng Bảo hiểm/VIP</h2>
+            <p class="text-muted mb-0">Đối chiếu hồ sơ ngoài hệ thống trước khi quyết định. Mọi quyết định được lưu cùng người duyệt, thời điểm và lý do.</p>
+          </div>
+          <button id="admin-benefit-reload" class="btn btn-outline-secondary rounded-pill px-4">Tải lại</button>
+        </div>
+        <p id="admin-benefit-message" role="status" aria-live="polite"></p>
+        <div class="card border-0 rounded-4 shadow-sm p-4">
+          <div id="admin-benefit-list" aria-live="polite">Đang tải…</div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../strategy/benefit-kinds.js"></script>
+  <script src="../strategy/admin-benefits.js"></script>
+</body>
+</html>

@@ -1,0 +1,173 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" type="device">
+  <diagram id="Observer — Sequence: đặt lịch phát sự kiện cho các observer" name="Observer — Sequence: đặt lịch phát sự kiện cho các observer">
+    <mxGraphModel grid="0" page="1" pageScale="1" pageWidth="2170" pageHeight="1277" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="OBSERVER — SEQUENCE: ĐẶT LỊCH PHÁT SỰ KIỆN CHO CÁC OBSERVER" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=21;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="15" width="2090" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="p0" value="Bệnh nhân (UI)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="25" y="80" width="250" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="p1" value="BookingFacade" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="285" y="80" width="250" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="p2" value="BookingServiceImpl&#10;«Subject»" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="545" y="80" width="250" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="p3" value="ApplicationEvent&#10;Publisher" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="805" y="80" width="250" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="p4" value="AppointmentEmail&#10;Observer" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="1065" y="80" width="250" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="p5" value="SlotCache&#10;Observer" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="1325" y="80" width="250" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="p6" value="AsyncEmailNotification&#10;Service «decorated»" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="1585" y="80" width="250" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="p7" value="RedisCacheService" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="1845" y="80" width="250" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="l1" value="POST /appointments/confirm" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=0;verticalAlign=bottom;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="150" y="215" as="sourcePoint" />
+            <mxPoint x="410" y="215" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l2" value="createBooking(patientId, request)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=0;verticalAlign=bottom;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="410" y="277" as="sourcePoint" />
+            <mxPoint x="670" y="277" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="step2" value="Khóa ca + bác sĩ, tính giá (Strategy),&#10;lưu Appointment, đánh dấu ca đã kín" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=14;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="682" y="317" width="380" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="l4" value="BookingRejectionException → rollback, KHÔNG phát sự kiện" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="670" y="457" as="sourcePoint" />
+            <mxPoint x="410" y="457" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="frame5" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="20" y="407" width="2090" height="87" as="geometry" />
+        </mxCell>
+        <mxCell id="frame5-label" value="alt [ca đã kín / giá đổi / mất quyền hưởng]" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=15;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="28" y="409" width="900" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="l6" value="publishEvent(AppointmentBookedEvent(saved))" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=0;verticalAlign=bottom;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="670" y="529" as="sourcePoint" />
+            <mxPoint x="930" y="529" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l7" value="onBooked(event)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=0;verticalAlign=bottom;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="930" y="591" as="sourcePoint" />
+            <mxPoint x="1190" y="591" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l8" value="sendBookingConfirmation(appointment)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=0;verticalAlign=bottom;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1190" y="653" as="sourcePoint" />
+            <mxPoint x="1710" y="653" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l9" value="đăng ký email gửi sau commit" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1710" y="715" as="sourcePoint" />
+            <mxPoint x="1190" y="715" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l10" value="onBooked(event)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=0;verticalAlign=bottom;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="930" y="777" as="sourcePoint" />
+            <mxPoint x="1450" y="777" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l11" value="evictSlotCache(doctorId, workDate)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=0;verticalAlign=bottom;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1450" y="839" as="sourcePoint" />
+            <mxPoint x="1970" y="839" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l12" value="mọi observer đã chạy (đồng bộ)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="930" y="901" as="sourcePoint" />
+            <mxPoint x="670" y="901" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l13" value="AppointmentDto" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="670" y="963" as="sourcePoint" />
+            <mxPoint x="410" y="963" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l14" value="201 Đặt lịch khám thành công" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="410" y="1025" as="sourcePoint" />
+            <mxPoint x="150" y="1025" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="remark15" value="Hủy lịch đi cùng đường: cancelBooking → publishEvent(AppointmentCancelledEvent) → onCancelled ở cả hai observer (email hủy + xóa cache ca)." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1067" width="2070" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="l16" value="" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=none;dashed=1;verticalAlign=bottom;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="150" y="155" as="sourcePoint" />
+            <mxPoint x="150" y="1167" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l17" value="" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=none;dashed=1;verticalAlign=bottom;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="410" y="155" as="sourcePoint" />
+            <mxPoint x="410" y="1167" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l18" value="" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=none;dashed=1;verticalAlign=bottom;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="670" y="155" as="sourcePoint" />
+            <mxPoint x="670" y="1167" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l19" value="" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=none;dashed=1;verticalAlign=bottom;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="930" y="155" as="sourcePoint" />
+            <mxPoint x="930" y="1167" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l20" value="" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=none;dashed=1;verticalAlign=bottom;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1190" y="155" as="sourcePoint" />
+            <mxPoint x="1190" y="1167" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l21" value="" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=none;dashed=1;verticalAlign=bottom;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1450" y="155" as="sourcePoint" />
+            <mxPoint x="1450" y="1167" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l22" value="" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=none;dashed=1;verticalAlign=bottom;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1710" y="155" as="sourcePoint" />
+            <mxPoint x="1710" y="1167" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l23" value="" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=none;dashed=1;verticalAlign=bottom;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1970" y="155" as="sourcePoint" />
+            <mxPoint x="1970" y="1167" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="footer" value="Observer email bắt mọi lỗi và chỉ ghi log, nên lỗi gửi thông báo không làm hỏng việc đặt lịch. Thứ tự giữa các observer không được dựa vào." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="30" y="1192" width="2090" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

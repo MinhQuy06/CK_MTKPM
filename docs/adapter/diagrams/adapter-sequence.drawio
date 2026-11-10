@@ -1,0 +1,116 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" type="device">
+  <diagram id="Adapter — Sequence: gửi SMS qua adapter" name="Adapter — Sequence: gửi SMS qua adapter">
+    <mxGraphModel grid="0" page="1" pageScale="1" pageWidth="1490" pageHeight="1009" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="ADAPTER — SEQUENCE: GỬI SMS QUA ADAPTER" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=21;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="15" width="1410" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="p0" value="SmsNotification&#10;Decorator «Client»" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="25" y="80" width="250" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="p1" value="SmsChannelAdapter&#10;«Adapter»" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="405" y="80" width="250" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="p2" value="VietnamPhone" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="785" y="80" width="250" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="p3" value="SimulatedSmsGateway&#10;Client «Adaptee»" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="1165" y="80" width="250" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="l1" value="send(&quot;0912 345 678&quot;, message)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=0;verticalAlign=bottom;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="150" y="215" as="sourcePoint" />
+            <mxPoint x="530" y="215" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l2" value="DeliveryResult(SKIPPED_NO_PHONE) — không gọi nhà cung cấp" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="530" y="317" as="sourcePoint" />
+            <mxPoint x="150" y="317" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="frame3" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="20" y="267" width="1410" height="87" as="geometry" />
+        </mxCell>
+        <mxCell id="frame3-label" value="alt [số điện thoại null / rỗng]" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=15;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="28" y="269" width="900" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="l4" value="toInternational(&quot;0912 345 678&quot;)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=0;verticalAlign=bottom;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="530" y="389" as="sourcePoint" />
+            <mxPoint x="910" y="389" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l5" value="Optional(&quot;+84912345678&quot;)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="910" y="451" as="sourcePoint" />
+            <mxPoint x="530" y="451" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l6" value="DeliveryResult(FAILED, &quot;Số điện thoại không hợp lệ&quot;)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="530" y="553" as="sourcePoint" />
+            <mxPoint x="150" y="553" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="frame7" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="20" y="503" width="1410" height="87" as="geometry" />
+        </mxCell>
+        <mxCell id="frame7-label" value="alt [số sai định dạng → Optional.empty()]" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=15;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="28" y="505" width="900" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="step7" value="text(message) → &quot;Da dat lich kham BK-…:&#10;2026-11-12 09:00-09:30, BS …&quot;" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=14;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="542" y="603" width="360" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="l9" value="submitSms(&quot;+84912345678&quot;, text)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=0;verticalAlign=bottom;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="530" y="703" as="sourcePoint" />
+            <mxPoint x="1290" y="703" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l10" value="int code (0 = OK, 400 = REJECTED)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1290" y="765" as="sourcePoint" />
+            <mxPoint x="530" y="765" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l11" value="code = 0 → DeliveryResult(SENT, msisdn) · khác 0 → FAILED" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="530" y="827" as="sourcePoint" />
+            <mxPoint x="150" y="827" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l12" value="" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=none;dashed=1;verticalAlign=bottom;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="150" y="155" as="sourcePoint" />
+            <mxPoint x="150" y="899" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l13" value="" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=none;dashed=1;verticalAlign=bottom;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="530" y="155" as="sourcePoint" />
+            <mxPoint x="530" y="899" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l14" value="" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=none;dashed=1;verticalAlign=bottom;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="910" y="155" as="sourcePoint" />
+            <mxPoint x="910" y="899" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l15" value="" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=none;dashed=1;verticalAlign=bottom;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1290" y="155" as="sourcePoint" />
+            <mxPoint x="1290" y="899" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="footer" value="Nhà cung cấp ném ngoại lệ (timeout…) → Decorator bắt và ghi FAILED (xem Decorator). Adapter không biết gì về lịch sử thông báo." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="30" y="924" width="1410" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

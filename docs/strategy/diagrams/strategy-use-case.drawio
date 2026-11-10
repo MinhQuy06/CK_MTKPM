@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" type="device">
+  <diagram id="Strategy — Use Case" name="Strategy — Use Case">
+    <mxGraphModel grid="0" page="1" pageScale="1" pageWidth="1700" pageHeight="1160" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="TÍNH PHÍ KHÁM THEO STRATEGY — SƠ ĐỒ USE CASE" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=21;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="15" width="1600" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="system" value="Hệ thống đặt lịch khám — Tính phí khám theo Strategy" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;verticalAlign=top;fontSize=17;fontStyle=1;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="280" y="80" width="1240" height="980" as="geometry" />
+        </mxCell>
+        <mxCell id="patient" value="Bệnh nhân" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;fontSize=16;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="100" y="560" width="40" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="admin" value="Admin" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;fontSize=16;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1590" y="580" width="40" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-quote" value="Xem báo giá theo loại phí&#10;(STANDARD / INSURANCE / VIP)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="330" y="150" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-book" value="Đặt lịch khám&#10;(xác nhận giá đã báo)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="330" y="300" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-reconfirm" value="Xác nhận lại giá mới" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="330" y="450" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-request" value="Gửi yêu cầu quyền hưởng&#10;(Bảo hiểm / VIP)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="330" y="620" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-renew" value="Gia hạn quyền hưởng" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="760" y="860" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-status" value="Xem trạng thái và&#10;lịch sử quyền hưởng" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="330" y="800" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-price" value="Tính giá theo chiến lược&#10;(PricingContext → Strategy)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="760" y="225" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-eligible" value="Kiểm tra quyền hưởng&#10;còn hiệu lực" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="760" y="380" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-history" value="Ghi lịch sử quyết định&#10;(lý do, người quyết định)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="760" y="690" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-list" value="Xem danh sách và&#10;chi tiết yêu cầu" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="1150" y="480" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-decide" value="Duyệt / từ chối&#10;yêu cầu quyền hưởng" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="1150" y="620" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-revoke" value="Thu hồi quyền hưởng&#10;đã duyệt" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="1150" y="760" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;endArrow=none;" edge="1" parent="1" source="patient" target="uc-quote">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;endArrow=none;" edge="1" parent="1" source="patient" target="uc-book">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;endArrow=none;" edge="1" parent="1" source="patient" target="uc-request">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;endArrow=none;" edge="1" parent="1" source="patient" target="uc-status">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;endArrow=none;" edge="1" parent="1" source="admin" target="uc-list">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;endArrow=none;" edge="1" parent="1" source="admin" target="uc-decide">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;endArrow=none;" edge="1" parent="1" source="admin" target="uc-revoke">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" value="«include»" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;dashed=1;" edge="1" parent="1" source="uc-quote" target="uc-price">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" value="«include»" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;dashed=1;" edge="1" parent="1" source="uc-book" target="uc-price">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" value="«extend»&#10;[loại phí ≠ STANDARD]" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;dashed=1;" edge="1" parent="1" source="uc-eligible" target="uc-price">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" value="«extend»&#10;[409 PRICE_CHANGED]" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;dashed=1;" edge="1" parent="1" source="uc-reconfirm" target="uc-book">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" value="«extend»&#10;[yêu cầu cũ APPROVED/REVOKED, cùng loại]" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;dashed=1;" edge="1" parent="1" source="uc-renew" target="uc-request">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e13" value="«include»" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;dashed=1;" edge="1" parent="1" source="uc-decide" target="uc-history">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e14" value="«include»" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;dashed=1;" edge="1" parent="1" source="uc-revoke" target="uc-history">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="scope" value="Phạm vi: chỉ các ca sử dụng của tính năng tính phí khám theo Strategy. Bác sĩ không tương tác trực tiếp; giá gốc lấy từ doctors.consultation_fee." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="280" y="1075" width="1240" height="50" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

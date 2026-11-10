@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" type="device">
+  <diagram id="Facade — Class" name="Facade — Class">
+    <mxGraphModel grid="0" page="1" pageScale="1" pageWidth="2200" pageHeight="1160" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="MẪU FACADE — MỘT CỬA CHO THAO TÁC LỊCH HẸN — SƠ ĐỒ LỚP" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=21;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="15" width="2100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="controller" value="«Client · REST»&#10;BookingController" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="110" width="620" height="256" as="geometry" />
+        </mxCell>
+        <mxCell id="controller-body" value="- bookingFacade: BookingFacade   (phụ thuộc duy nhất)&#10;&#10;+ createBooking   POST /appointments&#10;+ confirmBooking  POST /appointments/confirm&#10;+ cancelBooking   DELETE /appointments/{id}/cancel&#10;+ getBookingDetails  GET /appointments/{id}&#10;+ getMyPatientAppointments  GET /appointments/my-appointments&#10;&#10;Chỉ lo HTTP: @PreAuthorize, mã trạng thái, thông điệp" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="controller">
+          <mxGeometry x="0" y="52" width="620" height="204" as="geometry" />
+        </mxCell>
+        <mxCell id="facade" value="«Facade»&#10;BookingFacade" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="800" y="110" width="640" height="236" as="geometry" />
+        </mxCell>
+        <mxCell id="facade-body" value="- currentUser: CurrentUserService&#10;- bookings: BookingService&#10;&#10;+ confirm(user, request): AppointmentDto   // bắt buộc báo giá&#10;+ bookWithoutQuote(user, request): AppointmentDto&#10;+ cancel(user, appointmentId)&#10;+ details(user, appointmentId): AppointmentDto  // lấy vai trò từ user&#10;+ myAppointments(user): List&lt;AppointmentDto&gt;" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="facade">
+          <mxGeometry x="0" y="52" width="640" height="184" as="geometry" />
+        </mxCell>
+        <mxCell id="subsystem" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fillColor=none;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="760" y="560" width="1400" height="470" as="geometry" />
+        </mxCell>
+        <mxCell id="subsystem-label" value="Hệ thống con (controller không còn biết tới)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="780" y="565" width="800" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="current" value="«subsystem»&#10;CurrentUserService" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="800" y="610" width="520" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="current-body" value="+ getUserId(userDetails): Long" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="current">
+          <mxGeometry x="0" y="52" width="520" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="booking" value="«subsystem»&#10;BookingService (BookingServiceImpl)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1420" y="610" width="700" height="156" as="geometry" />
+        </mxCell>
+        <mxCell id="booking-body" value="+ createBooking(patientId, request)&#10;+ cancelBooking(id, patientId)&#10;+ getBookingDetails(id, requesterId, role)&#10;+ getPatientAppointments(patientId)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="booking">
+          <mxGeometry x="0" y="52" width="700" height="104" as="geometry" />
+        </mxCell>
+        <mxCell id="deep" value="«subsystem · bên trong đặt lịch»&#10;Repositories · PricingContext · BenefitService · ApplicationEventPublisher" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1420" y="860" width="700" height="116" as="geometry" />
+        </mxCell>
+        <mxCell id="deep-body" value="Khóa ca và bác sĩ, kiểm tra quyền hưởng, tính giá (Strategy),&#10;lưu lịch hẹn, phát sự kiện (Observer → Decorator)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="deep">
+          <mxGeometry x="0" y="52" width="700" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="strategyctl" value="«không qua Facade»&#10;ConsultationQuoteController · Patient/AdminBenefitController" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="610" width="620" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="strategyctl-body" value="Endpoint Strategy giữ nguyên" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="strategyctl">
+          <mxGeometry x="0" y="52" width="620" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" value="mọi thao tác lịch hẹn" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=1;exitY=0.3;entryX=0;entryY=0.3;" edge="1" parent="1" source="controller" target="facade">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="ai đang đăng nhập" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=0.3;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="facade" target="current">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="quy trình đặt lịch" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=0.8;exitY=1;entryX=0.3;entryY=0;" edge="1" parent="1" source="facade" target="booking">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="điều phối" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;endArrow=open;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="booking" target="deep">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="note" value="Trước: controller tự lấy userId, tự đọc vai trò, tự bật quoteRequired và gọi thẳng BookingService. Sau: controller chỉ gọi BookingFacade; đổi cách xác định người dùng hay quy trình đặt lịch không chạm tới controller.&#10;Facade không thay thế các hệ thống con: code khác vẫn có thể gọi BookingService trực tiếp." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=15;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1060" width="2100" height="70" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

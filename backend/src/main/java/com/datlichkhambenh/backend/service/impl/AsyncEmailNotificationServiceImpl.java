@@ -1,5 +1,6 @@
 package com.datlichkhambenh.backend.service.impl;
 
+import com.datlichkhambenh.backend.builder.NotificationMessageDirector;
 import com.datlichkhambenh.backend.entity.Appointment;
 import com.datlichkhambenh.backend.messaging.EmailNotificationMessage;
 import com.datlichkhambenh.backend.messaging.EmailNotificationRequestedEvent;
@@ -12,34 +13,24 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AsyncEmailNotificationServiceImpl implements AsyncEmailNotificationService {
     private final ApplicationEventPublisher eventPublisher;
+    private final NotificationMessageDirector director;
 
     @Override
     public void sendBookingConfirmation(Appointment appointment) {
-        publish("BOOKING_CONFIRMED", appointment);
+        publish(director.bookingConfirmed(appointment));
     }
 
     @Override
     public void sendAppointmentReminder(Appointment appointment) {
-        publish("APPOINTMENT_REMINDER", appointment);
+        publish(director.reminder(appointment));
     }
 
     @Override
     public void sendCancellationNotice(Appointment appointment) {
-        publish("BOOKING_CANCELLED", appointment);
+        publish(director.cancelled(appointment));
     }
 
-    private void publish(String type, Appointment appointment) {
-        EmailNotificationMessage message = new EmailNotificationMessage(
-                type,
-                appointment.getPatient().getUser().getEmail(),
-                appointment.getPatient().getFullName(),
-                appointment.getBookingCode(),
-                appointment.getDoctor().getFullName(),
-                appointment.getSchedule().getWorkDate().toString(),
-                appointment.getSchedule().getStartTime().toString(),
-                appointment.getSchedule().getEndTime().toString(),
-                appointment.getPrice() == null ? null : appointment.getPrice().toPlainString()
-        );
+    private void publish(EmailNotificationMessage message) {
         eventPublisher.publishEvent(new EmailNotificationRequestedEvent(message));
     }
 }

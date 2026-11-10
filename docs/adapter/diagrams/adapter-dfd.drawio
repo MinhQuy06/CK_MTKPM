@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" type="device">
+  <diagram id="Adapter — DFD" name="Adapter — DFD">
+    <mxGraphModel grid="0" page="1" pageScale="1" pageWidth="2100" pageHeight="880" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="MẪU ADAPTER — DFD MỨC 1: TỪ BẢN TIN ĐẾN NHÀ CUNG CẤP SMS" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=21;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="15" width="2000" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="dec" value="Decorator SMS&#10;(chuỗi thông báo)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="320" width="250" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="vendor" value="Nhà cung cấp SMS&#10;(giả lập) → Bệnh nhân" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1780" y="320" width="280" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="p1" value="1.0&#10;Kiểm tra &amp;&#10;chuẩn hóa số" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="420" y="290" width="230" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="p2" value="2.0&#10;Soạn nội dung&#10;SMS" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="850" y="290" width="230" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="p3" value="3.0&#10;Gửi &amp; dịch&#10;mã trạng thái" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1290" y="290" width="230" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="d1" value="D1   patients (phone)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=partialRectangle;right=0;whiteSpace=wrap;align=left;spacingLeft=14;fontSize=15;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="380" y="640" width="320" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" value="số điện thoại&#10;+ bản tin" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=1;exitY=0.4;entryX=0;entryY=0.4;" edge="1" parent="1" source="dec" target="p1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="phone" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=0.5;exitY=0;entryX=0.4;entryY=1;" edge="1" parent="1" source="d1" target="p1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="SKIPPED_NO_PHONE /&#10;FAILED (số sai)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;exitX=0.3;exitY=0.05;entryX=0.5;entryY=0;" edge="1" parent="1" source="p1" target="dec">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="489" y="220" />
+              <mxPoint x="165" y="220" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e4" value="+84xxxxxxxxx&#10;+ bản tin" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="p1" target="p2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" value="msisdn + text" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="p2" target="p3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" value="submitSms(msisdn, text)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=1;exitY=0.35;entryX=0;entryY=0.35;" edge="1" parent="1" source="p3" target="vendor">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" value="mã 0 / 400" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=0;exitY=0.7;entryX=1;entryY=0.7;" edge="1" parent="1" source="vendor" target="p3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" value="DeliveryResult (SENT / FAILED)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=0.5;exitY=0;entryX=0.15;entryY=0;" edge="1" parent="1" source="p3" target="dec">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1405" y="160" />
+              <mxPoint x="78" y="160" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="note" value="Yourdon/DeMarco. Adapter không ghi kho nào; Decorator SMS nhận DeliveryResult và ghi notification_log." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="780" width="2000" height="50" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

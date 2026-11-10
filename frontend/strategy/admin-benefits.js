@@ -11,7 +11,7 @@ async function loadAdminBenefits() {
   response.data.forEach(item=>{
    const row=adminBenefitNode('article','card p-3 mb-3');row.dataset.requestId=item.id;
    row.append(adminBenefitNode('h2','h5',item.patientName+' — '+item.kind+' — '+item.status));
-   row.append(adminBenefitNode('p','', 'Mã hồ sơ: '+item.referenceCode+' · Đề nghị: '+item.requestedFrom+' → '+item.requestedUntil));
+   row.append(adminBenefitNode('p','', BenefitKinds.of(item.kind).shortReferenceLabel+': '+item.referenceCode+' · Đề nghị: '+item.requestedFrom+' → '+item.requestedUntil));
    (item.decisions||[]).forEach(d=>row.append(adminBenefitNode('p','small mb-1',d.action+': '+d.reason+' · Admin #'+d.decidedBy+' · '+d.decidedAt)));
    if(item.status==='PENDING') {
     const form=adminBenefitNode('div','row g-2 mt-2');

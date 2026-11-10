@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" type="device">
+  <diagram id="Builder — Class" name="Builder — Class">
+    <mxGraphModel grid="0" page="1" pageScale="1" pageWidth="2000" pageHeight="1180" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="MẪU BUILDER — DỰNG BẢN TIN THÔNG BÁO LỊCH HẸN — SƠ ĐỒ LỚP" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=21;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="15" width="1900" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="client" value="«Client»&#10;AsyncEmailNotificationServiceImpl" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="110" width="560" height="216" as="geometry" />
+        </mxCell>
+        <mxCell id="client-body" value="- eventPublisher: ApplicationEventPublisher&#10;- director: NotificationMessageDirector&#10;&#10;+ sendBookingConfirmation(a: Appointment)&#10;+ sendAppointmentReminder(a: Appointment)&#10;+ sendCancellationNotice(a: Appointment)&#10;- publish(m: EmailNotificationMessage)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="client">
+          <mxGeometry x="0" y="52" width="560" height="164" as="geometry" />
+        </mxCell>
+        <mxCell id="director" value="«Director»&#10;NotificationMessageDirector" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="720" y="110" width="620" height="216" as="geometry" />
+        </mxCell>
+        <mxCell id="director-body" value="+ BOOKING_CONFIRMED, APPOINTMENT_REMINDER,&#10;  BOOKING_CANCELLED: String&#10;&#10;+ bookingConfirmed(a: Appointment): EmailNotificationMessage&#10;+ reminder(a: Appointment): EmailNotificationMessage&#10;+ cancelled(a: Appointment): EmailNotificationMessage&#10;- forAppointment(type, a): EmailNotificationMessage" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="director">
+          <mxGeometry x="0" y="52" width="620" height="164" as="geometry" />
+        </mxCell>
+        <mxCell id="builder" value="«Builder»&#10;NotificationMessageBuilder" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="720" y="520" width="620" height="276" as="geometry" />
+        </mxCell>
+        <mxCell id="builder-body" value="- type, recipientEmail, patientName, bookingCode,&#10;  doctorName, workDate, startTime, endTime,&#10;  price: String&#10;&#10;+ aMessage(): NotificationMessageBuilder  {static}&#10;+ type(t) / recipientEmail(e) / patientName(n) /&#10;  bookingCode(c) / doctorName(n) / workDate(d) /&#10;  startTime(t) / endTime(t) / price(p): NotificationMessageBuilder&#10;+ build(): EmailNotificationMessage&#10;- require(field, value)  // type, recipientEmail, bookingCode" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="builder">
+          <mxGeometry x="0" y="52" width="620" height="224" as="geometry" />
+        </mxCell>
+        <mxCell id="product" value="«Product · record»&#10;EmailNotificationMessage" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1460" y="520" width="480" height="256" as="geometry" />
+        </mxCell>
+        <mxCell id="product-body" value="type: String&#10;recipientEmail: String&#10;patientName: String&#10;bookingCode: String&#10;doctorName: String&#10;workDate: String&#10;startTime: String&#10;endTime: String&#10;price: String  (có thể null)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="product">
+          <mxGeometry x="0" y="52" width="480" height="204" as="geometry" />
+        </mxCell>
+        <mxCell id="source" value="«Entity»&#10;Appointment" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1460" y="110" width="480" height="176" as="geometry" />
+        </mxCell>
+        <mxCell id="source-body" value="bookingCode&#10;patient → user.email, fullName&#10;doctor → fullName&#10;schedule → workDate, startTime, endTime&#10;price" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="source">
+          <mxGeometry x="0" y="52" width="480" height="124" as="geometry" />
+        </mxCell>
+        <mxCell id="event" value="«record»&#10;EmailNotificationRequestedEvent" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="520" width="560" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="event-body" value="message: EmailNotificationMessage" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="event">
+          <mxGeometry x="0" y="52" width="560" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" value="dùng" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=1;exitY=0.3;entryX=0;entryY=0.3;" edge="1" parent="1" source="client" target="director">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="điều khiển các bước dựng" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="director" target="builder">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="«create»" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;endArrow=open;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="builder" target="product">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="đọc dữ liệu" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;endArrow=open;exitX=1;exitY=0.3;entryX=0;entryY=0.3;" edge="1" parent="1" source="director" target="source">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" value="publishEvent" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;endArrow=open;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="client" target="event">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" value="mang theo" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=0.5;exitY=1;entryX=0.5;entryY=1;" edge="1" parent="1" source="event" target="product">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="320" y="1000" />
+              <mxPoint x="1700" y="1000" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="note" value="Builder thay constructor 9 tham số String dễ truyền nhầm thứ tự. Director giữ &quot;công thức&quot; cho từng loại thông báo; nơi gọi chỉ nói &quot;bản tin hủy cho lịch hẹn này&quot;.&#10;build() từ chối khi thiếu type, recipientEmail hoặc bookingCode (IllegalStateException); price được phép null cho lịch hẹn cũ." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=15;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1040" width="1900" height="70" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
