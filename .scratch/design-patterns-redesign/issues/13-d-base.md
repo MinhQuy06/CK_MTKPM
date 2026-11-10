@@ -4,10 +4,10 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** done
 
 **GitHub:** #34
 
-- [ ] Lớp bọc trừu tượng cài đặt giao diện dịch vụ thông báo
-- [ ] Chuỗi được ghép ở một lớp cấu hình, là bean chính
-- [ ] Toàn bộ test Java, Node và trình duyệt hiện có vẫn pass, không sửa test cũ
+- [x] Lớp bọc trừu tượng cài đặt giao diện dịch vụ thông báo
+- [x] Chuỗi được ghép ở một lớp cấu hình, là bean chính
+- [x] Toàn bộ test Java, Node và trình duyệt hiện có vẫn pass, không sửa test cũ
