@@ -25,4 +25,19 @@ class NotificationMessageIntegrationTests extends BookingApiFixture {
         assertEquals("09:30", message.endTime());
         assertEquals(0, new BigDecimal(message.price()).compareTo(FEE));
     }
+
+    @Test
+    void cancellationNoticeIsBuiltForTheSameAppointment() throws Exception {
+        var appointment = book();
+        nextEmail();
+
+        cancel(appointment.path("id").asLong());
+
+        var message = nextEmail();
+        assertEquals("BOOKING_CANCELLED", message.type());
+        assertEquals(patientEmail, message.recipientEmail());
+        assertEquals(appointment.path("bookingCode").asText(), message.bookingCode());
+        assertEquals(day.toString(), message.workDate());
+        assertEquals("09:00", message.startTime());
+    }
 }
