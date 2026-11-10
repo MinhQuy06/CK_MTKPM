@@ -69,7 +69,9 @@ const path = require('node:path');
     await page.locator('#booking-modal [data-bs-dismiss="modal"]').first().click();
     await page.waitForFunction(() => !document.getElementById('booking-modal').classList.contains('show'));
     await page.locator('button[onclick^="openBookingModal"]').nth(1).click();
-    await page.locator('#booking-date').fill(new Date(Date.now() + 86400000).toISOString().slice(0, 10));
+    // Fixture slots are "tomorrow" in clinic time; UTC tomorrow is today in Vietnam between 00:00 and 07:00.
+    const clinicTomorrow = new Date(Date.now() + 86400000).toLocaleDateString('en-CA', { timeZone: 'Asia/Ho_Chi_Minh' });
+    await page.locator('#booking-date').fill(clinicTomorrow);
     await page.locator('#booking-date').dispatchEvent('change');
     await page.locator('#slots-container .slot-btn:not([disabled])').first().click();
     await page.waitForFunction(() => !document.getElementById('quote-details').hidden);
