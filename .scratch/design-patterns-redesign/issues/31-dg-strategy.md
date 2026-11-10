@@ -4,8 +4,8 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** done
 
 **GitHub:** #52
 
-- [ ] README Strategy liệt kê đúng 4 sơ đồ chính
+- [x] README Strategy liệt kê đúng 4 sơ đồ chính
