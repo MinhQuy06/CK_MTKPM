@@ -4,8 +4,8 @@
 
 **Blocked by:** 30
 
-**Status:** ready-for-agent
+**Status:** done
 
 **GitHub:** #59
 
-- [ ] Mọi link hoạt động
+- [x] Mọi link hoạt động

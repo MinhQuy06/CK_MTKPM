@@ -20,7 +20,7 @@ Khung nét đứt là một mẫu. Luồng đặt lịch: Bệnh nhân → `Book
 | Factory Method | Tạo tài khoản Bệnh nhân/Bác sĩ lặp ở đăng ký và Admin | `AccountFactory` theo vai trò, dùng chung cho đăng ký và Admin | [factory/](factory/) |
 | Facade | Controller đặt lịch phải biết nhiều dịch vụ bên dưới | `BookingFacade` là cửa duy nhất của `BookingController` | [facade/](facade/) |
 
-Thư mục README và kịch bản của 6 mẫu mới: sẽ có (đang làm). Sơ đồ đã có trong `docs/<mẫu>/diagrams/`.
+Mỗi thư mục có `README.md` (định nghĩa, bài toán, vai trò trong code, 4 sơ đồ, quyết định thiết kế, kiểm thử, hạn chế), `kich-ban-thuyet-trinh.md` (≈ 5 phút) và `diagrams/`.
 
 ## Thành viên
 
