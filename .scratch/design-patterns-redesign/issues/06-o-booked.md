@@ -4,10 +4,10 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** done
 
 **GitHub:** #27
 
-- [ ] Test qua API: đặt lịch → đúng 1 bản tin xác nhận, sau commit
-- [ ] Dịch vụ đặt lịch không còn phụ thuộc dịch vụ email ở luồng đặt lịch
-- [ ] Toàn bộ test Java, Node và trình duyệt hiện có vẫn pass, không sửa test cũ
+- [x] Test qua API: đặt lịch → đúng 1 bản tin xác nhận, sau commit
+- [x] Dịch vụ đặt lịch không còn phụ thuộc dịch vụ email ở luồng đặt lịch
+- [x] Toàn bộ test Java, Node và trình duyệt hiện có vẫn pass, không sửa test cũ

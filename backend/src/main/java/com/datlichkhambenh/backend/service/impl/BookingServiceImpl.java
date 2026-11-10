@@ -20,8 +20,10 @@ import com.datlichkhambenh.backend.repository.ScheduleRepository;
 import com.datlichkhambenh.backend.service.AsyncEmailNotificationService;
 import com.datlichkhambenh.backend.service.BookingService;
 import com.datlichkhambenh.backend.service.RedisCacheService;
+import com.datlichkhambenh.backend.observer.AppointmentBookedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,6 +45,7 @@ public class BookingServiceImpl implements BookingService {
     private final RedisCacheService redisCacheService;
     private final PricingContext pricing;
     private final com.datlichkhambenh.backend.strategy.service.BenefitService benefits;
+    private final ApplicationEventPublisher events;
 
     @Override
     @Transactional
@@ -119,12 +122,8 @@ public class BookingServiceImpl implements BookingService {
         // 5. Invalidate slot cache trong Redis
         redisCacheService.evictSlotCache(doctor.getUserId(), schedule.getWorkDate());
 
-        // 6. Trigger sự kiện gửi mail bất đồng bộ (Async task, KHÔNG block response)
-        try {
-            emailNotificationService.sendBookingConfirmation(savedAppointment);
-        } catch (Exception e) {
-            log.error("Lỗi khi trigger gửi mail xác nhận đặt lịch: {}", e.getMessage());
-        }
+        // 6. Observer: báo cho các observer (email…) rằng lịch hẹn đã được đặt
+        events.publishEvent(new AppointmentBookedEvent(savedAppointment));
 
         return mapToDto(savedAppointment);
     }

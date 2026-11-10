@@ -12,6 +12,7 @@ import com.datlichkhambenh.backend.repository.ScheduleRepository;
 import com.datlichkhambenh.backend.repository.SpecialtyRepository;
 import com.datlichkhambenh.backend.repository.UserRepository;
 import com.datlichkhambenh.backend.security.JwtTokenProvider;
+import com.datlichkhambenh.backend.service.impl.NoOpRedisCacheService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,9 +36,11 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
@@ -69,6 +72,7 @@ public abstract class BookingApiFixture {
     @Autowired protected ScheduleRepository schedules;
     @Autowired protected PlatformTransactionManager tm;
     @Autowired protected CapturingRabbitTemplate sink;
+    @Autowired protected RecordingCache cache;
 
     protected String patientToken;
     protected String patientEmail;
@@ -84,6 +88,22 @@ public abstract class BookingApiFixture {
         @Primary
         CapturingRabbitTemplate capturingRabbitTemplate(ConnectionFactory factory) {
             return new CapturingRabbitTemplate(factory);
+        }
+
+        @Bean
+        @Primary
+        RecordingCache recordingCache() {
+            return new RecordingCache();
+        }
+    }
+
+    /** Records slot-cache evictions as "doctorId@date" so tests can see cache reactions. */
+    public static class RecordingCache extends NoOpRedisCacheService {
+        public final List<String> slotEvictions = new CopyOnWriteArrayList<>();
+
+        @Override
+        public void evictSlotCache(Long doctorId, LocalDate date) {
+            slotEvictions.add(doctorId + "@" + date);
         }
     }
 
@@ -108,6 +128,7 @@ public abstract class BookingApiFixture {
     @BeforeEach
     void seedBookingWorld() {
         sink.messages.clear();
+        cache.slotEvictions.clear();
         String suffix = UUID.randomUUID().toString();
         day = LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh")).plusDays(2);
         new TransactionTemplate(tm).executeWithoutResult(tx -> {
