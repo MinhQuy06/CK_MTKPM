@@ -4,8 +4,8 @@
 
 **Blocked by:** 01, 11, 12
 
-**Status:** ready-for-agent
+**Status:** done
 
 **GitHub:** #48
 
-- [ ] Tên lớp/bảng khớp code
+- [x] Tên lớp/bảng khớp code
