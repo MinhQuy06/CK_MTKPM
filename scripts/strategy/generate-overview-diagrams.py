@@ -303,7 +303,7 @@ def activity():
     act('s3', 'POST /appointments: mở giao dịch,\nkhóa slot (FOR UPDATE)', 's', 860, 80)
     decide('d2', 'slot còn trống,\nkhớp ngày giờ?', 980)
     error('err2', '409 SLOT_UNAVAILABLE:\nbỏ chọn, tải lại khung giờ', 1000)
-    act('s4', 'Nếu loại ≠ STANDARD: khóa và kiểm tra\nquyền hưởng (lockedEligible)', 's', 1130, 80)
+    act('s4', 'Nếu loại ≠ STANDARD: khóa và kiểm tra\nquyền hưởng (lockCovering)', 's', 1130, 80)
     decide('d3', 'quyền hưởng\ncòn hiệu lực?', 1250)
     error('err3', '403: quyền hưởng không còn hợp lệ\ncho ngày khám', 1270)
     act('s5', 'Tính lại giá bằng Strategy hiện hành\n(PricingContext.calculate)', 's', 1400, 80)
@@ -379,8 +379,8 @@ def package():
                        '&nbsp;&nbsp;BenefitDecisionInput, BenefitRevokeInput',
                        'response: ConsultationQuoteDto, BenefitRequestDto,', '&nbsp;&nbsp;BenefitDecisionDto'],
         510, 160, 770, 190)
-    pkg('service', 'service', ['ConsultationQuoteService «Client»', 'BenefitService',
-                               '&nbsp;&nbsp;(eligible / lockedEligible,', '&nbsp;&nbsp;duyệt, từ chối, thu hồi)'],
+    pkg('service', 'service', ['BookingOffer «Client» (strategy.offer)', 'BenefitService',
+                               '&nbsp;&nbsp;(covering / lockCovering,', '&nbsp;&nbsp;duyệt, từ chối, thu hồi)'],
         70, 440, 380, 210)
     pkg('pricing', 'pricing «Strategy pattern»', [
         '«interface» ConsultationPricingStrategy — <i>Strategy</i>',
@@ -391,12 +391,12 @@ def package():
         'PricingAmounts, PricingChoice — giá trị trả về'], 510, 440, 770, 240, 'strokeWidth=3;', 260)
     pkg('repository', 'repository', ['BenefitRequestRepository', 'BenefitDecisionRepository'], 70, 780, 380, 170)
     pkg('entity', 'entity', ['BenefitRequest', 'BenefitDecision'], 510, 800, 380, 150)
-    d.box('roles', 'Vai trò trong mẫu Strategy:\nClient: ConsultationQuoteService, BookingServiceImpl\n'
+    d.box('roles', 'Vai trò trong mẫu Strategy:\nClient: BookingOffer (báo giá, loại phí, đặt lịch)\n'
           'Context: PricingContext\nStrategy: ConsultationPricingStrategy\nConcreteStrategy: Standard / Insurance / Vip',
           930, 790, 370, 170, NOTE)
 
     pkg('shared', 'com.datlichkhambenh.backend (dùng chung)', [], 1380, 70, 530, 1020, 'dashed=1;fontSize=16;', 400)
-    pkg('booking', 'service.impl', ['BookingServiceImpl «Client»', '(tính giá + lockedEligible khi đặt lịch)'],
+    pkg('booking', 'service.impl', ['BookingServiceImpl «Client»', '(gọi BookingOffer, lưu lịch hẹn)'],
         1420, 160, 450, 150)
     pkg('shared-repo', 'repository', ['ScheduleRepository, AppointmentRepository,', 'PatientRepository, DoctorRepository'],
         1420, 400, 450, 160)

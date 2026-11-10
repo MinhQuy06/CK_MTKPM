@@ -20,17 +20,17 @@ def class_diagram():
         'Chỉ lo HTTP: @PreAuthorize, mã trạng thái, thông điệp'], 40, 110, 620)
     d.uml('facade', '«Facade»\nBookingFacade', [
         '- currentUser: CurrentUserService', '- bookings: BookingService', '',
-        '+ confirm(user, request): AppointmentDto   // bắt buộc báo giá',
-        '+ bookWithoutQuote(user, request): AppointmentDto',
+        '+ confirm(user, request): AppointmentDto   // tạo ConfirmedQuote',
+        '+ bookWithoutQuote(user, request): AppointmentDto  // LegacyQuote / LegacyStandard',
         '+ cancel(user, appointmentId)', '+ details(user, appointmentId): AppointmentDto  // lấy vai trò từ user',
         '+ myAppointments(user): List<AppointmentDto>'], 800, 110, 640)
     d.box('subsystem', '', 760, 560, 1400, 470, 'fillColor=none;dashed=1;')
     d.text('subsystem-label', 'Hệ thống con (controller không còn biết tới)', 780, 565, 800, 30, 16)
     d.uml('current', '«subsystem»\nCurrentUserService', ['+ getUserId(userDetails): Long'], 800, 610, 520)
     d.uml('booking', '«subsystem»\nBookingService (BookingServiceImpl)', [
-        '+ createBooking(patientId, request)', '+ cancelBooking(id, patientId)',
+        '+ createBooking(patientId, scheduleId, symptoms, expectation)', '+ cancelBooking(id, patientId)',
         '+ getBookingDetails(id, requesterId, role)', '+ getPatientAppointments(patientId)'], 1420, 610, 700)
-    d.uml('deep', '«subsystem · bên trong đặt lịch»\nRepositories · PricingContext · BenefitService · ApplicationEventPublisher',
+    d.uml('deep', '«subsystem · bên trong đặt lịch»\nBookingOffer · Repositories · ApplicationEventPublisher',
           ['Khóa ca và bác sĩ, kiểm tra quyền hưởng, tính giá (Strategy),', 'lưu lịch hẹn, phát sự kiện (Observer → Decorator)'],
           1420, 860, 700)
     d.uml('strategyctl', '«không qua Facade»\nConsultationQuoteController · Patient/AdminBenefitController',
@@ -39,7 +39,7 @@ def class_diagram():
     d.edge('facade', 'current', 'ai đang đăng nhập', 'exitX=0.3;exitY=1;entryX=0.5;entryY=0;')
     d.edge('facade', 'booking', 'quy trình đặt lịch', 'exitX=0.8;exitY=1;entryX=0.3;entryY=0;')
     d.edge('booking', 'deep', 'điều phối', DEPENDS + 'exitX=0.5;exitY=1;entryX=0.5;entryY=0;')
-    d.text('note', 'Trước: controller tự lấy userId, tự đọc vai trò, tự bật quoteRequired và gọi thẳng BookingService. '
+    d.text('note', 'Trước: controller tự lấy userId, tự đọc vai trò, tự bật cờ quoteRequired trên DTO và gọi thẳng BookingService. '
            'Sau: controller chỉ gọi BookingFacade; đổi cách xác định người dùng hay quy trình đặt lịch không chạm tới '
            'controller.\nFacade không thay thế các hệ thống con: code khác vẫn có thể gọi BookingService trực tiếp.',
            40, 1060, 2100, 70, 15)
@@ -53,11 +53,11 @@ def sequence():
     s.call(0, 1, 'POST /appointments/confirm  (JWT PATIENT, báo giá đã đồng ý)')
     s.remark('@PreAuthorize("hasAuthority(\'PATIENT\')") + @Valid CreateBookingDto — vẫn nằm ở controller.')
     s.call(1, 2, 'confirm(userDetails, request)')
-    s.step(2, 'request.setQuoteRequired(true)', 300, 44)
+    s.step(2, 'tạo Expectation.ConfirmedQuote từ request', 360, 44)
     s.call(2, 3, 'getUserId(userDetails)')
     s.reply(3, 2, 'patientId')
-    s.call(2, 4, 'createBooking(patientId, request)')
-    s.call(4, 5, 'khóa ca → kiểm tra quyền hưởng → tính giá → lưu → phát sự kiện')
+    s.call(2, 4, 'createBooking(patientId, scheduleId, symptoms, ConfirmedQuote)')
+    s.call(4, 5, 'BookingOffer.lockAndConfirm → lưu → phát sự kiện')
     s.reply(5, 4, 'Appointment đã lưu')
     s.begin('alt [ca kín / giá đổi / mất quyền hưởng]')
     s.reply(4, 1, 'BookingRejectionException → 409 / 403 (đi xuyên Facade)')

@@ -9,7 +9,7 @@ Repo MinhQuy06/CK_MTKPM, branch `thaihoa`. Phần triển khai gồm báo giá v
 | Strategy | `ConsultationPricingStrategy` |
 | Concrete Strategy | `StandardPricingStrategy`, `InsurancePricingStrategy`, `VipPricingStrategy` |
 | Context | `PricingContext`, registry các thuật toán Spring inject |
-| Client | `ConsultationQuoteService`, `BookingServiceImpl` |
+| Client | `BookingOffer` (giá chào: loại phí, báo giá, khóa và xác nhận), được `ConsultationQuoteController` và `BookingServiceImpl` gọi |
 | Điều kiện sử dụng | `BenefitService`, quyền đã được Admin duyệt |
 
 | Loại | Tỷ lệ giảm mặc định | Bệnh nhân trả khi phí gốc 300.000đ |

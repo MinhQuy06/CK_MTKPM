@@ -31,7 +31,11 @@ Mỗi thư mục có `README.md` (định nghĩa, bài toán, vai trò trong cod
 | | | |
 | | | |
 
-## Kết quả kiểm thử (11/11/2026, nhánh `design-patterns`)
+## Kết quả kiểm thử
+
+Sau khi gom luật giá chào về `BookingOffer` (11/11/2026, nhánh `booking-offer-design`): Java H2 187 chạy / 0 lỗi (17 bỏ qua là nhóm MySQL), Java MySQL thật 188 / 0 lỗi / 0 bỏ qua, nâng cấp MySQL pass, Node 14/14, trình duyệt 17/17.
+
+### Lần trước (11/11/2026, nhánh `design-patterns`)
 
 | Bộ test | Lệnh | Kết quả |
 |---|---|---|

@@ -38,13 +38,13 @@
             <mxPoint x="410" y="215" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="l2" value="createBooking(patientId, request)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=0;verticalAlign=bottom;">
+        <mxCell id="l2" value="createBooking(patientId, scheduleId, symptoms, expectation)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=0;verticalAlign=bottom;">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="410" y="277" as="sourcePoint" />
             <mxPoint x="670" y="277" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="step2" value="Khóa ca + bác sĩ, tính giá (Strategy),&#10;lưu Appointment, đánh dấu ca đã kín" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=14;align=left;spacingLeft=8;" vertex="1" parent="1">
+        <mxCell id="step2" value="BookingOffer khóa + tính giá (Strategy),&#10;lưu Appointment, đánh dấu ca đã kín" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=14;align=left;spacingLeft=8;" vertex="1" parent="1">
           <mxGeometry x="682" y="317" width="380" height="56" as="geometry" />
         </mxCell>
         <mxCell id="l4" value="BookingRejectionException → rollback, KHÔNG phát sự kiện" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
