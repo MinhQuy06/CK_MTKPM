@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" type="device">
+  <diagram id="Observer — Class" name="Observer — Class">
+    <mxGraphModel grid="0" page="1" pageScale="1" pageWidth="2700" pageHeight="1100" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="MẪU OBSERVER — PHẢN ỨNG KHI ĐẶT / HỦY LỊCH — SƠ ĐỒ LỚP" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=21;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="15" width="2600" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="subject" value="«ConcreteSubject»&#10;BookingServiceImpl" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="110" width="640" height="276" as="geometry" />
+        </mxCell>
+        <mxCell id="subject-body" value="- events: ApplicationEventPublisher&#10;- pricing: PricingContext&#10;- …repositories&#10;&#10;+ createBooking(patientId, request): AppointmentDto&#10;  … lưu lịch hẹn, khóa ca …&#10;  events.publishEvent(new AppointmentBookedEvent(saved))&#10;+ cancelBooking(appointmentId, patientId)&#10;  … đổi trạng thái, mở ca thay thế …&#10;  events.publishEvent(new AppointmentCancelledEvent(a))" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="subject">
+          <mxGeometry x="0" y="52" width="640" height="224" as="geometry" />
+        </mxCell>
+        <mxCell id="bus" value="«Subject registry · Spring»&#10;ApplicationEventPublisher" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="820" y="110" width="480" height="156" as="geometry" />
+        </mxCell>
+        <mxCell id="bus-body" value="+ publishEvent(event: Object)&#10;&#10;Gọi đồng bộ mọi @EventListener&#10;nhận kiểu sự kiện đó" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="bus">
+          <mxGeometry x="0" y="52" width="480" height="104" as="geometry" />
+        </mxCell>
+        <mxCell id="booked" value="«record · Event»&#10;AppointmentBookedEvent" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="820" y="460" width="480" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="booked-body" value="appointment: Appointment" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="booked">
+          <mxGeometry x="0" y="52" width="480" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="cancelled" value="«record · Event»&#10;AppointmentCancelledEvent" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="820" y="650" width="480" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="cancelled-body" value="appointment: Appointment" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="cancelled">
+          <mxGeometry x="0" y="52" width="480" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="email" value="«ConcreteObserver»&#10;AppointmentEmailObserver" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1440" y="110" width="620" height="196" as="geometry" />
+        </mxCell>
+        <mxCell id="email-body" value="- notifications: AsyncEmailNotificationService&#10;&#10;+ onBooked(e: AppointmentBookedEvent)  @EventListener&#10;+ onCancelled(e: AppointmentCancelledEvent)  @EventListener&#10;&#10;Lỗi chỉ ghi log, không hủy lịch đã đặt" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="email">
+          <mxGeometry x="0" y="52" width="620" height="144" as="geometry" />
+        </mxCell>
+        <mxCell id="cache" value="«ConcreteObserver»&#10;SlotCacheObserver" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1440" y="560" width="620" height="176" as="geometry" />
+        </mxCell>
+        <mxCell id="cache-body" value="- cache: RedisCacheService&#10;&#10;+ onBooked(e: AppointmentBookedEvent)  @EventListener&#10;+ onCancelled(e: AppointmentCancelledEvent)  @EventListener&#10;- evict(slot)  // bác sĩ + ngày làm việc" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="cache">
+          <mxGeometry x="0" y="52" width="620" height="124" as="geometry" />
+        </mxCell>
+        <mxCell id="notify" value="«interface»&#10;AsyncEmailNotificationService" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="2200" y="130" width="460" height="136" as="geometry" />
+        </mxCell>
+        <mxCell id="notify-body" value="+ sendBookingConfirmation(a)&#10;+ sendCancellationNotice(a)&#10;(bản đã bọc bởi Decorator)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="notify">
+          <mxGeometry x="0" y="52" width="460" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="redis" value="«interface»&#10;RedisCacheService" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="2200" y="600" width="460" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="redis-body" value="+ evictSlotCache(doctorId, date)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="redis">
+          <mxGeometry x="0" y="52" width="460" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" value="publishEvent" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=1;exitY=0.2;entryX=0;entryY=0.3;" edge="1" parent="1" source="subject" target="bus">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="«create»" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;endArrow=open;exitX=1;exitY=0.65;entryX=0;entryY=0.5;" edge="1" parent="1" source="subject" target="booked">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="«create»" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;endArrow=open;exitX=1;exitY=0.85;entryX=0;entryY=0.5;" edge="1" parent="1" source="subject" target="cancelled">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="thông báo" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=1;exitY=0.3;entryX=0;entryY=0.3;" edge="1" parent="1" source="bus" target="email">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" value="thông báo" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=0.9;exitY=1;entryX=0;entryY=0.2;" edge="1" parent="1" source="bus" target="cache">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1357" y="595" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e6" value="dùng" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=1;exitY=0.4;entryX=0;entryY=0.4;" edge="1" parent="1" source="email" target="notify">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" value="dùng" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=1;exitY=0.4;entryX=0;entryY=0.5;" edge="1" parent="1" source="cache" target="redis">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="note" value="Trước: BookingServiceImpl gọi thẳng dịch vụ email và cache. Sau: nó chỉ phát sự kiện; thêm phản ứng mới = thêm một observer, không sửa dịch vụ đặt lịch.&#10;Observer chạy trong giao dịch đặt lịch; email vẫn chỉ đi sau commit (AFTER_COMMIT). Đặt lịch thất bại ném lỗi trước khi phát sự kiện nên không observer nào chạy." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=15;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="960" width="2620" height="70" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
