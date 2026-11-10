@@ -1,5 +1,7 @@
 package com.datlichkhambenh.backend.decorator;
 
+import com.datlichkhambenh.backend.adapter.NotificationChannel;
+import com.datlichkhambenh.backend.builder.NotificationMessageDirector;
 import com.datlichkhambenh.backend.service.AsyncEmailNotificationService;
 import com.datlichkhambenh.backend.service.impl.AsyncEmailNotificationServiceImpl;
 import org.springframework.context.annotation.Bean;
@@ -16,10 +18,14 @@ public class NotificationDecoratorConfig {
     @Bean
     @Primary
     public AsyncEmailNotificationService decoratedNotificationService(AsyncEmailNotificationServiceImpl email,
-                                                                      NotificationLogRepository history) {
-        // Outermost first: dedup → audit → e-mail
+                                                                      NotificationLogRepository history,
+                                                                      NotificationChannel sms,
+                                                                      NotificationMessageDirector director) {
+        // Outermost first: dedup → SMS → audit → e-mail
         return new DeduplicationDecorator(
-                new AuditLogDecorator(email, history),
+                new SmsNotificationDecorator(
+                        new AuditLogDecorator(email, history),
+                        sms, director, history),
                 history);
     }
 }

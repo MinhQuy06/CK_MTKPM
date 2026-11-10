@@ -4,9 +4,9 @@
 
 **Blocked by:** 14, 11, 12
 
-**Status:** ready-for-agent
+**Status:** done
 
 **GitHub:** #37
 
-- [ ] Test qua API: có số → client giả lập nhận 1 tin, log SMS/SENT
-- [ ] Test qua API: không có số → không có SMS, log SMS/SKIPPED_NO_PHONE, email vẫn gửi
+- [x] Test qua API: có số → client giả lập nhận 1 tin, log SMS/SENT
+- [x] Test qua API: không có số → không có SMS, log SMS/SKIPPED_NO_PHONE, email vẫn gửi

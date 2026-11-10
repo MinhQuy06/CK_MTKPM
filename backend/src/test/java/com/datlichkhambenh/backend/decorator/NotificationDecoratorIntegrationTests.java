@@ -24,11 +24,12 @@ class NotificationDecoratorIntegrationTests extends BookingApiFixture {
     }
 
     @Test
-    void bookingRecordsOneSentEmailInHistory() throws Exception {
+    void bookingRecordsTheEmailAndSkipsSmsForPatientWithoutPhone() throws Exception {
         String code = book().path("bookingCode").asText();
-        nextEmail();
 
-        assertEquals(List.of("BOOKING_CONFIRMED EMAIL SENT"), historyOf(code));
+        assertEquals("BOOKING_CONFIRMED", nextEmail().type());
+        assertEquals(List.of("BOOKING_CONFIRMED EMAIL SENT", "BOOKING_CONFIRMED SMS SKIPPED_NO_PHONE"),
+                historyOf(code));
     }
 
     @Autowired AsyncEmailNotificationService notifications;
@@ -53,7 +54,9 @@ class NotificationDecoratorIntegrationTests extends BookingApiFixture {
         assertNull(noMoreEmailWithin(300), "the duplicate reminder must not be e-mailed");
         assertEquals(List.of(
                 "BOOKING_CONFIRMED EMAIL SENT",
+                "BOOKING_CONFIRMED SMS SKIPPED_NO_PHONE",
                 "APPOINTMENT_REMINDER EMAIL SENT",
+                "APPOINTMENT_REMINDER SMS SKIPPED_NO_PHONE",
                 "APPOINTMENT_REMINDER EMAIL SKIPPED_DUPLICATE"), historyOf(code));
     }
 }
