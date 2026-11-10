@@ -1,0 +1,68 @@
+package com.datlichkhambenh.backend.factory;
+
+import com.datlichkhambenh.backend.entity.Specialty;
+import com.datlichkhambenh.backend.entity.User;
+import com.datlichkhambenh.backend.repository.DoctorRepository;
+import com.datlichkhambenh.backend.repository.PatientRepository;
+import com.datlichkhambenh.backend.repository.SpecialtyRepository;
+import com.datlichkhambenh.backend.repository.UserRepository;
+import com.datlichkhambenh.backend.security.JwtTokenProvider;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.annotation.Transactional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+/** Factory tickets 19-22: every way of creating a clinic account, seen through the API. */
+@SpringBootTest
+@AutoConfigureMockMvc
+@ActiveProfiles("test")
+@Transactional
+class AccountFactoryIntegrationTests {
+    @Autowired MockMvc mvc;
+    @Autowired UserRepository users;
+    @Autowired PatientRepository patients;
+    @Autowired DoctorRepository doctors;
+    @Autowired SpecialtyRepository specialties;
+    @Autowired JwtTokenProvider jwt;
+
+    ResultActions postJson(String path, String body, String token) throws Exception {
+        var request = post(path).contentType(MediaType.APPLICATION_JSON).content(body);
+        if (token != null) {
+            request.header("Authorization", "Bearer " + token);
+        }
+        return mvc.perform(request);
+    }
+
+    void canLogIn(String email, String password, String role) throws Exception {
+        postJson("/api/v1/auth/login", """
+                {"email":"%s","password":"%s"}""".formatted(email, password), null)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.role").value(role));
+    }
+
+    @Test
+    void patientRegistrationCreatesALoginAndAPatientProfile() throws Exception {
+        postJson("/api/v1/auth/register", """
+                {"email":"Factory.Patient@Test.vn","password":"Patient@123","role":"PATIENT",
+                 "fullName":"BN Factory","phone":"0981234001","gender":"FEMALE","address":"Hà Nội"}""", null)
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.data.role").value("PATIENT"));
+
+        canLogIn("factory.patient@test.vn", "Patient@123", "PATIENT");
+        User user = users.findByEmailIgnoreCase("factory.patient@test.vn").orElseThrow();
+        var patient = patients.findById(user.getId()).orElseThrow();
+        assertEquals("BN Factory", patient.getFullName());
+        assertEquals("0981234001", patient.getPhone());
+        assertEquals("Hà Nội", patient.getAddress());
+    }
+}

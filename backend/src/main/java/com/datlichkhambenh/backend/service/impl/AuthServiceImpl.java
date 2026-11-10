@@ -11,6 +11,8 @@ import com.datlichkhambenh.backend.entity.Specialty;
 import com.datlichkhambenh.backend.entity.User;
 import com.datlichkhambenh.backend.exception.AppException;
 import com.datlichkhambenh.backend.exception.ResourceNotFoundException;
+import com.datlichkhambenh.backend.factory.AccountRequest;
+import com.datlichkhambenh.backend.factory.AccountFactories;
 import com.datlichkhambenh.backend.repository.DoctorRepository;
 import com.datlichkhambenh.backend.repository.PatientRepository;
 import com.datlichkhambenh.backend.repository.SpecialtyRepository;
@@ -38,6 +40,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
+    private final AccountFactories accounts;
 
     @Override
     @Transactional
@@ -63,27 +66,16 @@ public class AuthServiceImpl implements AuthService {
                 && (request.getExperienceYears() == null || request.getConsultationFee() == null)) {
             throw new AppException("Bác sĩ phải cung cấp số năm kinh nghiệm và giá khám");
         }
-        User user = User.builder()
-                .email(email)
-                .passwordHash(passwordEncoder.encode(request.getPassword()))
-                .role(role)
-                .isActive(true)
-                .build();
-
-        User savedUser = userRepository.save(user);
-
+        User savedUser;
         if ("PATIENT".equals(role)) {
-            Patient patient = Patient.builder()
-                    .user(savedUser)
-                    .fullName(request.getFullName())
-                    .phone(request.getPhone())
-                    .dob(request.getDob())
-                    .gender(request.getGender())
-                    .address(request.getAddress())
-                    .medicalHistory(request.getMedicalHistory())
-                    .build();
-            patientRepository.save(patient);
-        } else if ("DOCTOR".equals(role)) {
+            savedUser = accounts.forRole(role).orElseThrow().create(accountRequest(email, request)).user();
+        } else {
+            savedUser = userRepository.save(User.builder()
+                    .email(email)
+                    .passwordHash(passwordEncoder.encode(request.getPassword()))
+                    .role(role)
+                    .isActive(true)
+                    .build());
             if (request.getSpecialtyId() == null) {
                 throw new AppException("Bác sĩ phải đăng ký thuộc 1 chuyên khoa (specialtyId)");
             }
@@ -189,6 +181,13 @@ public class AuthServiceImpl implements AuthService {
                 throw new AppException("Tài khoản bác sĩ chưa được Admin phê duyệt", HttpStatus.FORBIDDEN);
             }
         }
+    }
+
+    /** Self-registered doctors wait for Admin approval. */
+    private AccountRequest accountRequest(String email, RegisterRequestDto r) {
+        return new AccountRequest(email, r.getPassword(), r.getFullName(), r.getPhone(), r.getDob(), r.getGender(),
+                r.getAddress(), r.getMedicalHistory(), r.getSpecialtyId(), r.getDegree(), r.getExperienceYears(),
+                r.getConsultationFee(), false);
     }
 
     private String normalizeEmail(String email) {
