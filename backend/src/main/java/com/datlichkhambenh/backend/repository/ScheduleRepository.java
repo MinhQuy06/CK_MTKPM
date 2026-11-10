@@ -7,8 +7,8 @@ import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +38,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     List<Schedule> findByDoctorUserIdAndWorkDate(Long doctorId, LocalDate workDate);
 
     boolean existsByDoctorUserIdAndWorkDateAndStartTimeLessThanAndEndTimeGreaterThan(
-            Long doctorId, LocalDate workDate, java.time.LocalTime endTime, java.time.LocalTime startTime);
+            Long doctorId, LocalDate workDate, LocalTime endTime, LocalTime startTime);
 
     @Query("SELECT COUNT(s) > 0 FROM Schedule s WHERE s.doctor.userId = :doctorId " +
            "AND s.workDate = :workDate " +
@@ -46,8 +46,8 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
            "AND s.id != :excludeId")
     boolean existsDuplicateSlot(@Param("doctorId") Long doctorId, 
                                  @Param("workDate") LocalDate workDate, 
-                                 @Param("startTime") java.time.LocalTime startTime, 
-                                 @Param("endTime") java.time.LocalTime endTime, 
+                                 @Param("startTime") LocalTime startTime, 
+                                 @Param("endTime") LocalTime endTime, 
                                  @Param("excludeId") Long excludeId);
 
     boolean existsByDoctorUserId(Long doctorId);

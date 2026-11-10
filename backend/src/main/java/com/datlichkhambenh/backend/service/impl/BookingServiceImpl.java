@@ -6,26 +6,27 @@ import com.datlichkhambenh.backend.entity.Doctor;
 import com.datlichkhambenh.backend.entity.Patient;
 import com.datlichkhambenh.backend.entity.Schedule;
 import com.datlichkhambenh.backend.exception.AppException;
-import com.datlichkhambenh.backend.strategy.offer.BookingOffer;
-import com.datlichkhambenh.backend.strategy.offer.Expectation;
-import com.datlichkhambenh.backend.strategy.offer.LockedOffer;
-import com.datlichkhambenh.backend.strategy.pricing.PricingAmounts;
-import org.springframework.http.HttpStatus;
 import com.datlichkhambenh.backend.exception.ResourceNotFoundException;
+import com.datlichkhambenh.backend.observer.AppointmentBookedEvent;
+import com.datlichkhambenh.backend.observer.AppointmentCancelledEvent;
 import com.datlichkhambenh.backend.repository.AppointmentRepository;
 import com.datlichkhambenh.backend.repository.PatientRepository;
 import com.datlichkhambenh.backend.repository.ScheduleRepository;
 import com.datlichkhambenh.backend.service.BookingService;
-import com.datlichkhambenh.backend.observer.AppointmentBookedEvent;
-import com.datlichkhambenh.backend.observer.AppointmentCancelledEvent;
+import com.datlichkhambenh.backend.strategy.entity.BenefitRequest;
+import com.datlichkhambenh.backend.strategy.offer.BookingOffer;
+import com.datlichkhambenh.backend.strategy.offer.Expectation;
+import com.datlichkhambenh.backend.strategy.offer.LockedOffer;
+import com.datlichkhambenh.backend.strategy.pricing.PricingAmounts;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,7 +47,7 @@ public class BookingServiceImpl implements BookingService {
         Schedule schedule = offer.slot();
         Doctor doctor = offer.doctor();
         PricingAmounts amount = offer.amounts();
-        com.datlichkhambenh.backend.strategy.entity.BenefitRequest grant = offer.benefit();
+        BenefitRequest grant = offer.benefit();
 
         Patient patient = patientRepository.findById(patientUserId)
                 .orElseThrow(() -> new ResourceNotFoundException("Hồ sơ bệnh nhân không tồn tại"));
@@ -167,8 +168,8 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<AppointmentDto> getDoctorAppointments(Long doctorUserId, java.time.LocalDate from,
-                                                       java.time.LocalDate to) {
+    public List<AppointmentDto> getDoctorAppointments(Long doctorUserId, LocalDate from,
+                                                       LocalDate to) {
         if (from.isAfter(to)) {
             throw new AppException("Ngày bắt đầu phải trước hoặc bằng ngày kết thúc");
         }

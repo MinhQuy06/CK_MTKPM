@@ -1,4 +1,4 @@
-// Summarises a patient's benefit requests into the pricing policy shown on the dashboard.
+// Tóm tắt các yêu cầu quyền hưởng của bệnh nhân thành ô "Chính sách giá của bạn" trên dashboard.
 (function (root) {
   'use strict';
 
@@ -14,7 +14,7 @@
 
   const formatIsoDate = iso => iso ? iso.split('-').reverse().join('/') : '…';
 
-  // Fills the dashboard card; hides it when the request list cannot be loaded.
+  // Điền ô trên dashboard; ẩn ô nếu không tải được danh sách yêu cầu.
   async function mount(card, loadRequests) {
     let summary;
     try { summary = summarize(await loadRequests()); }
