@@ -36,15 +36,13 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
         format_sql: true
-    # Phải true để schema.sql chạy SAU KHI Hibernate tạo xong bảng
-    defer-datasource-initialization: true
 
-  # ─── SQL Initialization (schema.sql + data.sql) ──────────────────
+  # ─── Khởi tạo dữ liệu ─────────────────────────────────────────────
+  # Không chạy file SQL nào lúc khởi động: Hibernate (ddl-auto) tạo bảng,
+  # DataInitializer (ApplicationRunner, profile dev) nạp dữ liệu mẫu với mật khẩu BCrypt.
   sql:
     init:
-      # DatabaseInitializer (CommandLineRunner) handles seeding with valid BCrypt hashes
       mode: never
-      encoding: UTF-8
 
   # ─── Redis ───────────────────────────────────────────────────────
   data:
