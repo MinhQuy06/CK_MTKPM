@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" type="device">
+  <diagram id="Builder — ERD" name="Builder — ERD">
+    <mxGraphModel grid="0" page="1" pageScale="1" pageWidth="2000" pageHeight="980" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="MẪU BUILDER — ERD: CÁC BẢNG MÀ DIRECTOR ĐỌC ĐỂ DỰNG BẢN TIN" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=21;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="15" width="1900" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="users" value="users" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=44;fontSize=16;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="120" width="520" height="148" as="geometry" />
+        </mxCell>
+        <mxCell id="users-body" value="&lt;table style=&quot;border-collapse:collapse&quot;&gt;&lt;tr&gt;&lt;td style=&quot;padding:0 10px 0 0&quot;&gt;PK&lt;/td&gt;&lt;td style=&quot;padding:0 14px 0 0&quot;&gt;id&lt;/td&gt;&lt;td&gt;BIGINT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:0 10px 0 0&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:0 14px 0 0&quot;&gt;email&lt;/td&gt;&lt;td&gt;VARCHAR(255) UK  → recipientEmail&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:0 10px 0 0&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:0 14px 0 0&quot;&gt;role&lt;/td&gt;&lt;td&gt;VARCHAR(20)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:0 10px 0 0&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:0 14px 0 0&quot;&gt;…&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;html=1;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;fontFamily=Courier New;spacing=10;" vertex="1" parent="users">
+          <mxGeometry x="0" y="44" width="520" height="104" as="geometry" />
+        </mxCell>
+        <mxCell id="patients" value="patients" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=44;fontSize=16;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="470" width="520" height="148" as="geometry" />
+        </mxCell>
+        <mxCell id="patients-body" value="&lt;table style=&quot;border-collapse:collapse&quot;&gt;&lt;tr&gt;&lt;td style=&quot;padding:0 10px 0 0&quot;&gt;PK,FK&lt;/td&gt;&lt;td style=&quot;padding:0 14px 0 0&quot;&gt;user_id&lt;/td&gt;&lt;td&gt;BIGINT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:0 10px 0 0&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:0 14px 0 0&quot;&gt;full_name&lt;/td&gt;&lt;td&gt;VARCHAR(255) → patientName&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:0 10px 0 0&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:0 14px 0 0&quot;&gt;phone&lt;/td&gt;&lt;td&gt;VARCHAR(20)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:0 10px 0 0&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:0 14px 0 0&quot;&gt;…&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;html=1;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;fontFamily=Courier New;spacing=10;" vertex="1" parent="patients">
+          <mxGeometry x="0" y="44" width="520" height="104" as="geometry" />
+        </mxCell>
+        <mxCell id="appointments" value="appointments" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=44;fontSize=16;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="720" y="300" width="560" height="224" as="geometry" />
+        </mxCell>
+        <mxCell id="appointments-body" value="&lt;table style=&quot;border-collapse:collapse&quot;&gt;&lt;tr&gt;&lt;td style=&quot;padding:0 10px 0 0&quot;&gt;PK&lt;/td&gt;&lt;td style=&quot;padding:0 14px 0 0&quot;&gt;id&lt;/td&gt;&lt;td&gt;BIGINT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:0 10px 0 0&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:0 14px 0 0&quot;&gt;booking_code&lt;/td&gt;&lt;td&gt;VARCHAR(100) UK → bookingCode&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:0 10px 0 0&quot;&gt;FK&lt;/td&gt;&lt;td style=&quot;padding:0 14px 0 0&quot;&gt;patient_id&lt;/td&gt;&lt;td&gt;BIGINT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:0 10px 0 0&quot;&gt;FK&lt;/td&gt;&lt;td style=&quot;padding:0 14px 0 0&quot;&gt;doctor_id&lt;/td&gt;&lt;td&gt;BIGINT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:0 10px 0 0&quot;&gt;FK&lt;/td&gt;&lt;td style=&quot;padding:0 14px 0 0&quot;&gt;schedule_id&lt;/td&gt;&lt;td&gt;BIGINT UK&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:0 10px 0 0&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:0 14px 0 0&quot;&gt;status&lt;/td&gt;&lt;td&gt;VARCHAR(20)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:0 10px 0 0&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:0 14px 0 0&quot;&gt;price&lt;/td&gt;&lt;td&gt;DECIMAL(12,2) → price&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:0 10px 0 0&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:0 14px 0 0&quot;&gt;…&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;html=1;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;fontFamily=Courier New;spacing=10;" vertex="1" parent="appointments">
+          <mxGeometry x="0" y="44" width="560" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="doctors" value="doctors" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=44;fontSize=16;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1420" y="120" width="520" height="129" as="geometry" />
+        </mxCell>
+        <mxCell id="doctors-body" value="&lt;table style=&quot;border-collapse:collapse&quot;&gt;&lt;tr&gt;&lt;td style=&quot;padding:0 10px 0 0&quot;&gt;PK,FK&lt;/td&gt;&lt;td style=&quot;padding:0 14px 0 0&quot;&gt;user_id&lt;/td&gt;&lt;td&gt;BIGINT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:0 10px 0 0&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:0 14px 0 0&quot;&gt;full_name&lt;/td&gt;&lt;td&gt;VARCHAR(255) → doctorName&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:0 10px 0 0&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:0 14px 0 0&quot;&gt;…&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;html=1;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;fontFamily=Courier New;spacing=10;" vertex="1" parent="doctors">
+          <mxGeometry x="0" y="44" width="520" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="schedules" value="schedules" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=44;fontSize=16;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1420" y="470" width="520" height="167" as="geometry" />
+        </mxCell>
+        <mxCell id="schedules-body" value="&lt;table style=&quot;border-collapse:collapse&quot;&gt;&lt;tr&gt;&lt;td style=&quot;padding:0 10px 0 0&quot;&gt;PK&lt;/td&gt;&lt;td style=&quot;padding:0 14px 0 0&quot;&gt;id&lt;/td&gt;&lt;td&gt;BIGINT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:0 10px 0 0&quot;&gt;FK&lt;/td&gt;&lt;td style=&quot;padding:0 14px 0 0&quot;&gt;doctor_id&lt;/td&gt;&lt;td&gt;BIGINT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:0 10px 0 0&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:0 14px 0 0&quot;&gt;work_date&lt;/td&gt;&lt;td&gt;DATE → workDate&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:0 10px 0 0&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:0 14px 0 0&quot;&gt;start_time&lt;/td&gt;&lt;td&gt;TIME → startTime&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:0 10px 0 0&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:0 14px 0 0&quot;&gt;end_time&lt;/td&gt;&lt;td&gt;TIME → endTime&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;html=1;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;fontFamily=Courier New;spacing=10;" vertex="1" parent="schedules">
+          <mxGeometry x="0" y="44" width="520" height="123" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" value="user_id (1–1)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;startArrow=ERzeroToOne;endArrow=ERmandOne;startFill=0;endFill=0;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" edge="1" parent="1" source="patients" target="users">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="patient_id" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;startArrow=ERzeroToMany;endArrow=ERmandOne;startFill=0;endFill=0;exitX=0;exitY=0.6;entryX=1;entryY=0.4;" edge="1" parent="1" source="appointments" target="patients">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="doctor_id" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;startArrow=ERzeroToMany;endArrow=ERmandOne;startFill=0;endFill=0;exitX=1;exitY=0.2;entryX=0;entryY=0.5;" edge="1" parent="1" source="appointments" target="doctors">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="schedule_id" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;startArrow=ERzeroToOne;endArrow=ERmandOne;startFill=0;endFill=0;exitX=1;exitY=0.7;entryX=0;entryY=0.5;" edge="1" parent="1" source="appointments" target="schedules">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" value="doctor_id" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;startArrow=ERzeroToMany;endArrow=ERmandOne;startFill=0;endFill=0;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" edge="1" parent="1" source="schedules" target="doctors">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="legend" value="Builder không thêm bảng và không ghi DB: bản tin chỉ tồn tại trong bộ nhớ rồi đi ra hàng đợi email. Mũi tên &quot;→ trường&quot; cho biết cột nào thành trường nào của EmailNotificationMessage.&#10;Ký hiệu crow's foot: ┤├ đúng một · o┤ không hoặc một · o&lt; không hoặc nhiều. Bảng chỉ vẽ cột liên quan (…)." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=15;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="60" y="830" width="1880" height="70" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

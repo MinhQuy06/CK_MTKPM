@@ -4,8 +4,8 @@
 
 **Blocked by:** 01, 05
 
-**Status:** ready-for-agent
+**Status:** done
 
 **GitHub:** #46
 
-- [ ] Tên lớp/bảng khớp code; ERD ghi chú bảng chỉ đọc
+- [x] Tên lớp/bảng khớp code; ERD ghi chú bảng chỉ đọc
