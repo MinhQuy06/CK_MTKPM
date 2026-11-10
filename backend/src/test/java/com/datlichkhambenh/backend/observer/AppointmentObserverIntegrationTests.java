@@ -3,6 +3,8 @@ package com.datlichkhambenh.backend.observer;
 import com.datlichkhambenh.backend.support.BookingApiFixture;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -17,5 +19,12 @@ class AppointmentObserverIntegrationTests extends BookingApiFixture {
         assertEquals("BOOKING_CONFIRMED", message.type());
         assertEquals(appointment.path("bookingCode").asText(), message.bookingCode());
         assertNull(noMoreEmailWithin(300), "only one confirmation expected");
+    }
+
+    @Test
+    void bookingEvictsTheBookedDoctorsSlotCacheOnce() throws Exception {
+        book();
+
+        assertEquals(List.of(doctorId + "@" + day), cache.slotEvictions);
     }
 }

@@ -119,10 +119,7 @@ public class BookingServiceImpl implements BookingService {
         schedule.setIsAvailable(false);
         scheduleRepository.save(schedule);
 
-        // 5. Invalidate slot cache trong Redis
-        redisCacheService.evictSlotCache(doctor.getUserId(), schedule.getWorkDate());
-
-        // 6. Observer: báo cho các observer (email…) rằng lịch hẹn đã được đặt
+        // 5. Observer: báo cho các observer (email, cache slot…) rằng lịch hẹn đã được đặt
         events.publishEvent(new AppointmentBookedEvent(savedAppointment));
 
         return mapToDto(savedAppointment);

@@ -4,9 +4,9 @@
 
 **Blocked by:** 06
 
-**Status:** ready-for-agent
+**Status:** done
 
 **GitHub:** #28
 
-- [ ] Test qua API với dịch vụ cache ghi nhận: 1 lần xóa đúng bác sĩ + ngày
-- [ ] Toàn bộ test Java, Node và trình duyệt hiện có vẫn pass, không sửa test cũ
+- [x] Test qua API với dịch vụ cache ghi nhận: 1 lần xóa đúng bác sĩ + ngày
+- [x] Toàn bộ test Java, Node và trình duyệt hiện có vẫn pass, không sửa test cũ
