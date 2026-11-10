@@ -13,6 +13,7 @@ import com.datlichkhambenh.backend.exception.AppException;
 import com.datlichkhambenh.backend.exception.ResourceNotFoundException;
 import com.datlichkhambenh.backend.factory.AccountRequest;
 import com.datlichkhambenh.backend.factory.AccountFactories;
+import com.datlichkhambenh.backend.factory.AccountFactory;
 import com.datlichkhambenh.backend.repository.DoctorRepository;
 import com.datlichkhambenh.backend.repository.PatientRepository;
 import com.datlichkhambenh.backend.repository.SpecialtyRepository;
@@ -55,10 +56,10 @@ public class AuthServiceImpl implements AuthService {
             throw new AppException("Số điện thoại đã tồn tại trên hệ thống");
         }
 
+        // Only roles with a registered factory can sign up: there is no ADMIN factory by design
         String role = request.getRole().toUpperCase();
-        if (!"PATIENT".equals(role) && !"DOCTOR".equals(role)) {
-            throw new AppException("Chỉ được đăng ký tài khoản PATIENT hoặc DOCTOR");
-        }
+        AccountFactory factory = accounts.forRole(role)
+                .orElseThrow(() -> new AppException("Chỉ được đăng ký tài khoản PATIENT hoặc DOCTOR"));
         if (request.getPhone() == null || request.getPhone().isBlank()) {
             throw new AppException("Số điện thoại không được để trống");
         }
@@ -66,7 +67,7 @@ public class AuthServiceImpl implements AuthService {
                 && (request.getExperienceYears() == null || request.getConsultationFee() == null)) {
             throw new AppException("Bác sĩ phải cung cấp số năm kinh nghiệm và giá khám");
         }
-        User savedUser = accounts.forRole(role).orElseThrow().create(accountRequest(email, request)).user();
+        User savedUser = factory.create(accountRequest(email, request)).user();
 
         return UserDto.builder()
                 .id(savedUser.getId())

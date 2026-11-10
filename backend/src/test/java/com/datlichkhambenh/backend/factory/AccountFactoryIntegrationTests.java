@@ -7,7 +7,12 @@ import com.datlichkhambenh.backend.repository.PatientRepository;
 import com.datlichkhambenh.backend.repository.SpecialtyRepository;
 import com.datlichkhambenh.backend.repository.UserRepository;
 import com.datlichkhambenh.backend.security.JwtTokenProvider;
+import com.datlichkhambenh.backend.dto.request.RegisterRequestDto;
+import com.datlichkhambenh.backend.exception.AppException;
+import com.datlichkhambenh.backend.service.AuthService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,6 +23,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -133,6 +139,30 @@ class AccountFactoryIntegrationTests {
                 .andExpect(jsonPath("$.data.fullName").value("BN Quầy"));
 
         canLogIn("bn.quay@test.vn", "Patient@1234", "PATIENT");
+    }
+
+    @Test
+    void registeringAsAdminIsRejectedAtTheApi() throws Exception {
+        postJson("/api/v1/auth/register", """
+                {"email":"hacker@test.vn","password":"Secret@123","role":"ADMIN","fullName":"X","phone":"0981234007"}""", null)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.success").value(false));
+        assertEquals(false, users.existsByEmailIgnoreCase("hacker@test.vn"));
+    }
+
+    @Autowired AuthService auth;
+
+    /** Defence in depth: even if request validation is bypassed, no factory exists for other roles. */
+    @ParameterizedTest
+    @ValueSource(strings = {"ADMIN", "NURSE", "admin"})
+    void serviceRejectsRolesWithoutAFactoryWithTheSameMessage(String role) {
+        var request = RegisterRequestDto.builder().email(role + "@bypass.vn").password("Secret@123").role(role)
+                .fullName("X").phone("0981234008").build();
+
+        var error = assertThrows(AppException.class, () -> auth.register(request));
+
+        assertEquals("Chỉ được đăng ký tài khoản PATIENT hoặc DOCTOR", error.getMessage());
+        assertEquals(false, users.existsByEmailIgnoreCase(role + "@bypass.vn"));
     }
 
     @Test

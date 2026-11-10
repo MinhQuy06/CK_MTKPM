@@ -4,8 +4,8 @@
 
 **Blocked by:** 19
 
-**Status:** ready-for-agent
+**Status:** done
 
 **GitHub:** #43
 
-- [ ] Test qua API: cùng mã lỗi và thông báo như trước
+- [x] Test qua API: cùng mã lỗi và thông báo như trước
