@@ -4,9 +4,9 @@
 
 **Blocked by:** 15, 17
 
-**Status:** ready-for-agent
+**Status:** done
 
 **GitHub:** #39
 
-- [ ] Test qua bean: gửi trùng không có SMS lần hai
-- [ ] Toàn bộ test Java, Node và trình duyệt hiện có vẫn pass, không sửa test cũ
+- [x] Test qua bean: gửi trùng không có SMS lần hai
+- [x] Toàn bộ test Java, Node và trình duyệt hiện có vẫn pass, không sửa test cũ

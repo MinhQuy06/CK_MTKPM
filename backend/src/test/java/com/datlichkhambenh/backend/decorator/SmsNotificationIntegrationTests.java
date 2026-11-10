@@ -2,7 +2,10 @@ package com.datlichkhambenh.backend.decorator;
 
 import com.datlichkhambenh.backend.adapter.SimulatedSmsGatewayClient;
 import com.datlichkhambenh.backend.adapter.VietnamPhone;
+import com.datlichkhambenh.backend.repository.AppointmentRepository;
+import com.datlichkhambenh.backend.service.AsyncEmailNotificationService;
 import com.datlichkhambenh.backend.support.BookingApiFixture;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,5 +42,23 @@ class SmsNotificationIntegrationTests extends BookingApiFixture {
         assertEquals(List.of("BOOKING_CONFIRMED EMAIL SENT", "BOOKING_CONFIRMED SMS SENT"),
                 history.findByBookingCodeOrderByIdAsc(code).stream()
                         .map(row -> row.getType() + " " + row.getChannel() + " " + row.getStatus()).toList());
+    }
+
+    @Autowired AsyncEmailNotificationService notifications;
+    @Autowired AppointmentRepository appointments;
+
+    /** Ticket 18: dedup sits outside the SMS layer, so a duplicate never reaches the vendor. */
+    @Test
+    void duplicateReminderSendsNoSecondSms() throws Exception {
+        long id = book().path("id").asLong();
+        gateway.sent().clear();
+
+        for (int i = 0; i < 2; i++) {
+            new TransactionTemplate(tm).executeWithoutResult(tx ->
+                    notifications.sendAppointmentReminder(appointments.findById(id).orElseThrow()));
+        }
+
+        assertEquals(1, gateway.sent().size(), "one reminder SMS, not two");
+        assertTrue(gateway.sent().get(0).text().startsWith("Nhac lich kham"), gateway.sent().get(0).text());
     }
 }
