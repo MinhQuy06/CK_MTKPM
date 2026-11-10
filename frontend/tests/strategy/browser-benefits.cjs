@@ -10,7 +10,14 @@ const assert=require('node:assert/strict');
   const auth=(await response.json()).data;
   await page.addInitScript(auth=>{localStorage.setItem('accessToken',auth.accessToken);localStorage.setItem('refreshToken',auth.refreshToken);localStorage.setItem('user',JSON.stringify(auth));},auth);
   await page.goto(origin+'/patient/benefits.html');
+  // The reference field explains which external code to enter for each benefit kind.
+  await page.locator('#benefit-kind').selectOption('INSURANCE');
+  assert.match(await page.locator('label[for="benefit-reference"]').innerText(),/Số thẻ BHYT/);
+  assert.match(await page.locator('#benefit-reference').getAttribute('placeholder'),/DN4010123456789/);
+  assert.match(await page.locator('#benefit-reference-hint').innerText(),/in trên thẻ/);
   await page.locator('#benefit-kind').selectOption('VIP');
+  assert.match(await page.locator('label[for="benefit-reference"]').innerText(),/Mã thẻ thành viên VIP/);
+  assert.match(await page.locator('#benefit-reference-hint').innerText(),/lễ tân/);
   await page.locator('#benefit-reference').fill('HS-BROWSER-9');
   await page.locator('#benefit-from').fill('2026-01-01');
   await page.locator('#benefit-until').fill('2027-12-31');
@@ -18,6 +25,7 @@ const assert=require('node:assert/strict');
   await page.locator('#benefit-submit').click();assert.equal((await created).status(),201);
   await page.waitForFunction(()=>document.getElementById('benefit-list').textContent.includes('HS-BROWSER-9'));
   assert.match(await page.locator('#benefit-list').innerText(),/Chờ duyệt/);
+  assert.match(await page.locator('#benefit-list').innerText(),/Mã thẻ VIP: HS-BROWSER-9/);
   assert.deepEqual(errors,[]);
   console.log('PASS: patient login → benefit form → pending request persisted/read through real API; no page errors.');
  } finally {await browser.close();}

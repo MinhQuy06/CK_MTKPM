@@ -49,7 +49,7 @@
       <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
         <div class="mb-4">
           <h2 class="fw-bold text-dark mb-1"><i class="bi bi-shield-check text-primary me-2"></i>Quyền Hưởng Bảo hiểm/VIP</h2>
-          <p class="text-muted mb-0">Gửi mã hồ sơ để phòng khám đối chiếu. Chỉ quyền đã được duyệt và còn hiệu lực mới được áp dụng khi tính phí.</p>
+          <p class="text-muted mb-0">Gửi số thẻ BHYT hoặc mã thẻ VIP của bạn để phòng khám đối chiếu. Chỉ quyền đã được duyệt và còn hiệu lực mới được áp dụng khi tính phí.</p>
         </div>
 
         <section class="card border-0 rounded-4 shadow-sm p-4 mb-4">
@@ -58,7 +58,8 @@
             <div class="col-md-6"><label for="benefit-kind" class="form-label">Loại quyền</label>
               <select id="benefit-kind" class="form-select"><option value="INSURANCE">Bảo hiểm</option><option value="VIP">VIP</option></select></div>
             <div class="col-md-6"><label for="benefit-reference" class="form-label">Mã hồ sơ / mã thành viên</label>
-              <input id="benefit-reference" class="form-control" required maxlength="120" autocomplete="off"></div>
+              <input id="benefit-reference" class="form-control" required maxlength="120" autocomplete="off" aria-describedby="benefit-reference-hint">
+              <div id="benefit-reference-hint" class="form-text"></div></div>
             <div class="col-md-6"><label for="benefit-from" class="form-label">Ngày bắt đầu đề nghị</label><input id="benefit-from" type="date" class="form-control" required></div>
             <div class="col-md-6"><label for="benefit-until" class="form-label">Ngày kết thúc đề nghị</label><input id="benefit-until" type="date" class="form-control" required></div>
             <div><button id="benefit-submit" class="btn btn-primary rounded-pill px-4 fw-semibold" type="submit">Gửi yêu cầu</button></div>
@@ -77,6 +78,7 @@
 
   <script src="../js/api.js"></script>
   <script src="../js/auth.js"></script>
+  <script src="../strategy/benefit-kinds.js"></script>
   <script src="../strategy/benefits.js"></script>
   <script>
     if (benefitUser) {

@@ -2,12 +2,12 @@
 (function (root) {
   'use strict';
 
-  const labels = { INSURANCE: 'Bảo hiểm', VIP: 'VIP' };
+  const BenefitKinds = typeof module === 'object' && module.exports ? require('./benefit-kinds.js') : root.BenefitKinds;
 
   function summarize(requests) {
     const active = (requests || [])
       .filter(r => r.effectiveStatus === 'APPROVED')
-      .map(r => ({ kind: r.kind, label: labels[r.kind] || r.kind, from: r.approvedFrom, until: r.approvedUntil }));
+      .map(r => ({ kind: r.kind, label: BenefitKinds.of(r.kind).label, from: r.approvedFrom, until: r.approvedUntil }));
     const pendingCount = (requests || []).filter(r => r.status === 'PENDING').length;
     return { active, pendingCount };
   }
