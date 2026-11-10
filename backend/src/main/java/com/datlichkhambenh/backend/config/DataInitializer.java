@@ -15,7 +15,14 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+import com.datlichkhambenh.backend.strategy.entity.BenefitDecision;
+import com.datlichkhambenh.backend.strategy.entity.BenefitRequest;
+import com.datlichkhambenh.backend.strategy.repository.BenefitDecisionRepository;
+import com.datlichkhambenh.backend.strategy.repository.BenefitRequestRepository;
 
 @Slf4j
 @Component
@@ -31,7 +38,16 @@ public class DataInitializer implements ApplicationRunner {
     private final AppointmentRepository appointmentRepository;
     private final MedicalRecordRepository medicalRecordRepository;
     private final MedicalServiceRepository medicalServiceRepository;
+    private final BenefitRequestRepository benefitRequestRepository;
+    private final BenefitDecisionRepository benefitDecisionRepository;
     private final PasswordEncoder passwordEncoder;
+
+    private static final ZoneId CLINIC_ZONE = ZoneId.of("Asia/Ho_Chi_Minh");
+    private static final int DEMO_SLOT_DAYS = 7;
+    private static final LocalTime[] DEMO_SLOT_STARTS = {
+            LocalTime.of(8, 0), LocalTime.of(8, 30), LocalTime.of(9, 0), LocalTime.of(9, 30),
+            LocalTime.of(14, 0), LocalTime.of(14, 30), LocalTime.of(15, 0), LocalTime.of(15, 30)
+    };
 
     @Override
     @Transactional
@@ -220,7 +236,80 @@ public class DataInitializer implements ApplicationRunner {
             }
         }
 
+        // 7. Luôn có slot trống trong 7 ngày tới (DB cũ chỉ có slot của lần chạy đầu tiên)
+        ensureUpcomingSlots();
+
+        // 8. Dữ liệu demo Strategy: quyền Insurance/VIP còn hiệu lực + 1 yêu cầu chờ duyệt
+        Long adminId = userRepository.findByEmailIgnoreCase("admin@clinic.vn").map(User::getId).orElse(null);
+        if (adminId != null) {
+            ensureActiveBenefit(pat1, "INSURANCE", "DN4010123456789", adminId);   // bn.hoangminh — giảm 80%
+            ensureActiveBenefit(pat2, "VIP", "VIP-2026-0002", adminId);           // bn.thuylinh — giảm 10%
+            ensureActiveBenefit(pat4, "INSURANCE", "HS4790123456781", adminId);   // bn.tranvannam — Insurance
+            ensureActiveBenefit(pat4, "VIP", "VIP-2026-0004", adminId);           //   + VIP (chọn 1, không cộng dồn)
+            ensurePendingBenefit(pat3, "INSURANCE", "GD4797912345678");            // patient@clinic — admin duyệt khi demo
+        }
+
         log.info("=== DataInitializer: Hoàn tất khởi tạo dữ liệu mẫu phòng khám thành công! ===");
+    }
+
+    /** Bổ sung slot cho mọi bác sĩ đã duyệt vào các ngày (từ mai) chưa có lịch. Idempotent. */
+    private void ensureUpcomingSlots() {
+        LocalDate tomorrow = LocalDate.now(CLINIC_ZONE).plusDays(1);
+        List<Schedule> created = new ArrayList<>();
+        for (Doctor doctor : doctorRepository.findAll()) {
+            if (!Boolean.TRUE.equals(doctor.getIsApproved())) continue;
+            for (int d = 0; d < DEMO_SLOT_DAYS; d++) {
+                LocalDate day = tomorrow.plusDays(d);
+                if (!scheduleRepository.findByDoctorUserIdAndWorkDate(doctor.getUserId(), day).isEmpty()) continue;
+                for (LocalTime start : DEMO_SLOT_STARTS) {
+                    created.add(Schedule.builder().doctor(doctor).workDate(day)
+                            .startTime(start).endTime(start.plusMinutes(30)).isAvailable(true).build());
+                }
+            }
+        }
+        if (!created.isEmpty()) {
+            scheduleRepository.saveAll(created);
+            log.info("[Seed] Added {} upcoming demo slots ({} → {})", created.size(), tomorrow, tomorrow.plusDays(DEMO_SLOT_DAYS - 1));
+        }
+    }
+
+    /** Đảm bảo bệnh nhân có quyền {kind} đã duyệt, hiệu lực từ hôm nay tới +90 ngày; kèm lịch sử quyết định. */
+    private void ensureActiveBenefit(Patient patient, String kind, String referenceCode, Long adminId) {
+        LocalDate today = LocalDate.now(CLINIC_ZONE);
+        boolean hasActive = benefitRequestRepository
+                .findByPatientUserIdAndKindAndStatusOrderByIdDesc(patient.getUserId(), kind, "APPROVED").stream()
+                .anyMatch(r -> r.getApprovedFrom() != null && r.getApprovedUntil() != null
+                        && !today.isBefore(r.getApprovedFrom()) && r.getApprovedUntil().isAfter(today.plusDays(DEMO_SLOT_DAYS)));
+        if (hasActive) return;
+        BenefitRequest request = new BenefitRequest();
+        request.setPatient(patient);
+        request.setKind(kind);
+        request.setReferenceCode(referenceCode);
+        request.setRequestedFrom(today);
+        request.setRequestedUntil(today.plusDays(90));
+        request.setApprovedFrom(today);
+        request.setApprovedUntil(today.plusDays(90));
+        request.setStatus("APPROVED");
+        benefitRequestRepository.save(request);
+        benefitDecisionRepository.save(new BenefitDecision(request, "APPROVE", "Dữ liệu demo: hồ sơ hợp lệ", adminId));
+        log.info("[Seed] Approved demo {} benefit for {}", kind, patient.getFullName());
+    }
+
+    /** Đảm bảo có một yêu cầu PENDING để demo luồng admin duyệt. */
+    private void ensurePendingBenefit(Patient patient, String kind, String referenceCode) {
+        boolean exists = benefitRequestRepository.findByPatientUserIdOrderByCreatedAtDescIdDesc(patient.getUserId()).stream()
+                .anyMatch(r -> kind.equals(r.getKind()) && ("PENDING".equals(r.getStatus()) || "APPROVED".equals(r.getStatus())));
+        if (exists) return;
+        LocalDate today = LocalDate.now(CLINIC_ZONE);
+        BenefitRequest request = new BenefitRequest();
+        request.setPatient(patient);
+        request.setKind(kind);
+        request.setReferenceCode(referenceCode);
+        request.setRequestedFrom(today);
+        request.setRequestedUntil(today.plusDays(180));
+        request.setStatus("PENDING");
+        benefitRequestRepository.save(request);
+        log.info("[Seed] Created pending demo {} benefit request for {}", kind, patient.getFullName());
     }
 
     private Specialty createSpecialtyIfNotExists(String name, String description) {
