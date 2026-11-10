@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" type="device">
+  <diagram id="Decorator — Class" name="Decorator — Class">
+    <mxGraphModel grid="0" page="1" pageScale="1" pageWidth="2200" pageHeight="1320" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="MẪU DECORATOR — BỌC DỊCH VỤ THÔNG BÁO — SƠ ĐỒ LỚP" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=21;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="15" width="2100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="client" value="«Client»&#10;AppointmentEmailObserver" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="110" width="520" height="116" as="geometry" />
+        </mxCell>
+        <mxCell id="client-body" value="- notifications: AsyncEmailNotificationService&#10;(nhận bean @Primary đã bọc)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="client">
+          <mxGeometry x="0" y="52" width="520" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="component" value="«interface · Component»&#10;AsyncEmailNotificationService" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="760" y="110" width="560" height="136" as="geometry" />
+        </mxCell>
+        <mxCell id="component-body" value="+ sendBookingConfirmation(a: Appointment)&#10;+ sendAppointmentReminder(a: Appointment)&#10;+ sendCancellationNotice(a: Appointment)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="component">
+          <mxGeometry x="0" y="52" width="560" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="concrete" value="«ConcreteComponent»&#10;AsyncEmailNotificationServiceImpl" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="450" width="520" height="136" as="geometry" />
+        </mxCell>
+        <mxCell id="concrete-body" value="Dựng bản tin (Builder) và phát&#10;EmailNotificationRequestedEvent → RabbitMQ&#10;sau commit" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="concrete">
+          <mxGeometry x="0" y="52" width="520" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="base" value="«abstract · Decorator»&#10;NotificationServiceDecorator" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1500" y="110" width="640" height="136" as="geometry" />
+        </mxCell>
+        <mxCell id="base-body" value="# inner: AsyncEmailNotificationService&#10;&#10;+ send…(a) { inner.send…(a) }  // mặc định chuyển tiếp" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="base">
+          <mxGeometry x="0" y="52" width="640" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="dedup" value="«ConcreteDecorator» 1 — ngoài cùng&#10;DeduplicationDecorator" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="760" y="520" width="600" height="156" as="geometry" />
+        </mxCell>
+        <mxCell id="dedup-body" value="- history: NotificationLogRepository&#10;+ send…(a): đã có EMAIL SENT cùng type + mã&#10;  → ghi SKIPPED_DUPLICATE, dừng&#10;  ngược lại → inner.send…(a)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="dedup">
+          <mxGeometry x="0" y="52" width="600" height="104" as="geometry" />
+        </mxCell>
+        <mxCell id="sms" value="«ConcreteDecorator» 2&#10;SmsNotificationDecorator" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1440" y="520" width="680" height="196" as="geometry" />
+        </mxCell>
+        <mxCell id="sms-body" value="- channel: NotificationChannel  (Adapter)&#10;- director: NotificationMessageDirector&#10;- history: NotificationLogRepository&#10;+ send…(a): inner.send…(a), rồi SMS&#10;  ghi SMS SENT / SKIPPED_NO_PHONE / FAILED&#10;  lỗi SMS không ném ra ngoài" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="sms">
+          <mxGeometry x="0" y="52" width="680" height="144" as="geometry" />
+        </mxCell>
+        <mxCell id="audit" value="«ConcreteDecorator» 3 — sát email&#10;AuditLogDecorator" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="760" y="880" width="600" height="136" as="geometry" />
+        </mxCell>
+        <mxCell id="audit-body" value="- history: NotificationLogRepository&#10;+ send…(a): inner.send…(a)&#10;  → ghi EMAIL SENT (lỗi → FAILED, ném lại)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="audit">
+          <mxGeometry x="0" y="52" width="600" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="config" value="«Configuration»&#10;NotificationDecoratorConfig" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="830" width="520" height="156" as="geometry" />
+        </mxCell>
+        <mxCell id="config-body" value="+ decoratedNotificationService(…)  @Bean @Primary&#10;  new Dedup(&#10;    new Sms(&#10;      new Audit(email)))" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="config">
+          <mxGeometry x="0" y="52" width="520" height="104" as="geometry" />
+        </mxCell>
+        <mxCell id="repo" value="«Repository»&#10;NotificationLogRepository" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;startSize=52;horizontal=1;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1440" y="960" width="680" height="116" as="geometry" />
+        </mxCell>
+        <mxCell id="repo-body" value="+ existsByTypeAndBookingCodeAndChannelAndStatus(…)&#10;+ findByBookingCodeOrderByIdAsc(code)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="repo">
+          <mxGeometry x="0" y="52" width="680" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" value="dùng" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=1;exitY=0.5;entryX=0;entryY=0.4;" edge="1" parent="1" source="client" target="component">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;endArrow=block;endFill=0;endSize=14;exitX=1;exitY=0.3;entryX=0.2;entryY=1;" edge="1" parent="1" source="concrete" target="component">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;endArrow=block;endFill=0;endSize=14;exitX=0;exitY=0.3;entryX=1;entryY=0.3;" edge="1" parent="1" source="base" target="component">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="inner 1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;startArrow=diamondThin;startFill=0;startSize=18;endArrow=open;exitX=0;exitY=0.8;entryX=1;entryY=0.8;" edge="1" parent="1" source="base" target="component">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;endArrow=block;endFill=0;endSize=14;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" edge="1" parent="1" source="dedup" target="base">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;endArrow=block;endFill=0;endSize=14;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" edge="1" parent="1" source="sms" target="base">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;endArrow=block;endFill=0;endSize=14;exitX=1;exitY=0.3;entryX=0.95;entryY=1;" edge="1" parent="1" source="audit" target="base">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2160" y="920" />
+              <mxPoint x="2160" y="480" />
+              <mxPoint x="2108" y="480" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e8" value="«create» chuỗi" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;endArrow=open;exitX=1;exitY=0.2;entryX=0;entryY=0.6;" edge="1" parent="1" source="config" target="dedup">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" value="ghi" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;endArrow=open;exitX=1;exitY=0.7;entryX=0;entryY=0.5;" edge="1" parent="1" source="audit" target="repo">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="note" value="Thứ tự từ ngoài vào trong: chống trùng → SMS → ghi lịch sử → email gốc. Chống trùng đứng trước SMS nên lần gửi trùng không sinh SMS lần hai; ghi lịch sử nằm sát email nên chỉ ghi lần gửi thật.&#10;Thêm/bớt/đổi thứ tự hành vi = sửa một chỗ NotificationDecoratorConfig, không sửa dịch vụ email gốc." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=15;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1180" width="2100" height="70" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
