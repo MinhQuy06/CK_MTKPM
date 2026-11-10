@@ -4,9 +4,9 @@
 
 **Blocked by:** 13
 
-**Status:** ready-for-agent
+**Status:** done
 
 **GitHub:** #35
 
-- [ ] Bảng `notification_log` có trong `schema.sql` và tạo được ở profile test/dev
-- [ ] Test qua API: đặt lịch → 1 dòng EMAIL/SENT đúng loại và mã
+- [x] Bảng `notification_log` do Hibernate tạo (`schema.sql` của repo cố ý không chứa DDL) + file nâng cấp MySQL `db/upgrade/decorator/001-notification-log.sql`
+- [x] Test qua API: đặt lịch → 1 dòng EMAIL/SENT đúng loại và mã

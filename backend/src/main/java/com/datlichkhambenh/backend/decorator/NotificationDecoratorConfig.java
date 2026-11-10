@@ -15,7 +15,8 @@ public class NotificationDecoratorConfig {
 
     @Bean
     @Primary
-    public AsyncEmailNotificationService decoratedNotificationService(AsyncEmailNotificationServiceImpl email) {
-        return email;
+    public AsyncEmailNotificationService decoratedNotificationService(AsyncEmailNotificationServiceImpl email,
+                                                                      NotificationLogRepository history) {
+        return new AuditLogDecorator(email, history);
     }
 }
