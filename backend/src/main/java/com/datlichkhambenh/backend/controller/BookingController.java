@@ -3,6 +3,7 @@ package com.datlichkhambenh.backend.controller;
 import com.datlichkhambenh.backend.dto.request.CreateBookingDto;
 import com.datlichkhambenh.backend.dto.response.ApiResponseDto;
 import com.datlichkhambenh.backend.dto.response.AppointmentDto;
+import com.datlichkhambenh.backend.facade.BookingFacade;
 import com.datlichkhambenh.backend.service.BookingService;
 import com.datlichkhambenh.backend.service.CurrentUserService;
 import jakarta.validation.Valid;
@@ -23,6 +24,7 @@ public class BookingController {
 
     private final BookingService bookingService;
     private final CurrentUserService currentUserService;
+    private final BookingFacade bookingFacade;
 
     @PostMapping
     @PreAuthorize("hasAuthority('PATIENT')")
@@ -30,8 +32,7 @@ public class BookingController {
             @AuthenticationPrincipal UserDetails userDetails,
             @Valid @RequestBody CreateBookingDto request
     ) {
-        Long patientUserId = currentUserService.getUserId(userDetails);
-        AppointmentDto appointment = bookingService.createBooking(patientUserId, request);
+        AppointmentDto appointment = bookingFacade.bookWithoutQuote(userDetails, request);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponseDto.success(appointment, "Đặt lịch khám thành công"));
     }
@@ -39,10 +40,10 @@ public class BookingController {
     @PostMapping("/confirm")
     @PreAuthorize("hasAuthority('PATIENT')")
     public ResponseEntity<ApiResponseDto<AppointmentDto>> confirmBooking(
-            @AuthenticationPrincipal UserDetails userDetails,@Valid @RequestBody CreateBookingDto request) {
-        request.setQuoteRequired(true);
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponseDto.success(
-                bookingService.createBooking(currentUserService.getUserId(userDetails),request),"Đặt lịch khám thành công"));
+            @AuthenticationPrincipal UserDetails userDetails, @Valid @RequestBody CreateBookingDto request) {
+        AppointmentDto appointment = bookingFacade.confirm(userDetails, request);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponseDto.success(appointment, "Đặt lịch khám thành công"));
     }
 
     @DeleteMapping("/{id}/cancel")

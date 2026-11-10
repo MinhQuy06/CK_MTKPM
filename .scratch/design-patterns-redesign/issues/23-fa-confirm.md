@@ -4,9 +4,9 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** done
 
 **GitHub:** #44
 
-- [ ] Hợp đồng kiểm thử đặt lịch Strategy pass nguyên vẹn
-- [ ] Toàn bộ test Java, Node và trình duyệt hiện có vẫn pass, không sửa test cũ
+- [x] Hợp đồng kiểm thử đặt lịch Strategy pass nguyên vẹn
+- [x] Toàn bộ test Java, Node và trình duyệt hiện có vẫn pass, không sửa test cũ
