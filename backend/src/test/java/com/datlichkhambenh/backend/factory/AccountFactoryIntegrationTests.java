@@ -99,6 +99,43 @@ class AccountFactoryIntegrationTests {
     }
 
     @Test
+    void adminCreatesAnApprovedDoctorWhoCanLogIn() throws Exception {
+        Long specialtyId = specialty().getId();
+
+        postJson("/api/v1/admin/doctors", """
+                {"email":"BS.Admin@Test.vn","password":"Doctor@1234","fullName":"  BS Admin  ","phone":"0981234004",
+                 "specialtyId":%d,"experienceYears":3,"consultationFee":200000}""".formatted(specialtyId), adminToken())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.data.fullName").value("BS Admin"));
+
+        canLogIn("bs.admin@test.vn", "Doctor@1234", "DOCTOR");
+        var doctor = doctors.findById(users.findByEmailIgnoreCase("bs.admin@test.vn").orElseThrow().getId()).orElseThrow();
+        assertEquals(true, doctor.getIsApproved());
+    }
+
+    @Test
+    void adminMayCreateADoctorStillWaitingForApproval() throws Exception {
+        postJson("/api/v1/admin/doctors", """
+                {"email":"bs.cho@test.vn","password":"Doctor@1234","fullName":"BS Chờ","phone":"0981234005",
+                 "specialtyId":%d,"approved":false}""".formatted(specialty().getId()), adminToken())
+                .andExpect(status().isCreated());
+
+        var doctor = doctors.findById(users.findByEmailIgnoreCase("bs.cho@test.vn").orElseThrow().getId()).orElseThrow();
+        assertEquals(false, doctor.getIsApproved());
+    }
+
+    @Test
+    void adminCreatesAPatientWhoCanLogIn() throws Exception {
+        postJson("/api/v1/admin/patients", """
+                {"email":"bn.quay@test.vn","password":"Patient@1234","fullName":"  BN Quầy  ","phone":"0981234006",
+                 "gender":"MALE"}""", adminToken())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.data.fullName").value("BN Quầy"));
+
+        canLogIn("bn.quay@test.vn", "Patient@1234", "PATIENT");
+    }
+
+    @Test
     void doctorRegistrationWithoutSpecialtyIsRejectedAsBefore() throws Exception {
         postJson("/api/v1/auth/register", """
                 {"email":"bs.nokhoa@test.vn","password":"Doctor@123","role":"DOCTOR","fullName":"BS Không khoa",

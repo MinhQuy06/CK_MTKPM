@@ -4,9 +4,9 @@
 
 **Blocked by:** 20
 
-**Status:** ready-for-agent
+**Status:** done
 
 **GitHub:** #42
 
-- [ ] Test qua API Admin: bác sĩ đã duyệt; bệnh nhân đăng nhập được
-- [ ] Toàn bộ test Java, Node và trình duyệt hiện có vẫn pass, không sửa test cũ
+- [x] Test qua API Admin: bác sĩ đã duyệt; bệnh nhân đăng nhập được
+- [x] Toàn bộ test Java, Node và trình duyệt hiện có vẫn pass, không sửa test cũ

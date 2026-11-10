@@ -15,6 +15,9 @@ import com.datlichkhambenh.backend.entity.Patient;
 import com.datlichkhambenh.backend.entity.User;
 import com.datlichkhambenh.backend.entity.Specialty;
 import com.datlichkhambenh.backend.exception.ResourceNotFoundException;
+import com.datlichkhambenh.backend.factory.AccountFactories;
+import com.datlichkhambenh.backend.factory.AccountRequest;
+import com.datlichkhambenh.backend.factory.ClinicAccount;
 import com.datlichkhambenh.backend.repository.*;
 import com.datlichkhambenh.backend.service.AdminManagementService;
 import com.datlichkhambenh.backend.service.RedisCacheService;
@@ -47,6 +50,7 @@ public class AdminManagementServiceImpl implements AdminManagementService {
     private final PatientService patientService;
     private final PasswordEncoder passwordEncoder;
     private final MedicalServiceRepository medicalServiceRepository;
+    private final AccountFactories accounts;
 
     @Override
     @Transactional
@@ -294,17 +298,14 @@ public class AdminManagementServiceImpl implements AdminManagementService {
     @Transactional
     public DoctorDto createDoctor(AdminCreateDoctorDto request) {
         validateUniqueIdentity(request.getEmail(), request.getPhone());
-        User user = userRepository.save(User.builder()
-                .email(normalizeEmail(request.getEmail()))
-                .passwordHash(passwordEncoder.encode(request.getPassword()))
-                .role("DOCTOR").isActive(true).build());
-        Specialty specialty = specialtyRepository.findById(request.getSpecialtyId())
-                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy chuyên khoa"));
-        Doctor doctor = doctorRepository.save(Doctor.builder().user(user).specialty(specialty)
-                .fullName(request.getFullName().trim()).phone(request.getPhone()).degree(request.getDegree())
-                .experienceYears(request.getExperienceYears()).consultationFee(request.getConsultationFee())
-                .isApproved(request.getApproved() == null || request.getApproved()).build());
-        redisCacheService.evictDoctorCache(specialty.getId());
+        // Admin-created doctors are approved unless the Admin says otherwise
+        var account = (ClinicAccount.DoctorAccount) accounts.forRole("DOCTOR").orElseThrow().create(new AccountRequest(
+                normalizeEmail(request.getEmail()), request.getPassword(), request.getFullName().trim(),
+                request.getPhone(), null, null, null, null, request.getSpecialtyId(), request.getDegree(),
+                request.getExperienceYears(), request.getConsultationFee(),
+                request.getApproved() == null || request.getApproved()));
+        Doctor doctor = account.doctor();
+        redisCacheService.evictDoctorCache(doctor.getSpecialty().getId());
         return mapDoctor(doctor);
     }
 
@@ -340,14 +341,11 @@ public class AdminManagementServiceImpl implements AdminManagementService {
     @Transactional
     public PatientDto createPatient(AdminCreatePatientDto request) {
         validateUniqueIdentity(request.getEmail(), request.getPhone());
-        User user = userRepository.save(User.builder()
-                .email(normalizeEmail(request.getEmail()))
-                .passwordHash(passwordEncoder.encode(request.getPassword()))
-                .role("PATIENT").isActive(true).build());
-        Patient patient = patientRepository.save(Patient.builder().user(user).fullName(request.getFullName().trim())
-                .phone(request.getPhone()).dob(request.getDob()).gender(request.getGender())
-                .address(request.getAddress()).medicalHistory(request.getMedicalHistory()).build());
-        return mapPatient(patient);
+        var account = (ClinicAccount.PatientAccount) accounts.forRole("PATIENT").orElseThrow().create(new AccountRequest(
+                normalizeEmail(request.getEmail()), request.getPassword(), request.getFullName().trim(),
+                request.getPhone(), request.getDob(), request.getGender(), request.getAddress(),
+                request.getMedicalHistory(), null, null, null, null, false));
+        return mapPatient(account.patient());
     }
 
     @Override
