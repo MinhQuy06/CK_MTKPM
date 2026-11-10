@@ -4,9 +4,9 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** done
 
 **GitHub:** #23
 
-- [ ] Có 7 dòng mẫu và bảng thành viên (Tên, Mẫu, Ghi chú) để trống
-- [ ] Link chưa có đích ghi rõ "sẽ có"
+- [x] Có 7 dòng mẫu và bảng thành viên (Tên, Mẫu, Ghi chú) để trống
+- [x] Link chưa có đích ghi rõ "sẽ có"
