@@ -37,4 +37,20 @@ class SmsChannelAdapterTests extends BookingApiFixture {
         assertTrue(sms.text().contains("BK-42"), sms.text());
         assertTrue(sms.text().contains("09:00"), sms.text());
     }
+
+    @Test
+    void localNumberIsConvertedBeforeReachingTheVendor() {
+        var result = channel.send("0912 345 678", confirmation());
+
+        assertEquals(DeliveryResult.Status.SENT, result.status());
+        assertEquals("+84912345678", gateway.sent().get(0).msisdn());
+    }
+
+    @Test
+    void malformedNumberFailsWithoutCallingTheVendor() {
+        var result = channel.send("12345", confirmation());
+
+        assertEquals(DeliveryResult.Status.FAILED, result.status());
+        assertTrue(gateway.sent().isEmpty());
+    }
 }

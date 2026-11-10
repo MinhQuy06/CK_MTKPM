@@ -21,9 +21,13 @@ public class SmsChannelAdapter implements NotificationChannel {
 
     @Override
     public DeliveryResult send(String patientPhone, EmailNotificationMessage message) {
-        int code = gateway.submitSms(patientPhone, text(message));
+        var msisdn = VietnamPhone.toInternational(patientPhone);
+        if (msisdn.isEmpty()) {
+            return DeliveryResult.failed("Số điện thoại không hợp lệ: " + patientPhone);
+        }
+        int code = gateway.submitSms(msisdn.get(), text(message));
         return code == SimulatedSmsGatewayClient.OK
-                ? DeliveryResult.sent(patientPhone)
+                ? DeliveryResult.sent(msisdn.get())
                 : DeliveryResult.failed("Nhà cung cấp SMS từ chối, mã " + code);
     }
 

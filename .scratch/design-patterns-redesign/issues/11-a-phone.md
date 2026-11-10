@@ -4,8 +4,8 @@
 
 **Blocked by:** 10
 
-**Status:** ready-for-agent
+**Status:** done
 
 **GitHub:** #32
 
-- [ ] Test đơn vị cho các dạng số phổ biến và dạng sai
+- [x] Test đơn vị cho các dạng số phổ biến và dạng sai
