@@ -20,12 +20,11 @@ import java.time.ZoneId;
 import java.util.List;
 
 /**
- * The one place that answers "can this patient book this slot, and at what price?" (see "Booking offer",
- * "Bookable slot" and "Covering benefit" in GLOSSARY.md). Pricing types, quotes and booking all go through it,
- * so the rules and the rejection codes cannot drift apart. Every refusal is a {@link BookingRejection}.
+ * Nơi duy nhất trả lời "bệnh nhân này đặt được ca này không, và giá bao nhiêu?" (xem "Giá chào", "Ca đặt được",
+ * "Quyền hưởng còn hiệu lực" trong GLOSSARY.md). Loại phí, báo giá và đặt lịch đều đi qua đây nên luật và mã lỗi
+ * không thể lệch nhau. Mọi lần từ chối đều là một {@link BookingRejection}.
  *
- * <p>It decides; it does not save. Creating the appointment, closing the slot and publishing events stay with the
- * booking workflow.
+ * <p>Module chỉ quyết định, không lưu: tạo lịch hẹn, đóng ca và phát sự kiện vẫn thuộc quy trình đặt lịch.
  */
 @Service
 public class BookingOffer {
@@ -47,7 +46,7 @@ public class BookingOffer {
         this.benefits = benefits;
     }
 
-    /** Pricing types this patient may pick for a bookable slot: Standard always, others with a covering benefit. */
+    /** Loại phí bệnh nhân được chọn cho một ca đặt được: luôn có Tiêu chuẩn, loại khác khi có quyền hưởng còn hiệu lực. */
     @Transactional(readOnly = true)
     public List<PricingChoice> pricingTypes(Long patientId, Long scheduleId) {
         Schedule slot = bookable(slots.findById(scheduleId).orElse(null), "Không thể báo giá ca khám đã qua");
@@ -57,7 +56,7 @@ public class BookingOffer {
                 .toList();
     }
 
-    /** Booking offer for a bookable slot. {@code pricingKey} null means Standard. Nothing is locked. */
+    /** Giá chào cho một ca đặt được. {@code pricingKey} null nghĩa là Tiêu chuẩn. Không khóa gì. */
     @Transactional(readOnly = true)
     public Offer quote(Long patientId, Long scheduleId, String pricingKey) {
         Schedule slot = bookable(slots.findById(scheduleId).orElse(null), "Không thể báo giá ca khám đã qua");
@@ -70,11 +69,10 @@ public class BookingOffer {
     }
 
     /**
-     * Locks and re-checks an offer against what the patient agreed to. Must run inside the caller's transaction;
-     * locks are taken in this order and held until it ends: slot → doctor → benefit (only for non-Standard pricing).
-     * Checks, in order: slot exists, is open, matches the agreed day/time (confirm route), has not started; doctor
-     * accepts bookings; pricing type is given (confirm route) and supported; a covering benefit exists; the quote is
-     * complete and its amounts are unchanged.
+     * Khóa và kiểm tra lại giá chào so với điều bệnh nhân đã đồng ý. Bắt buộc chạy trong giao dịch của nơi gọi;
+     * khóa theo thứ tự và giữ đến hết giao dịch: ca → bác sĩ → quyền hưởng (chỉ khi không phải Tiêu chuẩn).
+     * Thứ tự kiểm tra: ca tồn tại, còn trống, khớp ngày giờ đã đồng ý (route xác nhận), chưa bắt đầu; bác sĩ nhận lịch;
+     * có loại phí (route xác nhận) và được hỗ trợ; có quyền hưởng còn hiệu lực; báo giá đủ và số tiền không đổi.
      */
     @Transactional(propagation = Propagation.MANDATORY)
     public LockedOffer lockAndConfirm(Long patientId, Long scheduleId, Expectation expectation) {
@@ -101,7 +99,7 @@ public class BookingOffer {
         return new LockedOffer(slot, doctor, benefit, amounts);
     }
 
-    // ------------------------------------------------------------------ rules shared by the three operations
+    // ------------------------------------------------------------------ luật dùng chung cho ba thao tác
 
     private Schedule bookable(Schedule slot, String startedMessage) {
         if (slot == null) {

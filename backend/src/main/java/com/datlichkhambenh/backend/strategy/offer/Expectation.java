@@ -5,23 +5,23 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 /**
- * What the patient agreed to before asking to book. The Facade picks the variant from the route; the
- * {@link BookingOffer} module checks the locked offer against it. Fields may be null: missing ones are
- * reported as {@link BookingRejection#QUOTE_REQUIRED} after the slot checks, so error precedence stays stable.
+ * Điều bệnh nhân đã đồng ý trước khi đặt lịch. Facade chọn dạng theo route; {@link BookingOffer} so giá chào đã khóa
+ * với nó. Trường có thể null: phần thiếu được báo {@link BookingRejection#QUOTE_REQUIRED} sau các kiểm tra ca,
+ * để thứ tự ưu tiên lỗi giữ như cũ.
  */
 public sealed interface Expectation {
 
-    /** Confirm route: the agreed quote including the slot's day and times (see "Agreed quote" in GLOSSARY.md). */
+    /** Route xác nhận: giá đã đồng ý, kể cả ngày giờ ca (xem "Giá đã đồng ý" trong GLOSSARY.md). */
     record ConfirmedQuote(String pricingKey, BigDecimal basePrice, BigDecimal discountRate, BigDecimal finalPrice,
                           LocalDate workDate, LocalTime startTime, LocalTime endTime) implements Expectation {
     }
 
-    /** Old route carrying prices: amounts are compared, the slot's day and times are not. */
+    /** Route cũ có kèm giá: so số tiền, không so ngày giờ ca. */
     record LegacyQuote(String pricingKey, BigDecimal basePrice, BigDecimal discountRate, BigDecimal finalPrice)
             implements Expectation {
     }
 
-    /** Old route without any quote: Standard pricing only (see "Legacy booking" in GLOSSARY.md). */
+    /** Route cũ không kèm báo giá: chỉ loại phí Tiêu chuẩn (xem "Đặt lịch kiểu cũ" trong GLOSSARY.md). */
     record LegacyStandard() implements Expectation {
     }
 }

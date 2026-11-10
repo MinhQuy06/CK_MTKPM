@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * Adaptee (GoF Adapter): stands in for a third-party SMS vendor SDK. Its interface is the vendor's,
- * not ours: an international MSISDN, plain text, and a numeric status code instead of exceptions.
- * Simulated: nothing is sent; every accepted message is kept in memory and logged.
+ * Adaptee (GoF Adapter): đóng vai SDK của nhà cung cấp SMS bên thứ ba. Giao diện là của nhà cung cấp, không phải
+ * của phòng khám: số quốc tế (+84…), văn bản thô và mã trạng thái dạng số thay vì ngoại lệ.
+ * Giả lập: không gửi gì thật; mọi tin được nhận chỉ lưu trong bộ nhớ và ghi log.
  */
 @Slf4j
 @Component
@@ -22,7 +22,7 @@ public class SimulatedSmsGatewayClient {
 
     private final List<SubmittedSms> sent = new CopyOnWriteArrayList<>();
 
-    /** Vendor call: returns {@link #OK} when accepted, another code when rejected. */
+    /** Lời gọi của nhà cung cấp: trả {@link #OK} khi nhận tin, mã khác khi từ chối. */
     public int submitSms(String msisdn, String text) {
         if (msisdn == null || !msisdn.startsWith("+")) {
             return REJECTED;
@@ -32,7 +32,7 @@ public class SimulatedSmsGatewayClient {
         return OK;
     }
 
-    /** Messages accepted so far (demo and tests). */
+    /** Các tin đã nhận (dùng cho demo và test). */
     public List<SubmittedSms> sent() {
         return sent;
     }

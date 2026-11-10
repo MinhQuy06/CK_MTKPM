@@ -3,17 +3,17 @@ package com.datlichkhambenh.backend.adapter;
 import com.datlichkhambenh.backend.messaging.EmailNotificationMessage;
 
 /**
- * Target (GoF Adapter): the one way the clinic sends an appointment notification over an extra
- * channel. Callers never see which vendor sits behind it.
+ * Target (GoF Adapter): cách duy nhất phòng khám gửi thông báo lịch hẹn qua một kênh phụ.
+ * Nơi gọi không bao giờ biết nhà cung cấp nào đứng phía sau.
  */
 public interface NotificationChannel {
 
-    /** Channel name as written to the notification history, e.g. "SMS". */
+    /** Tên kênh ghi vào lịch sử thông báo, ví dụ "SMS". */
     String name();
 
     /**
-     * @param patientPhone the patient's phone as stored by the clinic (may be null or local format)
-     * @param message      what to tell the patient
+     * @param patientPhone số điện thoại bệnh nhân như phòng khám lưu (có thể null hoặc dạng 0xxx)
+     * @param message      nội dung cần báo cho bệnh nhân
      */
     DeliveryResult send(String patientPhone, EmailNotificationMessage message);
 }

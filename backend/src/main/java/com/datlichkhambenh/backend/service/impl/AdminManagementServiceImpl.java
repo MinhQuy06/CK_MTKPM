@@ -295,7 +295,7 @@ public class AdminManagementServiceImpl implements AdminManagementService {
     @Transactional
     public DoctorDto createDoctor(AdminCreateDoctorDto request) {
         validateUniqueIdentity(request.getEmail(), request.getPhone());
-        // Admin-created doctors are approved unless the Admin says otherwise
+        // Bác sĩ do Admin tạo được duyệt sẵn, trừ khi Admin chọn để chờ duyệt
         var account = (ClinicAccount.DoctorAccount) accounts.forRole("DOCTOR").orElseThrow().create(new AccountRequest(
                 normalizeEmail(request.getEmail()), request.getPassword(), request.getFullName().trim(),
                 request.getPhone(), null, null, null, null, request.getSpecialtyId(), request.getDegree(),

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/** HTTP only: authorisation, status codes and messages. Every booking action goes through {@link BookingFacade}. */
+/** Chỉ lo HTTP: phân quyền, mã trạng thái và thông điệp. Mọi thao tác lịch hẹn đi qua {@link BookingFacade}. */
 @RestController
 @RequestMapping("/api/v1/appointments")
 @RequiredArgsConstructor

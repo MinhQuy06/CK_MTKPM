@@ -14,7 +14,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 /**
  * RedisConfig — Cấu hình kết nối và serialization Redis.
  *
- * - Key: StringRedisSerializer (human-readable key)
+ * - Key: StringRedisSerializer (khóa đọc được bằng mắt)
  * - Value: GenericJackson2JsonRedisSerializer (JSON, dễ debug)
  * - TTL quản lý tập trung qua RedisCacheService (không dùng @Cacheable để kiểm soát tốt hơn)
  */

@@ -4,11 +4,11 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 /**
- * Everything needed to open a clinic account, whoever asks for it (self-registration or Admin).
- * Doctor-only fields are ignored by the patient factory and vice versa.
+ * Mọi thông tin cần để mở tài khoản, dù ai yêu cầu (tự đăng ký hay Admin tạo).
+ * Factory bệnh nhân bỏ qua các trường của bác sĩ và ngược lại.
  *
- * @param email    already normalised (trimmed, lower case)
- * @param approved doctor only: whether the doctor may take bookings right away
+ * @param email    đã chuẩn hóa (bỏ khoảng trắng, chữ thường)
+ * @param approved chỉ cho bác sĩ: có được nhận lịch ngay không
  */
 public record AccountRequest(
         String email,

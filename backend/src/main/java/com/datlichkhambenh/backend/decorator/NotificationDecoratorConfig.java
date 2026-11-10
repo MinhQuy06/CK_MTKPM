@@ -9,8 +9,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
 /**
- * The one place where the notification decorators are stacked. Everything that injects
- * {@link AsyncEmailNotificationService} receives this primary, decorated bean.
+ * Nơi duy nhất xếp chồng các decorator thông báo. Mọi chỗ tiêm {@link AsyncEmailNotificationService}
+ * đều nhận bean @Primary đã bọc này.
  */
 @Configuration
 public class NotificationDecoratorConfig {
@@ -21,7 +21,7 @@ public class NotificationDecoratorConfig {
                                                                       NotificationLogRepository history,
                                                                       NotificationChannel sms,
                                                                       NotificationMessageDirector director) {
-        // Outermost first: dedup → SMS → audit → e-mail
+        // Từ ngoài vào trong: chống trùng → SMS → ghi lịch sử → email gốc
         return new DeduplicationDecorator(
                 new SmsNotificationDecorator(
                         new AuditLogDecorator(email, history),

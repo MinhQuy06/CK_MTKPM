@@ -7,7 +7,7 @@ import com.datlichkhambenh.backend.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-/** Concrete Creator: patient accounts. */
+/** Concrete Creator: tài khoản bệnh nhân. */
 @Component
 public class PatientAccountFactory extends AccountFactory {
     private final PatientRepository patients;

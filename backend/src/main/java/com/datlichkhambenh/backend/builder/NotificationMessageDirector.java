@@ -5,8 +5,8 @@ import com.datlichkhambenh.backend.messaging.EmailNotificationMessage;
 import org.springframework.stereotype.Component;
 
 /**
- * Director (GoF Builder): owns the recipe for each kind of appointment notification, so callers ask
- * for "a cancellation notice for this appointment" instead of setting nine fields themselves.
+ * Director (GoF Builder): giữ "công thức" cho từng loại thông báo lịch hẹn, để nơi gọi chỉ cần xin
+ * "bản tin hủy cho lịch hẹn này" thay vì tự đặt 9 trường.
  */
 @Component
 public class NotificationMessageDirector {

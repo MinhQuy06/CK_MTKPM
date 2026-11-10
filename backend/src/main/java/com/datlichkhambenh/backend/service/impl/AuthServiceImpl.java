@@ -53,7 +53,7 @@ public class AuthServiceImpl implements AuthService {
             throw new AppException("Số điện thoại đã tồn tại trên hệ thống");
         }
 
-        // Only roles with a registered factory can sign up: there is no ADMIN factory by design
+        // Chỉ vai trò có factory mới đăng ký được: cố ý không có factory ADMIN
         String role = request.getRole().toUpperCase();
         AccountFactory factory = accounts.forRole(role)
                 .orElseThrow(() -> new AppException("Chỉ được đăng ký tài khoản PATIENT hoặc DOCTOR"));
@@ -154,7 +154,7 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
-    /** Self-registered doctors wait for Admin approval. */
+    /** Bác sĩ tự đăng ký phải chờ Admin duyệt. */
     private AccountRequest accountRequest(String email, RegisterRequestDto r) {
         return new AccountRequest(email, r.getPassword(), r.getFullName(), r.getPhone(), r.getDob(), r.getGender(),
                 r.getAddress(), r.getMedicalHistory(), r.getSpecialtyId(), r.getDegree(), r.getExperienceYears(),

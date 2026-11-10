@@ -8,8 +8,8 @@ import com.datlichkhambenh.backend.messaging.EmailNotificationMessage;
 import com.datlichkhambenh.backend.service.AsyncEmailNotificationService;
 
 /**
- * Concrete Decorator: after the wrapped service has e-mailed, also sends the same notification over
- * an extra {@link NotificationChannel} (the SMS Adapter) and records the outcome in the history.
+ * Concrete Decorator: sau khi dịch vụ bên trong gửi email, gửi thêm cùng thông báo qua một
+ * {@link NotificationChannel} (Adapter SMS) và ghi kết quả vào lịch sử.
  */
 public class SmsNotificationDecorator extends NotificationServiceDecorator {
     private final NotificationChannel channel;
@@ -42,7 +42,7 @@ public class SmsNotificationDecorator extends NotificationServiceDecorator {
         alsoSend(appointment, director.cancelled(appointment));
     }
 
-    /** SMS is a secondary channel: its failure is recorded, never thrown back into the e-mail/booking flow. */
+    /** SMS là kênh phụ: lỗi chỉ được ghi lại, không bao giờ ném ngược vào luồng email / đặt lịch. */
     private void alsoSend(Appointment appointment, EmailNotificationMessage message) {
         DeliveryResult result;
         try {

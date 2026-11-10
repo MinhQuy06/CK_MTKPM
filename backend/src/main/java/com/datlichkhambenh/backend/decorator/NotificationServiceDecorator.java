@@ -4,8 +4,8 @@ import com.datlichkhambenh.backend.entity.Appointment;
 import com.datlichkhambenh.backend.service.AsyncEmailNotificationService;
 
 /**
- * Decorator (GoF): has the same interface as the notification service it wraps and forwards to it
- * by default. Concrete decorators override only what they add, before or after forwarding.
+ * Decorator (GoF): cùng interface với dịch vụ thông báo mà nó bọc, mặc định chuyển tiếp nguyên lời gọi.
+ * Concrete decorator chỉ override phần hành vi thêm vào, trước hoặc sau khi chuyển tiếp.
  */
 public abstract class NotificationServiceDecorator implements AsyncEmailNotificationService {
     protected final AsyncEmailNotificationService inner;

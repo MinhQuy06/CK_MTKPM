@@ -6,7 +6,7 @@ import java.util.List;
 import java.time.LocalDate;
 
 public interface BookingService {
-    /** Books a slot at the price the booking offer module confirms against {@code expectation}. */
+    /** Đặt một ca với giá mà module giá chào xác nhận theo {@code expectation}. */
     AppointmentDto createBooking(Long patientUserId, Long scheduleId, String symptoms,
                                  com.datlichkhambenh.backend.strategy.offer.Expectation expectation);
     void cancelBooking(Long appointmentId, Long patientUserId);

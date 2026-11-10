@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-/** Pricing types and quotes for a slot: HTTP only; every rule lives in {@link BookingOffer}. */
+/** Loại phí và báo giá cho một ca: chỉ lo HTTP; mọi luật nằm trong {@link BookingOffer}. */
 @RestController
 @RequestMapping("/api/v1/appointments")
 @PreAuthorize("hasAuthority('PATIENT')")

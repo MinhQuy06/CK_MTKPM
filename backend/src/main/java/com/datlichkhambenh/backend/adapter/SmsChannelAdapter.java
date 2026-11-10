@@ -5,9 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 /**
- * Adapter (GoF, object adapter): makes the vendor's SMS client look like a {@link NotificationChannel}.
- * It holds the client (composition) and translates our call into the vendor's shape: notification
- * message to short SMS text, and the vendor status code back into a {@link DeliveryResult}.
+ * Adapter (GoF, object adapter): làm client SMS của nhà cung cấp trông như một {@link NotificationChannel}.
+ * Giữ client bên trong (composition) và dịch qua lại: bản tin thông báo → SMS ngắn,
+ * mã trạng thái của nhà cung cấp → {@link DeliveryResult}.
  */
 @Component
 @RequiredArgsConstructor
@@ -34,7 +34,7 @@ public class SmsChannelAdapter implements NotificationChannel {
                 : DeliveryResult.failed("Nhà cung cấp SMS từ chối, mã " + code);
     }
 
-    /** SMS is short and plain: what happened, booking code, when, with whom. */
+    /** SMS ngắn, không dấu: chuyện gì, mã lịch hẹn, lúc nào, với bác sĩ nào. */
     static String text(EmailNotificationMessage m) {
         String what = switch (m.type()) {
             case "BOOKING_CONFIRMED" -> "Da dat lich kham";

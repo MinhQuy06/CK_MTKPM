@@ -2,6 +2,6 @@ package com.datlichkhambenh.backend.observer;
 
 import com.datlichkhambenh.backend.entity.Appointment;
 
-/** Subject state change (GoF Observer): an appointment was just marked CANCELLED. */
+/** Sự kiện của Subject (GoF Observer): một lịch hẹn vừa chuyển sang CANCELLED. */
 public record AppointmentCancelledEvent(Appointment appointment) {
 }

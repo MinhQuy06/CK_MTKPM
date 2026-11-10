@@ -13,11 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * CustomUserDetailsService -- Load UserDetails tu DB theo email.
- * Duoc Spring Security dung khi xac thuc.
+ * CustomUserDetailsService: nạp UserDetails từ DB theo email.
+ * Spring Security dùng khi xác thực.
  *
- * Authority duoc set truc tiep theo role (ADMIN / DOCTOR / PATIENT),
- * khong them tien to ROLE_ de khop voi hasAuthority() tren Controller.
+ * Authority đặt thẳng theo role (ADMIN / DOCTOR / PATIENT),
+ * không thêm tiền tố ROLE_ để khớp với hasAuthority() trên Controller.
  */
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -37,7 +37,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException(
                         "Khong tim thay tai khoan voi email: " + email));
 
-        // Boolean wrapper: Lombok @Getter tao getIsActive() (khong phai isIsActive())
+        // Boolean dạng wrapper: Lombok @Getter tạo getIsActive() (không phải isIsActive())
         boolean isActive = Boolean.TRUE.equals(user.getIsActive());
         boolean isApprovedDoctor = !"DOCTOR".equals(user.getRole())
                 || doctorRepository.findById(user.getId())
@@ -45,8 +45,8 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElse(false);
         boolean canAccess = isActive && isApprovedDoctor;
 
-        // Dung truc tiep user.getRole() (vi du: "ADMIN") - khong them "ROLE_"
-        // de khop voi @PreAuthorize("hasAuthority('ADMIN')") tren Controller
+        // Dùng thẳng user.getRole() (ví dụ: "ADMIN"), không thêm "ROLE_"
+        // để khớp với @PreAuthorize("hasAuthority('ADMIN')") trên Controller
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getEmail())
                 .password(user.getPasswordHash())
