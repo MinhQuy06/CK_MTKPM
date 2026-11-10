@@ -4,9 +4,9 @@
 
 **Blocked by:** 23
 
-**Status:** ready-for-agent
+**Status:** done
 
 **GitHub:** #45
 
-- [ ] Controller đặt lịch không còn tiêm dịch vụ đặt lịch hay dịch vụ người dùng
-- [ ] Toàn bộ test Java, Node và trình duyệt hiện có vẫn pass, không sửa test cũ
+- [x] Controller đặt lịch không còn tiêm dịch vụ đặt lịch hay dịch vụ người dùng
+- [x] Toàn bộ test Java, Node và trình duyệt hiện có vẫn pass, không sửa test cũ

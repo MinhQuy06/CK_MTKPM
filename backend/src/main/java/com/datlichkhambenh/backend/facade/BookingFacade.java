@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * Facade (GoF): one simple entry point for everything a signed-in user does with appointments.
  * Behind it sit the subsystems the controller no longer needs to know: who the user is
@@ -29,5 +31,19 @@ public class BookingFacade {
     /** Older clients without a quote: Standard price only. */
     public AppointmentDto bookWithoutQuote(UserDetails patient, CreateBookingDto request) {
         return bookings.createBooking(currentUser.getUserId(patient), request);
+    }
+
+    public void cancel(UserDetails patient, Long appointmentId) {
+        bookings.cancelBooking(appointmentId, currentUser.getUserId(patient));
+    }
+
+    /** Owner patient, the appointment's doctor or an Admin; the role comes from the signed-in user. */
+    public AppointmentDto details(UserDetails requester, Long appointmentId) {
+        String role = requester.getAuthorities().iterator().next().getAuthority();
+        return bookings.getBookingDetails(appointmentId, currentUser.getUserId(requester), role);
+    }
+
+    public List<AppointmentDto> myAppointments(UserDetails patient) {
+        return bookings.getPatientAppointments(currentUser.getUserId(patient));
     }
 }

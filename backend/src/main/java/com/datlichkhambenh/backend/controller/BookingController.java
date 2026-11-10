@@ -4,8 +4,6 @@ import com.datlichkhambenh.backend.dto.request.CreateBookingDto;
 import com.datlichkhambenh.backend.dto.response.ApiResponseDto;
 import com.datlichkhambenh.backend.dto.response.AppointmentDto;
 import com.datlichkhambenh.backend.facade.BookingFacade;
-import com.datlichkhambenh.backend.service.BookingService;
-import com.datlichkhambenh.backend.service.CurrentUserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,13 +15,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/** HTTP only: authorisation, status codes and messages. Every booking action goes through {@link BookingFacade}. */
 @RestController
 @RequestMapping("/api/v1/appointments")
 @RequiredArgsConstructor
 public class BookingController {
 
-    private final BookingService bookingService;
-    private final CurrentUserService currentUserService;
     private final BookingFacade bookingFacade;
 
     @PostMapping
@@ -52,8 +49,7 @@ public class BookingController {
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable("id") Long appointmentId
     ) {
-        Long patientUserId = currentUserService.getUserId(userDetails);
-        bookingService.cancelBooking(appointmentId, patientUserId);
+        bookingFacade.cancel(userDetails, appointmentId);
         return ResponseEntity.ok(ApiResponseDto.success(null, "Hủy lịch hẹn thành công"));
     }
 
@@ -62,17 +58,12 @@ public class BookingController {
     public ResponseEntity<ApiResponseDto<AppointmentDto>> getBookingDetails(
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable("id") Long appointmentId) {
-        Long requesterId = currentUserService.getUserId(userDetails);
-        String requesterRole = userDetails.getAuthorities().iterator().next().getAuthority();
-        AppointmentDto appointment = bookingService.getBookingDetails(appointmentId, requesterId, requesterRole);
-        return ResponseEntity.ok(ApiResponseDto.success(appointment));
+        return ResponseEntity.ok(ApiResponseDto.success(bookingFacade.details(userDetails, appointmentId)));
     }
 
     @GetMapping("/my-appointments")
     @PreAuthorize("hasAuthority('PATIENT')")
     public ResponseEntity<ApiResponseDto<List<AppointmentDto>>> getMyPatientAppointments(@AuthenticationPrincipal UserDetails userDetails) {
-        Long patientUserId = currentUserService.getUserId(userDetails);
-        List<AppointmentDto> appointments = bookingService.getPatientAppointments(patientUserId);
-        return ResponseEntity.ok(ApiResponseDto.success(appointments));
+        return ResponseEntity.ok(ApiResponseDto.success(bookingFacade.myAppointments(userDetails)));
     }
 }
