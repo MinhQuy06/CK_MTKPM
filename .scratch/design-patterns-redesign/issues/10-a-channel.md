@@ -4,9 +4,9 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** done
 
 **GitHub:** #31
 
-- [ ] Test qua bean kênh thông báo: client giả lập nhận đúng số và nội dung có mã lịch hẹn
-- [ ] Adapter dùng composition, không kế thừa client
+- [x] Test qua bean kênh thông báo: client giả lập nhận đúng số và nội dung có mã lịch hẹn
+- [x] Adapter dùng composition, không kế thừa client
