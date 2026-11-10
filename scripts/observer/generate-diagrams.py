@@ -91,7 +91,7 @@ def erd():
                                        ('', 'end_time', 'TIME'), ('', 'is_available', 'BOOLEAN')], 1400, 140, 520)
     d.table('doctors', 'doctors', [('PK,FK', 'user_id', 'BIGINT'), ('', 'full_name', 'VARCHAR(255)'), ('', '…', '')],
             1400, 520, 520)
-    d.box('cachekey', 'Redis (không phải bảng)\nslots:{doctorId}:{workDate}\n= danh sách ca trống đã cache',
+    d.box('cachekey', 'Redis (không phải bảng)\nslots:doctor:{doctorId}:date:{workDate}\n= danh sách ca trống đã cache',
           680, 560, 560, 110, 'whiteSpace=wrap;fontSize=15;dashed=1;')
     d.rel('appointments', 'patients', 'patient_id', 'ERzeroToMany', 'ERmandOne', 'exitX=0;exitY=0.4;entryX=1;entryY=0.4;')
     d.rel('appointments', 'schedules', 'schedule_id', 'ERzeroToOne', 'ERmandOne', 'exitX=1;exitY=0.4;entryX=0;entryY=0.4;')
