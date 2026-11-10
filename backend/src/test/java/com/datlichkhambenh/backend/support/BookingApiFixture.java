@@ -26,6 +26,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -169,12 +170,22 @@ public abstract class BookingApiFixture {
 
     /** Books the seeded slot and returns the saved appointment JSON. */
     protected JsonNode book() throws Exception {
-        String path = PATH + "/confirm";
-        var response = mvc.perform(post(path).servletPath(path).header("Authorization", "Bearer " + patientToken)
-                .contentType(MediaType.APPLICATION_JSON).content(json.writeValueAsString(confirmBody())))
-                .andReturn().getResponse();
+        var response = confirm(confirmBody());
         assertEquals(201, response.getStatus(), response.getContentAsString());
         return json.readTree(response.getContentAsString()).path("data");
+    }
+
+    /** Raw confirmation call, for tests of rejected bookings. */
+    protected MockHttpServletResponse confirm(Map<String, Object> body) throws Exception {
+        String path = PATH + "/confirm";
+        return mvc.perform(post(path).servletPath(path).header("Authorization", "Bearer " + patientToken)
+                .contentType(MediaType.APPLICATION_JSON).content(json.writeValueAsString(body)))
+                .andReturn().getResponse();
+    }
+
+    /** Error code of a rejected booking response. */
+    protected String code(MockHttpServletResponse response) throws Exception {
+        return json.readTree(response.getContentAsString()).path("code").asText();
     }
 
     protected void cancel(long appointmentId) throws Exception {

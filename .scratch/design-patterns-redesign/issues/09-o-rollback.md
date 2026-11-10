@@ -4,8 +4,8 @@
 
 **Blocked by:** 08
 
-**Status:** ready-for-agent
+**Status:** done
 
 **GitHub:** #30
 
-- [ ] Test qua API: mỗi nhánh thất bại → không có bản tin ở RabbitTemplate
+- [x] Test qua API: mỗi nhánh thất bại → không có bản tin ở RabbitTemplate
