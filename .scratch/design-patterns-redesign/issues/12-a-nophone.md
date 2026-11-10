@@ -4,8 +4,8 @@
 
 **Blocked by:** 10
 
-**Status:** ready-for-agent
+**Status:** done
 
 **GitHub:** #33
 
-- [ ] Test: số rỗng → kết quả bỏ qua, client không nhận tin
+- [x] Test: số rỗng → kết quả bỏ qua, client không nhận tin

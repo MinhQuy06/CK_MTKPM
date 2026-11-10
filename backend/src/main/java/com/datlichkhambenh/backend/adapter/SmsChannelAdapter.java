@@ -21,6 +21,9 @@ public class SmsChannelAdapter implements NotificationChannel {
 
     @Override
     public DeliveryResult send(String patientPhone, EmailNotificationMessage message) {
+        if (patientPhone == null || patientPhone.isBlank()) {
+            return DeliveryResult.skippedNoPhone();
+        }
         var msisdn = VietnamPhone.toInternational(patientPhone);
         if (msisdn.isEmpty()) {
             return DeliveryResult.failed("Số điện thoại không hợp lệ: " + patientPhone);

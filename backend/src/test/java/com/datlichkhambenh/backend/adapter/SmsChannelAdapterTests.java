@@ -5,6 +5,9 @@ import com.datlichkhambenh.backend.messaging.EmailNotificationMessage;
 import com.datlichkhambenh.backend.support.BookingApiFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -44,6 +47,16 @@ class SmsChannelAdapterTests extends BookingApiFixture {
 
         assertEquals(DeliveryResult.Status.SENT, result.status());
         assertEquals("+84912345678", gateway.sent().get(0).msisdn());
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = {"", "   "})
+    void patientWithoutPhoneIsSkippedWithoutCallingTheVendor(String phone) {
+        var result = channel.send(phone, confirmation());
+
+        assertEquals(DeliveryResult.Status.SKIPPED_NO_PHONE, result.status());
+        assertTrue(gateway.sent().isEmpty());
     }
 
     @Test
