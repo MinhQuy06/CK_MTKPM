@@ -31,6 +31,21 @@ Mỗi thư mục có `README.md` (định nghĩa, bài toán, vai trò trong cod
 | | | |
 | | | |
 
+## Kết quả kiểm thử (11/11/2026, nhánh `design-patterns`)
+
+| Bộ test | Lệnh | Kết quả |
+|---|---|---|
+| Java, H2 | `bash scripts/maven.sh -f backend/pom.xml clean test` | 170 chạy, 0 lỗi, 17 bỏ qua (nhóm MySQL cần `CK_MYSQL_URL`) |
+| Java, MySQL 8.0 thật | cùng lệnh với `CK_MYSQL_URL` (xem [report Strategy](strategy/report.md)) | 171 chạy, 0 lỗi, 0 bỏ qua |
+| Nâng cấp MySQL Strategy | `python3 scripts/strategy/test-mysql-upgrades.py` | Pass |
+| Nâng cấp MySQL Decorator | áp `db/upgrade/decorator/001-notification-log.sql` hai lần vào schema tạm | Pass (idempotent) |
+| Node | `npm --prefix frontend test` | 14/14 |
+| Trình duyệt Strategy | `python3 scripts/strategy/test-browser.py` | 17/17 |
+
+Ghi chú: `browser-quote.cjs` từng hỏng từ 00:00 đến 07:00 giờ Việt Nam do lấy "ngày mai" theo UTC (lỗi có từ trước nhánh này); đã sửa để lấy theo giờ phòng khám.
+
+Theo từng mẫu: Builder, Observer, Adapter, Decorator, Factory, Facade đều có test qua API (MockMvc, profile `test`) quan sát ở biên: bản tin bắt tại RabbitTemplate, SMS tại client giả lập, bảng `notification_log`, cache ghi nhận. Hai test cũ đã sửa có lý do: `BookingServiceImplTests` (kiểm tra phát sự kiện thay vì gọi email, Observer) và `AuthServiceImplTests` (thêm tham số constructor, Factory).
+
 ## Sinh lại sơ đồ
 
 ```bash
