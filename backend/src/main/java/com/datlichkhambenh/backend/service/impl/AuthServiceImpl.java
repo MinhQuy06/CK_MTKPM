@@ -66,34 +66,7 @@ public class AuthServiceImpl implements AuthService {
                 && (request.getExperienceYears() == null || request.getConsultationFee() == null)) {
             throw new AppException("Bác sĩ phải cung cấp số năm kinh nghiệm và giá khám");
         }
-        User savedUser;
-        if ("PATIENT".equals(role)) {
-            savedUser = accounts.forRole(role).orElseThrow().create(accountRequest(email, request)).user();
-        } else {
-            savedUser = userRepository.save(User.builder()
-                    .email(email)
-                    .passwordHash(passwordEncoder.encode(request.getPassword()))
-                    .role(role)
-                    .isActive(true)
-                    .build());
-            if (request.getSpecialtyId() == null) {
-                throw new AppException("Bác sĩ phải đăng ký thuộc 1 chuyên khoa (specialtyId)");
-            }
-            Specialty specialty = specialtyRepository.findById(request.getSpecialtyId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy chuyên khoa"));
-
-            Doctor doctor = Doctor.builder()
-                    .user(savedUser)
-                    .specialty(specialty)
-                    .fullName(request.getFullName())
-                    .phone(request.getPhone())
-                    .degree(request.getDegree())
-                    .experienceYears(request.getExperienceYears())
-                    .consultationFee(request.getConsultationFee())
-                    .isApproved(false)
-                    .build();
-            doctorRepository.save(doctor);
-        }
+        User savedUser = accounts.forRole(role).orElseThrow().create(accountRequest(email, request)).user();
 
         return UserDto.builder()
                 .id(savedUser.getId())

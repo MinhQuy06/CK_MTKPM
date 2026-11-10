@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -36,7 +37,7 @@ class AccountFactoryIntegrationTests {
     @Autowired JwtTokenProvider jwt;
 
     ResultActions postJson(String path, String body, String token) throws Exception {
-        var request = post(path).contentType(MediaType.APPLICATION_JSON).content(body);
+        var request = post(path).servletPath(path).contentType(MediaType.APPLICATION_JSON).content(body);
         if (token != null) {
             request.header("Authorization", "Bearer " + token);
         }
@@ -64,5 +65,45 @@ class AccountFactoryIntegrationTests {
         assertEquals("BN Factory", patient.getFullName());
         assertEquals("0981234001", patient.getPhone());
         assertEquals("Hà Nội", patient.getAddress());
+    }
+
+    Specialty specialty() {
+        return specialties.save(Specialty.builder().name("Factory khoa " + System.nanoTime()).build());
+    }
+
+    String adminToken() {
+        User admin = users.save(User.builder().email("factory-admin@test.vn").passwordHash("unused")
+                .role("ADMIN").isActive(true).build());
+        return jwt.generateToken(admin.getEmail(), "ADMIN");
+    }
+
+    @Test
+    void doctorRegistrationWaitsForAdminApproval() throws Exception {
+        Long specialtyId = specialty().getId();
+
+        postJson("/api/v1/auth/register", """
+                {"email":"bs.factory@test.vn","password":"Doctor@123","role":"DOCTOR","fullName":"BS Factory",
+                 "phone":"0981234002","specialtyId":%d,"degree":"ThS","experienceYears":5,"consultationFee":250000}"""
+                .formatted(specialtyId), null)
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.data.role").value("DOCTOR"));
+
+        String pending = "/api/v1/admin/doctors/pending";
+        mvc.perform(get(pending).servletPath(pending).header("Authorization", "Bearer " + adminToken()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data[?(@.fullName == 'BS Factory')]").exists());
+        var doctor = doctors.findById(users.findByEmailIgnoreCase("bs.factory@test.vn").orElseThrow().getId()).orElseThrow();
+        assertEquals(false, doctor.getIsApproved());
+        assertEquals(specialtyId, doctor.getSpecialty().getId());
+        assertEquals(0, doctor.getConsultationFee().compareTo(new java.math.BigDecimal("250000")));
+    }
+
+    @Test
+    void doctorRegistrationWithoutSpecialtyIsRejectedAsBefore() throws Exception {
+        postJson("/api/v1/auth/register", """
+                {"email":"bs.nokhoa@test.vn","password":"Doctor@123","role":"DOCTOR","fullName":"BS Không khoa",
+                 "phone":"0981234003","experienceYears":5,"consultationFee":250000}""", null)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Bác sĩ phải đăng ký thuộc 1 chuyên khoa (specialtyId)"));
     }
 }
