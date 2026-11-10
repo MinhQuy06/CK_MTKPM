@@ -4,10 +4,10 @@
 
 **Blocked by:** 07
 
-**Status:** ready-for-agent
+**Status:** done
 
 **GitHub:** #29
 
-- [ ] Test qua API: hủy → 1 bản tin hủy + 1 lần xóa cache
-- [ ] Dịch vụ đặt lịch không còn phụ thuộc dịch vụ email và cache
-- [ ] Toàn bộ test Java, Node và trình duyệt hiện có vẫn pass, không sửa test cũ
+- [x] Test qua API: hủy → 1 bản tin hủy + 1 lần xóa cache
+- [x] Dịch vụ đặt lịch không còn phụ thuộc dịch vụ email và cache
+- [x] Toàn bộ test Java, Node và trình duyệt hiện có vẫn pass, không sửa test cũ

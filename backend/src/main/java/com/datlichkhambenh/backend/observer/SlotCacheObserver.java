@@ -17,7 +17,15 @@ public class SlotCacheObserver {
         evict(event.appointment().getSchedule());
     }
 
+    /** The freed time is offered again as a new slot, so the cached list is stale too. */
+    @EventListener
+    public void onCancelled(AppointmentCancelledEvent event) {
+        evict(event.appointment().getSchedule());
+    }
+
     private void evict(Schedule slot) {
-        cache.evictSlotCache(slot.getDoctor().getUserId(), slot.getWorkDate());
+        if (slot != null) {
+            cache.evictSlotCache(slot.getDoctor().getUserId(), slot.getWorkDate());
+        }
     }
 }

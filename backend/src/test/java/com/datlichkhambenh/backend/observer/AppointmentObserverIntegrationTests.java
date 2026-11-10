@@ -27,4 +27,17 @@ class AppointmentObserverIntegrationTests extends BookingApiFixture {
 
         assertEquals(List.of(doctorId + "@" + day), cache.slotEvictions);
     }
+
+    @Test
+    void cancellingSendsOneNoticeAndEvictsTheSlotCache() throws Exception {
+        var appointment = book();
+        nextEmail();
+        cache.slotEvictions.clear();
+
+        cancel(appointment.path("id").asLong());
+
+        assertEquals("BOOKING_CANCELLED", nextEmail().type());
+        assertNull(noMoreEmailWithin(300), "only one cancellation notice expected");
+        assertEquals(List.of(doctorId + "@" + day), cache.slotEvictions);
+    }
 }

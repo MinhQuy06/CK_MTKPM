@@ -24,4 +24,13 @@ public class AppointmentEmailObserver {
             log.error("Lỗi khi trigger gửi mail xác nhận đặt lịch: {}", e.getMessage());
         }
     }
+
+    @EventListener
+    public void onCancelled(AppointmentCancelledEvent event) {
+        try {
+            notifications.sendCancellationNotice(event.appointment());
+        } catch (Exception e) {
+            log.error("Lỗi khi trigger mail hủy lịch: {}", e.getMessage());
+        }
+    }
 }
