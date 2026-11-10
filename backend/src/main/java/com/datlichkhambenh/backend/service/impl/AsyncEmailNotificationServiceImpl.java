@@ -1,5 +1,6 @@
 package com.datlichkhambenh.backend.service.impl;
 
+import com.datlichkhambenh.backend.builder.NotificationMessageBuilder;
 import com.datlichkhambenh.backend.entity.Appointment;
 import com.datlichkhambenh.backend.messaging.EmailNotificationMessage;
 import com.datlichkhambenh.backend.messaging.EmailNotificationRequestedEvent;
@@ -29,17 +30,17 @@ public class AsyncEmailNotificationServiceImpl implements AsyncEmailNotification
     }
 
     private void publish(String type, Appointment appointment) {
-        EmailNotificationMessage message = new EmailNotificationMessage(
-                type,
-                appointment.getPatient().getUser().getEmail(),
-                appointment.getPatient().getFullName(),
-                appointment.getBookingCode(),
-                appointment.getDoctor().getFullName(),
-                appointment.getSchedule().getWorkDate().toString(),
-                appointment.getSchedule().getStartTime().toString(),
-                appointment.getSchedule().getEndTime().toString(),
-                appointment.getPrice() == null ? null : appointment.getPrice().toPlainString()
-        );
+        EmailNotificationMessage message = NotificationMessageBuilder.aMessage()
+                .type(type)
+                .recipientEmail(appointment.getPatient().getUser().getEmail())
+                .patientName(appointment.getPatient().getFullName())
+                .bookingCode(appointment.getBookingCode())
+                .doctorName(appointment.getDoctor().getFullName())
+                .workDate(appointment.getSchedule().getWorkDate().toString())
+                .startTime(appointment.getSchedule().getStartTime().toString())
+                .endTime(appointment.getSchedule().getEndTime().toString())
+                .price(appointment.getPrice() == null ? null : appointment.getPrice().toPlainString())
+                .build();
         eventPublisher.publishEvent(new EmailNotificationRequestedEvent(message));
     }
 }

@@ -4,9 +4,9 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** done
 
 **GitHub:** #24
 
-- [ ] Test qua API: đặt lịch → bản tin bắt ở RabbitTemplate đủ 9 trường đúng giá trị
-- [ ] Toàn bộ test Java, Node và trình duyệt hiện có vẫn pass, không sửa test cũ
+- [x] Test qua API: đặt lịch → bản tin bắt ở RabbitTemplate đủ 9 trường đúng giá trị
+- [x] Toàn bộ test Java, Node và trình duyệt hiện có vẫn pass, không sửa test cũ
