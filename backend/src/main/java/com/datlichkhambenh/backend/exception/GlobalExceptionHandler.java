@@ -21,7 +21,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BookingRejectionException.class)
     public ResponseEntity<ApiResponseDto<Void>> handleBookingRejection(BookingRejectionException ex) {
-        var body=ApiResponseDto.<Void>error(ex.getMessage());body.setCode(ex.getCode());
+        // Lỗi đặt lịch có mã: đưa mã vào trường "code" để giao diện rẽ nhánh (PRICE_CHANGED, SLOT_UNAVAILABLE…)
+        var body = ApiResponseDto.<Void>error(ex.getMessage());
+        body.setCode(ex.getCode());
         return ResponseEntity.status(ex.getStatus()).body(body);
     }
 

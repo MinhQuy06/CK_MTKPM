@@ -1,3 +1,5 @@
 package com.datlichkhambenh.backend.strategy.pricing;
 
-public record PricingChoice(String key,String name) {}
+/** Một loại phí bệnh nhân được chọn: khóa và tên hiển thị. */
+public record PricingChoice(String key, String name) {
+}
