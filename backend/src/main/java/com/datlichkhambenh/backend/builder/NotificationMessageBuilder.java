@@ -69,8 +69,18 @@ public final class NotificationMessageBuilder {
         return this;
     }
 
+    /** @throws IllegalStateException when type, recipientEmail or bookingCode is missing; price may be null. */
     public EmailNotificationMessage build() {
+        require("type", type);
+        require("recipientEmail", recipientEmail);
+        require("bookingCode", bookingCode);
         return new EmailNotificationMessage(type, recipientEmail, patientName, bookingCode, doctorName,
                 workDate, startTime, endTime, price);
+    }
+
+    private static void require(String field, String value) {
+        if (value == null || value.isBlank()) {
+            throw new IllegalStateException("Notification message is missing required field: " + field);
+        }
     }
 }

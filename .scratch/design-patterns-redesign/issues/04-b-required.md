@@ -4,9 +4,9 @@
 
 **Blocked by:** 03
 
-**Status:** ready-for-agent
+**Status:** done
 
 **GitHub:** #25
 
-- [ ] Test đơn vị: thiếu từng trường bắt buộc → lỗi nêu tên trường
-- [ ] Thiếu giá → dựng được
+- [x] Test đơn vị: thiếu từng trường bắt buộc → lỗi nêu tên trường
+- [x] Thiếu giá → dựng được
