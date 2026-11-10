@@ -8,7 +8,6 @@ import java.util.Optional;
 
 /**
  * Repository cho bảng USERS.
- * Logic nghiệp vụ sẽ được bổ sung ở bước tiếp theo.
  */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {

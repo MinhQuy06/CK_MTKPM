@@ -1,6 +1,5 @@
 package com.datlichkhambenh.backend.service;
 
-import com.datlichkhambenh.backend.dto.request.CreateBookingDto;
 import com.datlichkhambenh.backend.dto.response.AppointmentDto;
 
 import java.util.List;

@@ -32,8 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.Locale;
-import java.time.LocalDate;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
 @RequiredArgsConstructor
@@ -48,7 +46,6 @@ public class AdminManagementServiceImpl implements AdminManagementService {
     private final ScheduleRepository scheduleRepository;
     private final DoctorService doctorService;
     private final PatientService patientService;
-    private final PasswordEncoder passwordEncoder;
     private final MedicalServiceRepository medicalServiceRepository;
     private final AccountFactories accounts;
 

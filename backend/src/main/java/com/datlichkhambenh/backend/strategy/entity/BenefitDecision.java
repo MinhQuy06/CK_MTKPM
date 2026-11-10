@@ -1,6 +1,5 @@
 package com.datlichkhambenh.backend.strategy.entity;
 
-import com.datlichkhambenh.backend.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
