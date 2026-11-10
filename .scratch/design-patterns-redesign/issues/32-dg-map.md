@@ -4,8 +4,8 @@
 
 **Blocked by:** 02, 25, 26, 27, 28, 29, 30
 
-**Status:** ready-for-agent
+**Status:** done
 
 **GitHub:** #53
 
-- [ ] Ảnh nhúng vào README tổng
+- [x] Ảnh nhúng vào README tổng

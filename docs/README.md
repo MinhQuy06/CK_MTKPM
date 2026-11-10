@@ -4,7 +4,9 @@ Hệ thống đặt lịch khám bệnh (Spring Boot + HTML/JS) được refacto
 
 ## Bản đồ 7 mẫu
 
-Sẽ có: sơ đồ tổng thể cho thấy 7 mẫu nằm ở tầng nào và luồng đặt lịch đi qua chúng ra sao.
+![Bản đồ 7 mẫu](diagrams/design-patterns-map.png)
+
+Khung nét đứt là một mẫu. Luồng đặt lịch: Bệnh nhân → `BookingController` → **Facade** → `BookingServiceImpl` (**Strategy** tính giá) → sự kiện (**Observer**) → chuỗi **Decorator** → SMS qua **Adapter** và email dựng bằng **Builder**. Tạo tài khoản đi riêng qua **Factory Method**. Nguồn: [design-patterns-map.drawio](diagrams/design-patterns-map.drawio), sinh bằng `python3 scripts/overview/generate-map.py`.
 
 ## Các mẫu
 
