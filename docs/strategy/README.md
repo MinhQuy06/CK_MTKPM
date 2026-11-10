@@ -19,9 +19,10 @@ Mục lục chung cho mã nguồn, tài liệu, UML, kiểm thử và công cụ
 
 ## Tài liệu và UML
 
+- [Tài liệu chi tiết tính năng Strategy](tai-lieu-strategy.md) · [Kịch bản thuyết trình](kich-ban-thuyet-trinh.md) · [Bản đồ mã nguồn](ma-nguon-strategy.md)
 - [Báo cáo, cách demo và bằng chứng](report.md)
 - [Báo giá](standard-quote.md) · [Xác nhận đặt lịch](booking-pricing.md)
-- [Bốn UML draw.io và PNG đen trắng](diagrams/)
+- [Sơ đồ draw.io và PNG đen trắng](diagrams/): lớp + tuần tự (báo giá, đặt lịch), Use Case, ERD, DFD mức 0/1, State Machine, Activity, Package
 - [Ảnh kiểm thử](evidence/) · [Nhật ký thực hiện](execution.md)
 - [Spec nghiệp vụ](../../.scratch/consultation-pricing-strategy/spec.md) · [Các ticket](../../.scratch/consultation-pricing-strategy/issues/)
 
@@ -41,6 +42,7 @@ python3 scripts/strategy/test-mysql-upgrades.py
 bash scripts/strategy/run-browser-fixture.sh
 python3 scripts/strategy/generate-quote-diagrams.py
 python3 scripts/strategy/generate-booking-diagrams.py
+python3 scripts/strategy/generate-overview-diagrams.py
 DRAWIO_BIN=/path/to/draw.io bash scripts/strategy/export-diagrams.sh
 ```
 

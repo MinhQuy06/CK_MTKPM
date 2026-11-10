@@ -34,12 +34,16 @@ class Diagram:
         self.box(key + '-body', body, 0, 52, w, h - 52,
                  'shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;', key)
 
-    def edge(self, source, target, label='', style=''):
+    def edge(self, source, target, label='', style='', points=()):
         self.counter += 1
         edge = ET.SubElement(self.root, 'mxCell', id=f'e{self.counter}', value=label,
                              style=STYLE + 'edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;' + style,
                              edge='1', parent='1', source=source, target=target)
-        ET.SubElement(edge, 'mxGeometry', relative='1', **{'as': 'geometry'})
+        geo = ET.SubElement(edge, 'mxGeometry', relative='1', **{'as': 'geometry'})
+        if points:
+            waypoints = ET.SubElement(geo, 'Array', **{'as': 'points'})
+            for x, y in points:
+                ET.SubElement(waypoints, 'mxPoint', x=str(x), y=str(y))
         return edge
 
     def line(self, x1, y1, x2, y2, label='', dashed=False, arrow=True):

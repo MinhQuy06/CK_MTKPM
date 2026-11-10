@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" type="device">
+  <diagram id="Strategy — State Machine" name="Strategy — State Machine">
+    <mxGraphModel grid="0" page="1" pageScale="1" pageWidth="2160" pageHeight="1060" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="BENEFITREQUEST — SƠ ĐỒ TRẠNG THÁI (STATE MACHINE)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=21;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="15" width="2080" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="init" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;fillColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="40" y="335" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="pending" value="PENDING&#10;(chờ Admin xử lý)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;rounded=1;arcSize=25;whiteSpace=wrap;fontSize=15;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="260" y="305" width="220" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="approved" value="APPROVED  (status lưu trong DB)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;swimlane;rounded=1;arcSize=4;startSize=40;fontSize=16;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="720" y="110" width="1000" height="520" as="geometry" />
+        </mxCell>
+        <mxCell id="a-init" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;fillColor=#000000;" vertex="1" parent="approved">
+          <mxGeometry x="485" y="60" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="a-choice" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;rhombus;" vertex="1" parent="approved">
+          <mxGeometry x="470" y="130" width="60" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="a-wait" value="NOT_YET_VALID&#10;(chưa tới ngày hiệu lực)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;rounded=1;arcSize=25;whiteSpace=wrap;fontSize=15;fontStyle=1;" vertex="1" parent="approved">
+          <mxGeometry x="40" y="330" width="220" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="a-active" value="Đang hiệu lực&#10;(dùng được khi đặt lịch)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;rounded=1;arcSize=25;whiteSpace=wrap;fontSize=15;fontStyle=1;" vertex="1" parent="approved">
+          <mxGeometry x="390" y="330" width="220" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="a-expired" value="EXPIRED&#10;(hết hạn)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;rounded=1;arcSize=25;whiteSpace=wrap;fontSize=15;fontStyle=1;" vertex="1" parent="approved">
+          <mxGeometry x="740" y="330" width="220" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="a-note" value="Trạng thái con được suy ra theo ngày hiện tại (Asia/Ho_Chi_Minh) khi hiển thị; DB vẫn lưu status = APPROVED." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;fontSize=14;fontStyle=2;" vertex="1" parent="approved">
+          <mxGeometry x="30" y="450" width="940" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="rejected" value="REJECTED&#10;(bị từ chối)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;rounded=1;arcSize=25;whiteSpace=wrap;fontSize=15;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="260" y="760" width="220" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="revoked" value="REVOKED&#10;(bị thu hồi)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;rounded=1;arcSize=25;whiteSpace=wrap;fontSize=15;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="760" width="240" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="end-rejected" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=endState;fillColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="355" y="940" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="end-revoked" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=endState;fillColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="1205" y="940" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" value="gửi yêu cầu&#10;/ gia hạn" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="init" target="pending">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="Admin duyệt [APPROVE]&#10;/ đặt approved_from..until,&#10;ghi BenefitDecision" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=1;exitY=0.5;entryX=0;entryY=0.46;" edge="1" parent="1" source="pending" target="approved">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="Admin từ chối [REJECT]&#10;/ ghi BenefitDecision (lý do)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="pending" target="rejected">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="Admin thu hồi [REVOKE]&#10;/ ghi BenefitDecision (lý do)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="approved" target="revoked">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="rejected" target="end-rejected">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="revoked" target="end-revoked">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="a-init" target="a-choice">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" value="[today &lt; approved_from]" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=0;exitY=0.5;entryX=0.5;entryY=0;" edge="1" parent="1" source="a-choice" target="a-wait">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" value="[from ≤ today ≤ until]" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="a-choice" target="a-active">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" value="[today &gt; approved_until]" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=1;exitY=0.5;entryX=0.5;entryY=0;" edge="1" parent="1" source="a-choice" target="a-expired">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" value="when(today ≥&#10;approved_from)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="a-wait" target="a-active">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" value="when(today &gt;&#10;approved_until)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="a-active" target="a-expired">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="n-renew" value="Gia hạn: khi yêu cầu cũ đang APPROVED hoặc REVOKED, bệnh nhân gửi yêu cầu MỚI cùng loại (kind). Yêu cầu mới có renewal_of_id = id cũ và bắt đầu ở PENDING; yêu cầu cũ giữ nguyên trạng thái." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=note;size=18;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="1770" y="110" width="360" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="n-lock" value="Mỗi quyết định của Admin khóa bản ghi và kiểm tra trạng thái nguồn (PENDING cho duyệt/từ chối, APPROVED cho thu hồi). Sai trạng thái → 409 &quot;vui lòng tải lại&quot;. Cột version chống ghi đè đồng thời." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=note;size=18;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="1770" y="290" width="360" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="n-invalid" value="INVALID (APPROVED nhưng thiếu approved_from/until) chỉ là chốt chặn dữ liệu lỗi khi hiển thị, không phải trạng thái nghiệp vụ nên không vẽ." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=note;size=18;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="1770" y="490" width="360" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="n-booking" value="Báo giá và đặt lịch INSURANCE/VIP chỉ chấp nhận yêu cầu APPROVED có khoảng [approved_from, approved_until] bao phủ ngày khám." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=note;size=18;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="1770" y="650" width="360" height="110" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
