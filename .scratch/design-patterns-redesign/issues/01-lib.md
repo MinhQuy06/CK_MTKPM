@@ -4,9 +4,9 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** done
 
 **GitHub:** #22
 
-- [ ] Ba script sinh sơ đồ Strategy dùng thư viện chung và cho ra `.drawio` giống hệt bản đang commit
-- [ ] Script xuất PNG nhận thư mục sơ đồ làm tham số
+- [x] Ba script sinh sơ đồ Strategy dùng thư viện chung và cho ra `.drawio` giống hệt bản đang commit
+- [x] Script xuất PNG nhận thư mục sơ đồ làm tham số
