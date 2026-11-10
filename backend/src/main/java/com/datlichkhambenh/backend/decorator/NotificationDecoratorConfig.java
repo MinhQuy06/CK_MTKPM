@@ -17,6 +17,9 @@ public class NotificationDecoratorConfig {
     @Primary
     public AsyncEmailNotificationService decoratedNotificationService(AsyncEmailNotificationServiceImpl email,
                                                                       NotificationLogRepository history) {
-        return new AuditLogDecorator(email, history);
+        // Outermost first: dedup → audit → e-mail
+        return new DeduplicationDecorator(
+                new AuditLogDecorator(email, history),
+                history);
     }
 }

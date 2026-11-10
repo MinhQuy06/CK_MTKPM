@@ -4,8 +4,8 @@
 
 **Blocked by:** 14
 
-**Status:** ready-for-agent
+**Status:** done
 
 **GitHub:** #36
 
-- [ ] Test qua bean: nhắc lịch 2 lần → 1 bản tin, 2 dòng log (SENT, SKIPPED_DUPLICATE)
+- [x] Test qua bean: nhắc lịch 2 lần → 1 bản tin, 2 dòng log (SENT, SKIPPED_DUPLICATE)

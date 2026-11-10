@@ -1,6 +1,6 @@
 # 18: Decorator: chốt thứ tự chuỗi
 
-**What to build:** Chuỗi chạy đúng thứ tự ghi lịch sử → chống trùng → SMS → email gốc, nên lần gửi trùng không sinh SMS lần hai.
+**What to build:** Chuỗi chạy đúng thứ tự chống trùng → SMS → ghi lịch sử → email gốc, nên lần gửi trùng không sinh SMS lần hai.
 
 **Blocked by:** 15, 17
 

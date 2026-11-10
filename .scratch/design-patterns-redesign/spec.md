@@ -25,7 +25,7 @@ Refactor hệ thống đang chạy để áp dụng 7 mẫu, mỗi mẫu giải 
 | Builder | Dựng bản tin thông báo; Director có sẵn công thức cho đặt lịch/hủy/nhắc lịch |
 | Observer | Đặt/hủy lịch phát sự kiện; observer gửi email và observer xóa cache slot phản ứng |
 | Adapter | Client SMS giả lập (giao diện khác) được bọc thành kênh thông báo chung |
-| Decorator | Bọc dịch vụ thông báo: ghi lịch sử → chống gửi trùng → gửi thêm SMS → email gốc |
+| Decorator | Bọc dịch vụ thông báo: chống gửi trùng → gửi thêm SMS → ghi lịch sử → email gốc |
 | Factory | Tạo tài khoản Bệnh nhân/Bác sĩ theo vai trò, dùng chung cho đăng ký và Admin tạo |
 | Facade | Một cửa đặt lịch đứng trước controller đặt lịch |
 
@@ -122,7 +122,7 @@ Mỗi mẫu có 4 sơ đồ draw.io + PNG đen trắng sinh bằng script, một
 ### Decorator
 
 - Lớp bọc trừu tượng cài đặt giao diện dịch vụ thông báo hiện có (đặt lịch/hủy/nhắc lịch) và giữ tham chiếu tới thành phần được bọc.
-- Ba decorator cụ thể, thứ tự từ ngoài vào trong: ghi lịch sử → chống gửi trùng → gửi thêm SMS → dịch vụ email gốc.
+- Ba decorator cụ thể, thứ tự từ ngoài vào trong: chống gửi trùng → gửi thêm SMS → ghi lịch sử → dịch vụ email gốc. (Đổi khi làm ticket 15: nếu ghi lịch sử nằm ngoài cùng thì nó không biết lớp trong đã bỏ qua do trùng và sẽ ghi SENT sai. Ghi lịch sử nằm sát email nên chỉ ghi lần gửi thật; chống trùng tự ghi SKIPPED_DUPLICATE và vẫn đứng trước SMS.)
   - Ghi lịch sử: mỗi lần gọi ghi một dòng.
   - Chống gửi trùng: nếu đã có dòng cùng loại + cùng mã lịch hẹn với kết quả đã gửi thì bỏ qua và ghi kết quả "bỏ qua do trùng".
   - Gửi thêm SMS: gọi email bên trong trước, rồi gửi SMS qua kênh Adapter; lỗi SMS chỉ được ghi lại, không ném ra ngoài.
