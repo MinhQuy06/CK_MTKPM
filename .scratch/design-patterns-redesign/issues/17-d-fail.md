@@ -4,8 +4,8 @@
 
 **Blocked by:** 16
 
-**Status:** ready-for-agent
+**Status:** done
 
 **GitHub:** #38
 
-- [ ] Test qua API với client SMS luôn lỗi
+- [x] Test qua API với client SMS luôn lỗi

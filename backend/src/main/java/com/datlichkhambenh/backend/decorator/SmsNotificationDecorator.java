@@ -42,8 +42,14 @@ public class SmsNotificationDecorator extends NotificationServiceDecorator {
         alsoSend(appointment, director.cancelled(appointment));
     }
 
+    /** SMS is a secondary channel: its failure is recorded, never thrown back into the e-mail/booking flow. */
     private void alsoSend(Appointment appointment, EmailNotificationMessage message) {
-        DeliveryResult result = channel.send(appointment.getPatient().getPhone(), message);
+        DeliveryResult result;
+        try {
+            result = channel.send(appointment.getPatient().getPhone(), message);
+        } catch (RuntimeException e) {
+            result = DeliveryResult.failed("Lỗi kênh " + channel.name() + ": " + e.getMessage());
+        }
         history.save(new NotificationLog(message.type(), message.bookingCode(), channel.name(),
                 result.status().name(), result.detail()));
     }
