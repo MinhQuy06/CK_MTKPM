@@ -2,6 +2,6 @@ package com.datlichkhambenh.backend.observer;
 
 import com.datlichkhambenh.backend.entity.Appointment;
 
-/** Subject state change (GoF Observer): an appointment was just saved as CONFIRMED. */
+/** Sự kiện của Subject (GoF Observer): một lịch hẹn vừa được lưu với trạng thái CONFIRMED. */
 public record AppointmentBookedEvent(Appointment appointment) {
 }

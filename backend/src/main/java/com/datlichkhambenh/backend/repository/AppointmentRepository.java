@@ -14,7 +14,6 @@ import jakarta.persistence.LockModeType;
 
 /**
  * Repository cho bảng APPOINTMENTS.
- * Logic nghiệp vụ sẽ được bổ sung ở bước tiếp theo.
  */
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
@@ -23,18 +22,13 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     @Query("select a from Appointment a where a.id = :id")
     Optional<Appointment> findByIdForUpdate(@Param("id") Long id);
 
-    // Tìm lịch hẹn theo booking_code (mã đặt chỗ duy nhất)
-    Optional<Appointment> findByBookingCode(String bookingCode);
-
     // Lịch sử đặt khám của bệnh nhân (xem lịch sử / hủy lịch)
     List<Appointment> findByPatientUserId(Long patientId);
 
     // Danh sách bệnh nhân đã khám của bác sĩ
     List<Appointment> findByDoctorUserId(Long doctorId);
 
-    // Kiểm tra slot đã bị đặt chưa (trước khi lock)
-    boolean existsByScheduleIdAndStatusNot(Long scheduleId, String status);
-
+    // Ca đã có lịch hẹn chưa (dùng khi kiểm tra ca đặt được)
     boolean existsByScheduleId(Long scheduleId);
 
     boolean existsByPatientUserId(Long patientId);

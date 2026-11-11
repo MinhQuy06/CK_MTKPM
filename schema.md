@@ -75,6 +75,31 @@ Agent PHẢI sinh entity/migration đúng 100% theo bảng dưới đây, không
 | doctor_notes | string | Ghi chú bác sĩ |
 | created_at | timestamp | Thời gian tạo ghi chú |
 
+## MEDICAL_SERVICES
+| Cột | Kiểu | Ghi chú |
+|---|---|---|
+| id | bigint | PK, Mã dịch vụ khám |
+| code | string(30) | UNIQUE, Mã dịch vụ |
+| name | string(150) | Tên dịch vụ |
+| description | text | Mô tả |
+| specialty_id | bigint | FK → SPECIALTIES.id (dịch vụ thuộc chuyên khoa) |
+| default_price | decimal(12,2) | Giá mặc định |
+| duration_minutes | int | Thời lượng (phút) |
+| active | boolean | Đang cung cấp hay không |
+
+## NOTIFICATION_LOG (mẫu Decorator)
+| Cột | Kiểu | Ghi chú |
+|---|---|---|
+| id | bigint | PK |
+| type | string(40) | BOOKING_CONFIRMED / APPOINTMENT_REMINDER / BOOKING_CANCELLED |
+| booking_code | string(50) | Mã lịch hẹn (liên kết logic với APPOINTMENTS.booking_code, không đặt FK) |
+| channel | string(10) | EMAIL / SMS |
+| status | string(30) | SENT / FAILED / SKIPPED_DUPLICATE / SKIPPED_NO_PHONE |
+| note | string(255) | Ghi chú, lý do lỗi |
+| created_at | datetime(6) | Thời điểm ghi |
+
+Chỉ mục `(booking_code, type)` phục vụ chống gửi trùng. MySQL nâng cấp tay: `backend/src/main/resources/db/upgrade/decorator/001-notification-log.sql`.
+
 ## Sơ đồ quan hệ (tổng hợp)
 
 ```

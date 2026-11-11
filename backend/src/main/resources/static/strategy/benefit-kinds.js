@@ -1,5 +1,5 @@
-// Display text for each benefit kind, shared by the patient, admin and dashboard Strategy pages.
-// The reference code is issued outside this system (BHYT card, clinic VIP card); the UI only explains where to find it.
+// Chữ hiển thị cho từng loại quyền hưởng, dùng chung cho trang bệnh nhân, Admin và dashboard.
+// Mã hồ sơ do nơi khác cấp (thẻ BHYT, thẻ VIP của phòng khám); giao diện chỉ hướng dẫn tìm mã ở đâu.
 (function (root) {
   'use strict';
 

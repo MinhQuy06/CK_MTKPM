@@ -6,8 +6,8 @@ import com.datlichkhambenh.backend.strategy.entity.BenefitRequest;
 import com.datlichkhambenh.backend.strategy.pricing.PricingAmounts;
 
 /**
- * A booking offer that matched the patient's expectation, with its slot, doctor and (if any) benefit row-locked
- * until the caller's transaction ends. {@code benefit} is null for Standard pricing.
+ * Giá chào đã khớp kỳ vọng của bệnh nhân; ca, bác sĩ và quyền hưởng (nếu có) đang bị khóa dòng đến hết giao dịch
+ * của nơi gọi. {@code benefit} là null với loại phí Tiêu chuẩn.
  */
 public record LockedOffer(Schedule slot, Doctor doctor, BenefitRequest benefit, PricingAmounts amounts) {
 }

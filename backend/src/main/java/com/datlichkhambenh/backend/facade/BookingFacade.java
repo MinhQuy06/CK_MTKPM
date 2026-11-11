@@ -12,10 +12,10 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * Facade (GoF): one simple entry point for everything a signed-in user does with appointments.
- * Behind it sit the subsystems the controller no longer needs to know: who the user is
- * ({@link CurrentUserService}) and the booking workflow ({@link BookingService}), which in turn locks
- * the slot, checks benefits, prices with Strategy and notifies through Observer/Decorator.
+ * Facade (GoF): một cửa vào cho mọi thao tác lịch hẹn của người đã đăng nhập. Phía sau là các hệ thống con
+ * mà controller không cần biết: ai đang đăng nhập ({@link CurrentUserService}) và quy trình đặt lịch
+ * ({@link BookingService}), bên trong đó khóa ca, kiểm quyền hưởng, tính giá bằng Strategy và thông báo
+ * qua Observer / Decorator.
  */
 @Component
 @RequiredArgsConstructor
@@ -24,8 +24,8 @@ public class BookingFacade {
     private final BookingService bookings;
 
     /**
-     * New UI flow: the patient sends back the full agreed quote, slot day and times included. Missing parts are
-     * refused as QUOTE_REQUIRED; this route can never fall back to a legacy booking.
+     * Luồng giao diện mới: bệnh nhân gửi lại đủ giá đã đồng ý, kể cả ngày giờ ca. Thiếu phần nào thì bị từ chối
+     * với QUOTE_REQUIRED; route này không bao giờ hạ cấp xuống đặt lịch kiểu cũ.
      */
     public AppointmentDto confirm(UserDetails patient, CreateBookingDto request) {
         Expectation agreed = new Expectation.ConfirmedQuote(request.getStrategyKey(), request.getExpectedBasePrice(),
@@ -35,8 +35,8 @@ public class BookingFacade {
     }
 
     /**
-     * Older clients: without any quote field it is a legacy booking (Standard only); with a pricing type or prices
-     * the amounts are still checked, but not the slot's day and times.
+     * Client cũ: không kèm trường báo giá nào thì là đặt lịch kiểu cũ (chỉ Tiêu chuẩn); kèm loại phí hoặc giá thì
+     * số tiền vẫn được so, nhưng ngày giờ ca thì không.
      */
     public AppointmentDto bookWithoutQuote(UserDetails patient, CreateBookingDto request) {
         boolean carriesQuote = request.getStrategyKey() != null || request.getExpectedPrice() != null
@@ -57,7 +57,7 @@ public class BookingFacade {
         bookings.cancelBooking(appointmentId, currentUser.getUserId(patient));
     }
 
-    /** Owner patient, the appointment's doctor or an Admin; the role comes from the signed-in user. */
+    /** Chủ lịch, bác sĩ của lịch hoặc Admin được xem; vai trò lấy từ người đang đăng nhập. */
     public AppointmentDto details(UserDetails requester, Long appointmentId) {
         String role = requester.getAuthorities().iterator().next().getAuthority();
         return bookings.getBookingDetails(appointmentId, currentUser.getUserId(requester), role);

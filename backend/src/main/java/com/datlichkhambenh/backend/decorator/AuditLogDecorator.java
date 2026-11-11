@@ -5,8 +5,8 @@ import com.datlichkhambenh.backend.entity.Appointment;
 import com.datlichkhambenh.backend.service.AsyncEmailNotificationService;
 
 /**
- * Concrete Decorator: writes one history row for every e-mail it forwards, SENT or FAILED.
- * SENT means handed to the e-mail queue; the queue itself still publishes after commit.
+ * Concrete Decorator: ghi một dòng lịch sử cho mỗi email chuyển tiếp, SENT hoặc FAILED.
+ * SENT nghĩa là đã giao cho hàng đợi email; hàng đợi vẫn chỉ gửi sau khi giao dịch commit.
  */
 public class AuditLogDecorator extends NotificationServiceDecorator {
     private final NotificationLogRepository history;

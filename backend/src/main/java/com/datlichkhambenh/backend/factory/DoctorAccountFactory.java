@@ -11,7 +11,7 @@ import com.datlichkhambenh.backend.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-/** Concrete Creator: doctor accounts, attached to a specialty, approved or waiting for Admin. */
+/** Concrete Creator: tài khoản bác sĩ, gắn chuyên khoa, đã duyệt hoặc chờ Admin duyệt. */
 @Component
 public class DoctorAccountFactory extends AccountFactory {
     private final DoctorRepository doctors;

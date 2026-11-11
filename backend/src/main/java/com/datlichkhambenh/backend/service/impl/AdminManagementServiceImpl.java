@@ -1,39 +1,46 @@
 package com.datlichkhambenh.backend.service.impl;
 
-import com.datlichkhambenh.backend.dto.request.SpecialtyRequestDto;
-import com.datlichkhambenh.backend.dto.response.AppointmentDto;
-import com.datlichkhambenh.backend.dto.response.DoctorDto;
-import com.datlichkhambenh.backend.dto.response.SpecialtyDto;
-import com.datlichkhambenh.backend.dto.response.UserDto;
-import com.datlichkhambenh.backend.dto.response.PatientDto;
 import com.datlichkhambenh.backend.dto.request.AdminCreateDoctorDto;
 import com.datlichkhambenh.backend.dto.request.AdminCreatePatientDto;
+import com.datlichkhambenh.backend.dto.request.SpecialtyRequestDto;
 import com.datlichkhambenh.backend.dto.request.UpdateDoctorProfileDto;
 import com.datlichkhambenh.backend.dto.request.UpdatePatientProfileDto;
+import com.datlichkhambenh.backend.dto.response.AppointmentDto;
+import com.datlichkhambenh.backend.dto.response.DoctorDto;
+import com.datlichkhambenh.backend.dto.response.PatientDto;
+import com.datlichkhambenh.backend.dto.response.SpecialtyDto;
+import com.datlichkhambenh.backend.dto.response.UserDto;
+import com.datlichkhambenh.backend.entity.Appointment;
 import com.datlichkhambenh.backend.entity.Doctor;
 import com.datlichkhambenh.backend.entity.Patient;
-import com.datlichkhambenh.backend.entity.User;
+import com.datlichkhambenh.backend.entity.Schedule;
 import com.datlichkhambenh.backend.entity.Specialty;
+import com.datlichkhambenh.backend.entity.User;
+import com.datlichkhambenh.backend.exception.AppException;
 import com.datlichkhambenh.backend.exception.ResourceNotFoundException;
 import com.datlichkhambenh.backend.factory.AccountFactories;
 import com.datlichkhambenh.backend.factory.AccountRequest;
 import com.datlichkhambenh.backend.factory.ClinicAccount;
 import com.datlichkhambenh.backend.repository.*;
 import com.datlichkhambenh.backend.service.AdminManagementService;
-import com.datlichkhambenh.backend.service.RedisCacheService;
 import com.datlichkhambenh.backend.service.DoctorService;
 import com.datlichkhambenh.backend.service.PatientService;
+import com.datlichkhambenh.backend.service.RedisCacheService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.Locale;
-import java.time.LocalDate;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -48,7 +55,6 @@ public class AdminManagementServiceImpl implements AdminManagementService {
     private final ScheduleRepository scheduleRepository;
     private final DoctorService doctorService;
     private final PatientService patientService;
-    private final PasswordEncoder passwordEncoder;
     private final MedicalServiceRepository medicalServiceRepository;
     private final AccountFactories accounts;
 
@@ -126,10 +132,10 @@ public class AdminManagementServiceImpl implements AdminManagementService {
         long cancelled = appointmentRepository.countByStatus("CANCELLED");
         stats.put("cancelledAppointments", cancelled);
         stats.put("cancellationRate", totalAppointments == 0 ? 0.0 : Math.round(cancelled * 10000.0 / totalAppointments) / 100.0);
-        java.math.BigDecimal revenue = appointmentRepository.findAll().stream()
+        BigDecimal revenue = appointmentRepository.findAll().stream()
                 .filter(a -> "COMPLETED".equals(a.getStatus()) && a.getPrice() != null)
-                .map(com.datlichkhambenh.backend.entity.Appointment::getPrice)
-                .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
+                .map(Appointment::getPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
         stats.put("totalRevenue", revenue);
         stats.put("topDoctors", appointmentRepository.findTopDoctors().stream().limit(5)
                 .map(row -> Map.of("doctorName", row[0], "appointments", row[1])).toList());
@@ -145,11 +151,11 @@ public class AdminManagementServiceImpl implements AdminManagementService {
 
     @Override @Transactional
     public void setUserActive(Long userId, boolean active) {
-        com.datlichkhambenh.backend.entity.User user = userRepository.findById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy người dùng"));
         if (!active && "ADMIN".equals(user.getRole())
                 && userRepository.countByRoleAndIsActiveTrue("ADMIN") <= 1) {
-            throw new com.datlichkhambenh.backend.exception.AppException("Không thể khóa quản trị viên hoạt động cuối cùng");
+            throw new AppException("Không thể khóa quản trị viên hoạt động cuối cùng");
         }
         user.setIsActive(active); userRepository.save(user);
         if ("DOCTOR".equals(user.getRole())) {
@@ -170,40 +176,40 @@ public class AdminManagementServiceImpl implements AdminManagementService {
     public void deleteSpecialty(Long id) {
         Specialty s = specialtyRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy chuyên khoa"));
         if (!doctorRepository.findBySpecialtyId(id).isEmpty() || medicalServiceRepository.existsBySpecialtyId(id)) {
-            throw new com.datlichkhambenh.backend.exception.AppException("Không thể xóa chuyên khoa đang được sử dụng");
+            throw new AppException("Không thể xóa chuyên khoa đang được sử dụng");
         }
         specialtyRepository.delete(s); redisCacheService.evictDoctorCache(id);
     }
 
     @Override @Transactional(readOnly = true)
     public Map<String, Object> getAnalytics(int year) {
-        List<com.datlichkhambenh.backend.entity.Appointment> yearly = appointmentRepository.findAll().stream()
+        List<Appointment> yearly = appointmentRepository.findAll().stream()
                 .filter(a -> a.getSchedule() != null && a.getSchedule().getWorkDate().getYear() == year).toList();
 
-        List<Map<String, Object>> months = new java.util.ArrayList<>();
-        List<Map<String, Object>> allTransactions = new java.util.ArrayList<>();
-        java.math.BigDecimal totalYearRevenue = java.math.BigDecimal.ZERO;
+        List<Map<String, Object>> months = new ArrayList<>();
+        List<Map<String, Object>> allTransactions = new ArrayList<>();
+        BigDecimal totalYearRevenue = BigDecimal.ZERO;
         long totalYearApps = 0;
-        java.math.BigDecimal prevMonthRevenue = java.math.BigDecimal.ZERO;
+        BigDecimal prevMonthRevenue = BigDecimal.ZERO;
 
         for (int month = 1; month <= 12; month++) {
             final int m = month;
-            List<com.datlichkhambenh.backend.entity.Appointment> entries = yearly.stream()
+            List<Appointment> entries = yearly.stream()
                     .filter(a -> a.getSchedule().getWorkDate().getMonthValue() == m).toList();
 
             long completed = entries.stream().filter(a -> "COMPLETED".equals(a.getStatus())).count();
             long cancelled = entries.stream().filter(a -> "CANCELLED".equals(a.getStatus())).count();
             long totalMonthApps = entries.size();
 
-            java.math.BigDecimal monthTotalRevenue = entries.stream()
+            BigDecimal monthTotalRevenue = entries.stream()
                     .filter(a -> "COMPLETED".equals(a.getStatus()) && a.getPrice() != null)
-                    .map(com.datlichkhambenh.backend.entity.Appointment::getPrice)
-                    .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
+                    .map(Appointment::getPrice)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
 
             double growthPercent = 0.0;
-            if (m > 1 && prevMonthRevenue.compareTo(java.math.BigDecimal.ZERO) > 0) {
+            if (m > 1 && prevMonthRevenue.compareTo(BigDecimal.ZERO) > 0) {
                 growthPercent = monthTotalRevenue.subtract(prevMonthRevenue)
-                        .divide(prevMonthRevenue, 4, java.math.RoundingMode.HALF_UP)
+                        .divide(prevMonthRevenue, 4, RoundingMode.HALF_UP)
                         .doubleValue() * 100;
             }
             prevMonthRevenue = monthTotalRevenue;
@@ -211,13 +217,13 @@ public class AdminManagementServiceImpl implements AdminManagementService {
             totalYearRevenue = totalYearRevenue.add(monthTotalRevenue);
             totalYearApps += totalMonthApps;
 
-            for (com.datlichkhambenh.backend.entity.Appointment app : entries) {
+            for (Appointment app : entries) {
                 Map<String, Object> tx = new HashMap<>();
                 tx.put("transactionId", String.format("TXN-%d%02d-%05d", year, m, app.getId()));
                 tx.put("bookingCode", app.getBookingCode());
                 tx.put("patientName", app.getPatient() != null ? app.getPatient().getFullName() : "Bệnh nhân");
                 tx.put("patientPhone", app.getPatient() != null ? app.getPatient().getPhone() : "");
-                tx.put("amount", app.getPrice() != null ? app.getPrice() : java.math.BigDecimal.ZERO);
+                tx.put("amount", app.getPrice() != null ? app.getPrice() : BigDecimal.ZERO);
                 tx.put("paymentMethod", "VietQR Banking");
                 tx.put("paymentDate", app.getCreatedAt() != null ? app.getCreatedAt().toString() : "");
                 tx.put("month", m);
@@ -237,13 +243,13 @@ public class AdminManagementServiceImpl implements AdminManagementService {
             ));
         }
 
-        Map<Long, List<com.datlichkhambenh.backend.entity.Appointment>> byDoctor = yearly.stream()
-                .collect(java.util.stream.Collectors.groupingBy(a -> a.getDoctor().getUserId()));
+        Map<Long, List<Appointment>> byDoctor = yearly.stream()
+                .collect(Collectors.groupingBy(a -> a.getDoctor().getUserId()));
         List<Map<String, Object>> rankings = byDoctor.values().stream().map(list -> {
-            com.datlichkhambenh.backend.entity.Doctor doctor = list.get(0).getDoctor();
-            java.math.BigDecimal revenue = list.stream().filter(a -> "COMPLETED".equals(a.getStatus()) && a.getPrice() != null)
-                    .map(com.datlichkhambenh.backend.entity.Appointment::getPrice)
-                    .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
+            Doctor doctor = list.get(0).getDoctor();
+            BigDecimal revenue = list.stream().filter(a -> "COMPLETED".equals(a.getStatus()) && a.getPrice() != null)
+                    .map(Appointment::getPrice)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
             return Map.<String, Object>of(
                     "doctorId", doctor.getUserId(),
                     "doctorName", doctor.getFullName(),
@@ -263,10 +269,10 @@ public class AdminManagementServiceImpl implements AdminManagementService {
 
         List<Map<String, Object>> dailyRevenue = yearly.stream()
                 .filter(a -> "COMPLETED".equals(a.getStatus()) && a.getPrice() != null)
-                .collect(java.util.stream.Collectors.groupingBy(a -> a.getSchedule().getWorkDate(),
-                        java.util.TreeMap::new,
-                        java.util.stream.Collectors.reducing(java.math.BigDecimal.ZERO,
-                                com.datlichkhambenh.backend.entity.Appointment::getPrice, java.math.BigDecimal::add)))
+                .collect(Collectors.groupingBy(a -> a.getSchedule().getWorkDate(),
+                        TreeMap::new,
+                        Collectors.reducing(BigDecimal.ZERO,
+                                Appointment::getPrice, BigDecimal::add)))
                 .entrySet().stream().map(e -> Map.<String, Object>of("date", e.getKey(), "revenue", e.getValue())).toList();
 
         Map<String, Object> result = new HashMap<>();
@@ -281,7 +287,7 @@ public class AdminManagementServiceImpl implements AdminManagementService {
         result.put("yearAppointments", totalYearApps);
         result.put("yearRevenue", totalYearRevenue.doubleValue());
         result.put("avgPerAppointment", totalYearApps > 0
-                ? totalYearRevenue.divide(new java.math.BigDecimal(totalYearApps), 0, java.math.RoundingMode.HALF_UP).doubleValue()
+                ? totalYearRevenue.divide(new BigDecimal(totalYearApps), 0, RoundingMode.HALF_UP).doubleValue()
                 : 0.0);
 
         return result;
@@ -298,7 +304,7 @@ public class AdminManagementServiceImpl implements AdminManagementService {
     @Transactional
     public DoctorDto createDoctor(AdminCreateDoctorDto request) {
         validateUniqueIdentity(request.getEmail(), request.getPhone());
-        // Admin-created doctors are approved unless the Admin says otherwise
+        // Bác sĩ do Admin tạo được duyệt sẵn, trừ khi Admin chọn để chờ duyệt
         var account = (ClinicAccount.DoctorAccount) accounts.forRole("DOCTOR").orElseThrow().create(new AccountRequest(
                 normalizeEmail(request.getEmail()), request.getPassword(), request.getFullName().trim(),
                 request.getPhone(), null, null, null, null, request.getSpecialtyId(), request.getDegree(),
@@ -320,7 +326,7 @@ public class AdminManagementServiceImpl implements AdminManagementService {
         Doctor doctor = doctorRepository.findById(doctorId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy bác sĩ"));
         if (appointmentRepository.existsByDoctorUserId(doctorId) || scheduleRepository.existsByDoctorUserId(doctorId)) {
-            throw new com.datlichkhambenh.backend.exception.AppException(
+            throw new AppException(
                     "Không thể xóa bác sĩ đã có lịch làm việc hoặc lịch hẹn; hãy khóa tài khoản thay thế");
         }
         Long specialtyId = doctor.getSpecialty().getId();
@@ -359,7 +365,7 @@ public class AdminManagementServiceImpl implements AdminManagementService {
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy bệnh nhân"));
         if (appointmentRepository.existsByPatientUserId(patientId)) {
-            throw new com.datlichkhambenh.backend.exception.AppException(
+            throw new AppException(
                     "Không thể xóa bệnh nhân đã có lịch sử khám; hãy khóa tài khoản thay thế");
         }
         User user = patient.getUser();
@@ -373,8 +379,8 @@ public class AdminManagementServiceImpl implements AdminManagementService {
     public List<AppointmentDto> getAppointments(int page, int size) {
         int safePage = Math.max(page, 0);
         int safeSize = Math.min(Math.max(size, 1), 100);
-        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(
-                safePage, safeSize, org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "createdAt"));
+        Pageable pageable = PageRequest.of(
+                safePage, safeSize, Sort.by(Sort.Direction.DESC, "createdAt"));
         return appointmentRepository.findAll(pageable).stream().map(this::mapAppointment).toList();
     }
 
@@ -384,8 +390,8 @@ public class AdminManagementServiceImpl implements AdminManagementService {
         return appointmentRepository.findByPatientUserId(patientId).stream().map(this::mapAppointment).toList();
     }
 
-    private AppointmentDto mapAppointment(com.datlichkhambenh.backend.entity.Appointment a) {
-        com.datlichkhambenh.backend.entity.Schedule s = a.getSchedule();
+    private AppointmentDto mapAppointment(Appointment a) {
+        Schedule s = a.getSchedule();
         return AppointmentDto.builder()
                 .id(a.getId())
                 .bookingCode(a.getBookingCode())
@@ -407,10 +413,10 @@ public class AdminManagementServiceImpl implements AdminManagementService {
 
     private void validateUniqueIdentity(String email, String phone) {
         if (userRepository.existsByEmailIgnoreCase(normalizeEmail(email))) {
-            throw new com.datlichkhambenh.backend.exception.AppException("Email đã tồn tại");
+            throw new AppException("Email đã tồn tại");
         }
         if (phone != null && (doctorRepository.existsByPhone(phone) || patientRepository.existsByPhone(phone))) {
-            throw new com.datlichkhambenh.backend.exception.AppException("Số điện thoại đã tồn tại");
+            throw new AppException("Số điện thoại đã tồn tại");
         }
     }
 

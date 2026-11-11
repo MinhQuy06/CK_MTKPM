@@ -2,7 +2,7 @@
 
 Bệnh nhân chọn ca trong dashboard và nhận báo giá từ server. API GET /api/v1/appointments/quote nhận scheduleId và strategyKey (mặc định STANDARD), yêu cầu JWT và PATIENT. Kết quả gồm giá gốc, tỷ lệ giảm, giá cuối và VND. Báo giá không giữ chỗ, tạo lịch hoặc gửi email.
 
-ConsultationPricingStrategy là Strategy; StandardPricingStrategy là Concrete Strategy. PricingContext giữ registry bất biến, chọn thuật toán cho từng request và chuẩn hóa tiền. ConsultationQuoteService là client của Context, chịu trách nhiệm ca còn đặt được. Công thức Tiêu chuẩn mặc định: 300000 × (1 − 0) = 300000 VND.
+ConsultationPricingStrategy là Strategy; StandardPricingStrategy là Concrete Strategy. PricingContext giữ registry bất biến, chọn thuật toán cho từng request và chuẩn hóa tiền. BookingOffer là client của Context, chịu trách nhiệm ca còn đặt được, quyền hưởng và lý do từ chối (trước 11/11/2026 là ConsultationQuoteService). Công thức Tiêu chuẩn mặc định: 300000 × (1 − 0) = 300000 VND.
 
 Tỷ lệ giảm STANDARD_DISCOUNT_RATE là số trong [0,1]. BigDecimal chuẩn hóa phí gốc HALF_UP đến đồng, áp dụng tỷ lệ rồi làm tròn giá cuối; phí 0 hợp lệ, thiếu/âm hoặc tràn DECIMAL(12,2) bị từ chối. Việc cấu hình công thức không tạo quyền Bảo hiểm/VIP: các ticket sau bổ sung xét điều kiện riêng.
 

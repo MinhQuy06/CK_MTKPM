@@ -29,3 +29,8 @@ frontend/node_modules/
 .superpowers/
 
 __pycache__/
+
+# Tệp hệ điều hành và IDE (mỗi máy tự có, không đưa vào repo)
+.DS_Store
+.idea/
+.vscode/

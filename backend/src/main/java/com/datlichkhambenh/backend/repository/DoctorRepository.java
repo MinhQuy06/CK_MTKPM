@@ -13,7 +13,6 @@ import java.util.Optional;
 
 /**
  * Repository cho bảng DOCTORS.
- * Logic nghiệp vụ sẽ được bổ sung ở bước tiếp theo.
  *
  * LƯU Ý: Cache danh sách bác sĩ / slot rảnh phải đọc từ Redis trước,
  * chỉ fallback về DB khi cache miss — xem RedisCacheService.
@@ -25,22 +24,15 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long> {
     @Query("select d from Doctor d where d.userId = :id")
     Optional<Doctor> findByIdForUpdate(@Param("id") Long id);
 
-    // Tìm bác sĩ theo số điện thoại
-    Optional<Doctor> findByPhone(String phone);
-
     // Kiểm tra phone đã tồn tại chưa
     boolean existsByPhone(String phone);
 
     // Lấy danh sách bác sĩ theo chuyên khoa (fallback khi cache miss)
     List<Doctor> findBySpecialtyId(Long specialtyId);
 
-    // Lấy danh sách bác sĩ đã được Admin phê duyệt
-    List<Doctor> findByIsApprovedTrue();
-
+    // Bác sĩ đã được Admin duyệt và tài khoản đang hoạt động
     List<Doctor> findByIsApprovedTrueAndUserIsActiveTrue();
 
-    // Lấy danh sách bác sĩ theo chuyên khoa VÀ đã được duyệt
-    List<Doctor> findBySpecialtyIdAndIsApprovedTrue(Long specialtyId);
-
+    // Như trên, lọc thêm theo chuyên khoa
     List<Doctor> findBySpecialtyIdAndIsApprovedTrueAndUserIsActiveTrue(Long specialtyId);
 }

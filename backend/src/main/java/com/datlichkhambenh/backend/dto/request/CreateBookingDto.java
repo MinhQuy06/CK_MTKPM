@@ -1,6 +1,9 @@
 package com.datlichkhambenh.backend.dto.request;
 
 import jakarta.validation.constraints.NotNull;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class CreateBookingDto {
 
@@ -8,12 +11,12 @@ public class CreateBookingDto {
     private Long scheduleId;
 
     private String symptoms;
-    private java.time.LocalDate expectedWorkDate;
-    private java.time.LocalTime expectedStartTime, expectedEndTime;
+    private LocalDate expectedWorkDate;
+    private LocalTime expectedStartTime, expectedEndTime;
     private String strategyKey;
-    private java.math.BigDecimal expectedBasePrice;
-    private java.math.BigDecimal expectedDiscountRate;
-    private java.math.BigDecimal expectedPrice;
+    private BigDecimal expectedBasePrice;
+    private BigDecimal expectedDiscountRate;
+    private BigDecimal expectedPrice;
 
     public CreateBookingDto() {}
 
@@ -30,20 +33,20 @@ public class CreateBookingDto {
         private Long scheduleId;
         private String symptoms;
         private String strategyKey;
-        private java.time.LocalDate expectedWorkDate;
-        private java.time.LocalTime expectedStartTime, expectedEndTime;
-        private java.math.BigDecimal expectedBasePrice, expectedDiscountRate, expectedPrice;
+        private LocalDate expectedWorkDate;
+        private LocalTime expectedStartTime, expectedEndTime;
+        private BigDecimal expectedBasePrice, expectedDiscountRate, expectedPrice;
 
         public CreateBookingDtoBuilder scheduleId(Long scheduleId) { this.scheduleId = scheduleId; return this; }
         public CreateBookingDtoBuilder symptoms(String symptoms) { this.symptoms = symptoms; return this; }
 
-        public CreateBookingDtoBuilder expectedWorkDate(java.time.LocalDate value){this.expectedWorkDate=value;return this;}
-        public CreateBookingDtoBuilder expectedStartTime(java.time.LocalTime value){this.expectedStartTime=value;return this;}
-        public CreateBookingDtoBuilder expectedEndTime(java.time.LocalTime value){this.expectedEndTime=value;return this;}
+        public CreateBookingDtoBuilder expectedWorkDate(LocalDate value){this.expectedWorkDate=value;return this;}
+        public CreateBookingDtoBuilder expectedStartTime(LocalTime value){this.expectedStartTime=value;return this;}
+        public CreateBookingDtoBuilder expectedEndTime(LocalTime value){this.expectedEndTime=value;return this;}
         public CreateBookingDtoBuilder strategyKey(String value){this.strategyKey=value;return this;}
-        public CreateBookingDtoBuilder expectedBasePrice(java.math.BigDecimal value){this.expectedBasePrice=value;return this;}
-        public CreateBookingDtoBuilder expectedDiscountRate(java.math.BigDecimal value){this.expectedDiscountRate=value;return this;}
-        public CreateBookingDtoBuilder expectedPrice(java.math.BigDecimal value){this.expectedPrice=value;return this;}
+        public CreateBookingDtoBuilder expectedBasePrice(BigDecimal value){this.expectedBasePrice=value;return this;}
+        public CreateBookingDtoBuilder expectedDiscountRate(BigDecimal value){this.expectedDiscountRate=value;return this;}
+        public CreateBookingDtoBuilder expectedPrice(BigDecimal value){this.expectedPrice=value;return this;}
         public CreateBookingDto build() {
             var dto=new CreateBookingDto(scheduleId,symptoms);dto.strategyKey=strategyKey;dto.expectedBasePrice=expectedBasePrice;
             dto.expectedWorkDate=expectedWorkDate;dto.expectedStartTime=expectedStartTime;dto.expectedEndTime=expectedEndTime;
@@ -51,12 +54,12 @@ public class CreateBookingDto {
         }
     }
 
-    public java.time.LocalDate getExpectedWorkDate(){return expectedWorkDate;}
-    public void setExpectedWorkDate(java.time.LocalDate value){expectedWorkDate=value;}
-    public java.time.LocalTime getExpectedStartTime(){return expectedStartTime;}
-    public void setExpectedStartTime(java.time.LocalTime value){expectedStartTime=value;}
-    public java.time.LocalTime getExpectedEndTime(){return expectedEndTime;}
-    public void setExpectedEndTime(java.time.LocalTime value){expectedEndTime=value;}
+    public LocalDate getExpectedWorkDate(){return expectedWorkDate;}
+    public void setExpectedWorkDate(LocalDate value){expectedWorkDate=value;}
+    public LocalTime getExpectedStartTime(){return expectedStartTime;}
+    public void setExpectedStartTime(LocalTime value){expectedStartTime=value;}
+    public LocalTime getExpectedEndTime(){return expectedEndTime;}
+    public void setExpectedEndTime(LocalTime value){expectedEndTime=value;}
 
     public Long getScheduleId() { return scheduleId; }
     public void setScheduleId(Long scheduleId) { this.scheduleId = scheduleId; }
@@ -65,10 +68,10 @@ public class CreateBookingDto {
     public void setSymptoms(String symptoms) { this.symptoms = symptoms; }
     public String getStrategyKey(){return strategyKey;}
     public void setStrategyKey(String value){strategyKey=value;}
-    public java.math.BigDecimal getExpectedBasePrice(){return expectedBasePrice;}
-    public void setExpectedBasePrice(java.math.BigDecimal value){expectedBasePrice=value;}
-    public java.math.BigDecimal getExpectedDiscountRate(){return expectedDiscountRate;}
-    public void setExpectedDiscountRate(java.math.BigDecimal value){expectedDiscountRate=value;}
-    public java.math.BigDecimal getExpectedPrice(){return expectedPrice;}
-    public void setExpectedPrice(java.math.BigDecimal value){expectedPrice=value;}
+    public BigDecimal getExpectedBasePrice(){return expectedBasePrice;}
+    public void setExpectedBasePrice(BigDecimal value){expectedBasePrice=value;}
+    public BigDecimal getExpectedDiscountRate(){return expectedDiscountRate;}
+    public void setExpectedDiscountRate(BigDecimal value){expectedDiscountRate=value;}
+    public BigDecimal getExpectedPrice(){return expectedPrice;}
+    public void setExpectedPrice(BigDecimal value){expectedPrice=value;}
 }

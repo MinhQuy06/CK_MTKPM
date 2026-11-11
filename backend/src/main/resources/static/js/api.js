@@ -66,7 +66,6 @@ const Api = {
   auth: {
     register: (body) => Api.post('/auth/register', body, false),
     login: (body) => Api.post('/auth/login', body, false),
-    refresh: (body) => Api.post('/auth/refresh', body, false),
     changePassword: (body) => Api.post('/auth/change-password', body),
   },
 
@@ -78,7 +77,6 @@ const Api = {
       if (keyword) params.set('keyword', keyword);
       return Api.get(`/doctors${params.size ? `?${params}` : ''}`);
     },
-    get: (id) => Api.get(`/doctors/${id}`),
     specialties: () => Api.get('/doctors/specialties', false),
     slots: (id, date) => Api.get(`/doctors/${id}/slots?date=${date}`),
     createSlot: (body) => Api.post('/doctors/slots', body),
@@ -86,23 +84,18 @@ const Api = {
     updateSlot: (id, body) => Api.put(`/doctors/slots/${id}`, body),
     deleteSlot: (id) => Api.delete(`/doctors/slots/${id}`),
     myAppointments: () => Api.get('/doctors/my-appointments'),
-    appointmentsByRange: (from, to) => Api.get(`/doctors/my-appointments/range?from=${from}&to=${to}`),
-    updateAppointmentStatus: (id, status) => Api.put(`/doctors/appointments/${id}/status?status=${status}`, null),
     updateMedRecord: (body) => Api.post('/doctors/medical-records', body),
     profile: () => Api.get('/doctors/me'),
     updateProfile: (body) => Api.put('/doctors/me', body),
     mySlots: () => Api.get('/doctors/my-slots'),
-    completedPatients: () => Api.get('/doctors/my-patients/completed'),
   },
 
   benefits: {
     revoke: (id,body) => Api.post('/admin/benefit-requests/' + id + '/revoke', body),
     adminList: () => Api.get('/admin/benefit-requests'),
-    adminGet: id => Api.get('/admin/benefit-requests/' + id),
     decide: (id,body) => Api.post('/admin/benefit-requests/' + id + '/decision', body),
     submit: body => Api.post('/patients/me/benefit-requests', body),
     mine: () => Api.get('/patients/me/benefit-requests'),
-    get: id => Api.get('/patients/me/benefit-requests/' + id),
   },
 
   // ── Appointments ──
@@ -114,14 +107,7 @@ const Api = {
     },
     create: (body) => Api.post('/appointments/confirm', body),
     cancel: (id) => Api.delete(`/appointments/${id}/cancel`),
-    get: (id) => Api.get(`/appointments/${id}`),
     mine: () => Api.get('/appointments/my-appointments'),
-  },
-
-  // ── Admin Appointments ──
-  adminAppointments: {
-    all: (page = 0, size = 20) => Api.get(`/admin/appointments?page=${page}&size=${size}`),
-    getPatientHistory: (patientId) => Api.get(`/admin/patients/${patientId}/appointments`),
   },
 
   // ── Admin ──

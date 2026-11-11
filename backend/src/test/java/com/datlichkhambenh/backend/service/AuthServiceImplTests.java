@@ -7,7 +7,6 @@ import com.datlichkhambenh.backend.entity.User;
 import com.datlichkhambenh.backend.exception.AppException;
 import com.datlichkhambenh.backend.repository.DoctorRepository;
 import com.datlichkhambenh.backend.repository.PatientRepository;
-import com.datlichkhambenh.backend.repository.SpecialtyRepository;
 import com.datlichkhambenh.backend.repository.UserRepository;
 import com.datlichkhambenh.backend.security.JwtTokenProvider;
 import com.datlichkhambenh.backend.service.impl.AuthServiceImpl;
@@ -34,7 +33,6 @@ class AuthServiceImplTests {
     @Mock UserRepository userRepository;
     @Mock PatientRepository patientRepository;
     @Mock DoctorRepository doctorRepository;
-    @Mock SpecialtyRepository specialtyRepository;
     @Mock PasswordEncoder passwordEncoder;
     @Mock AuthenticationManager authenticationManager;
     JwtTokenProvider jwtTokenProvider;
@@ -48,7 +46,7 @@ class AuthServiceImplTests {
         ReflectionTestUtils.setField(jwtTokenProvider, "jwtExpirationMs", 3_600_000L);
         ReflectionTestUtils.setField(jwtTokenProvider, "refreshExpirationMs", 86_400_000L);
         authService = new AuthServiceImpl(userRepository, patientRepository, doctorRepository,
-                specialtyRepository, passwordEncoder, authenticationManager, jwtTokenProvider,
+                passwordEncoder, authenticationManager, jwtTokenProvider,
                 new AccountFactories(List.of()));
     }
 

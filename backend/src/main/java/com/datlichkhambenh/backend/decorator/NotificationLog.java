@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 /**
- * One notification attempt: which kind, for which booking, over which channel, and what happened.
- * Status is SENT (handed to the channel/queue), FAILED, SKIPPED_DUPLICATE or SKIPPED_NO_PHONE.
+ * Một lần gửi thông báo: loại nào, cho lịch hẹn nào, qua kênh nào và kết quả ra sao.
+ * Trạng thái: SENT (đã giao cho kênh / hàng đợi), FAILED, SKIPPED_DUPLICATE hoặc SKIPPED_NO_PHONE.
  */
 @Entity
 @Table(name = "notification_log", indexes = @Index(name = "idx_notification_log_booking", columnList = "booking_code, type"))

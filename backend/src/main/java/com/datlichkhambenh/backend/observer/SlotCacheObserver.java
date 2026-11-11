@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-/** Concrete Observer: the cached free-slot list of that doctor and day is stale after a booking. */
+/** Concrete Observer: sau khi đặt / hủy lịch, danh sách ca trống đã cache của bác sĩ và ngày đó không còn đúng. */
 @Component
 @RequiredArgsConstructor
 public class SlotCacheObserver {
@@ -17,7 +17,7 @@ public class SlotCacheObserver {
         evict(event.appointment().getSchedule());
     }
 
-    /** The freed time is offered again as a new slot, so the cached list is stale too. */
+    /** Giờ vừa trống được mở lại thành ca mới, nên danh sách đã cache cũng cũ. */
     @EventListener
     public void onCancelled(AppointmentCancelledEvent event) {
         evict(event.appointment().getSchedule());

@@ -1,4 +1,4 @@
-// Keeps asynchronous quote responses tied to the current slot and pricing kind.
+// Giữ kết quả báo giá (gọi bất đồng bộ) khớp với ca và loại phí đang chọn: phản hồi trễ của lựa chọn cũ bị bỏ qua.
 (function (root) {
   'use strict';
 

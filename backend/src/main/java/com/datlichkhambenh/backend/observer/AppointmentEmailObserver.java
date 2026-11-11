@@ -7,8 +7,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 /**
- * Concrete Observer: tells the patient by e-mail. It runs inside the booking transaction, but the
- * e-mail itself still only leaves after commit. A failure here never rolls the booking back.
+ * Concrete Observer: báo cho bệnh nhân qua email. Chạy trong giao dịch đặt lịch, nhưng email vẫn chỉ đi
+ * sau khi commit. Lỗi ở đây chỉ ghi log, không bao giờ làm hủy lịch đã đặt.
  */
 @Slf4j
 @Component

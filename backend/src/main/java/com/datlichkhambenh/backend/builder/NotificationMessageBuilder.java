@@ -3,8 +3,8 @@ package com.datlichkhambenh.backend.builder;
 import com.datlichkhambenh.backend.messaging.EmailNotificationMessage;
 
 /**
- * Builder (GoF): assembles an {@link EmailNotificationMessage} field by field, by name, instead of
- * a nine-argument constructor where two neighbouring Strings are easy to swap.
+ * Builder (GoF): dựng {@link EmailNotificationMessage} từng trường, gọi theo tên, thay cho constructor 9 tham số
+ * String mà hai tham số cạnh nhau rất dễ truyền nhầm chỗ.
  */
 public final class NotificationMessageBuilder {
     private String type;
@@ -69,7 +69,7 @@ public final class NotificationMessageBuilder {
         return this;
     }
 
-    /** @throws IllegalStateException when type, recipientEmail or bookingCode is missing; price may be null. */
+    /** @throws IllegalStateException khi thiếu type, recipientEmail hoặc bookingCode; price được phép null. */
     public EmailNotificationMessage build() {
         require("type", type);
         require("recipientEmail", recipientEmail);

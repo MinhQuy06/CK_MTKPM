@@ -9,7 +9,6 @@ import java.util.Optional;
 
 /**
  * Repository cho bảng MEDICAL_RECORDS.
- * Logic nghiệp vụ sẽ được bổ sung ở bước tiếp theo.
  */
 @Repository
 public interface MedicalRecordRepository extends JpaRepository<MedicalRecord, Long> {

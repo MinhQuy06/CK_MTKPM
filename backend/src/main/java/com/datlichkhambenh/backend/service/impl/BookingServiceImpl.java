@@ -1,39 +1,34 @@
 package com.datlichkhambenh.backend.service.impl;
 
-import com.datlichkhambenh.backend.dto.request.CreateBookingDto;
 import com.datlichkhambenh.backend.dto.response.AppointmentDto;
 import com.datlichkhambenh.backend.entity.Appointment;
 import com.datlichkhambenh.backend.entity.Doctor;
 import com.datlichkhambenh.backend.entity.Patient;
 import com.datlichkhambenh.backend.entity.Schedule;
 import com.datlichkhambenh.backend.exception.AppException;
-import com.datlichkhambenh.backend.exception.BookingRejectionException;
+import com.datlichkhambenh.backend.exception.ResourceNotFoundException;
+import com.datlichkhambenh.backend.observer.AppointmentBookedEvent;
+import com.datlichkhambenh.backend.observer.AppointmentCancelledEvent;
+import com.datlichkhambenh.backend.repository.AppointmentRepository;
+import com.datlichkhambenh.backend.repository.PatientRepository;
+import com.datlichkhambenh.backend.repository.ScheduleRepository;
+import com.datlichkhambenh.backend.service.BookingService;
+import com.datlichkhambenh.backend.strategy.entity.BenefitRequest;
 import com.datlichkhambenh.backend.strategy.offer.BookingOffer;
 import com.datlichkhambenh.backend.strategy.offer.Expectation;
 import com.datlichkhambenh.backend.strategy.offer.LockedOffer;
 import com.datlichkhambenh.backend.strategy.pricing.PricingAmounts;
-import org.springframework.http.HttpStatus;
-import com.datlichkhambenh.backend.exception.BookingConflictException;
-import com.datlichkhambenh.backend.exception.ResourceNotFoundException;
-import com.datlichkhambenh.backend.repository.AppointmentRepository;
-import com.datlichkhambenh.backend.repository.DoctorRepository;
-import com.datlichkhambenh.backend.repository.PatientRepository;
-import com.datlichkhambenh.backend.repository.ScheduleRepository;
-import com.datlichkhambenh.backend.service.BookingService;
-import com.datlichkhambenh.backend.observer.AppointmentBookedEvent;
-import com.datlichkhambenh.backend.observer.AppointmentCancelledEvent;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
@@ -41,7 +36,6 @@ public class BookingServiceImpl implements BookingService {
     private final ScheduleRepository scheduleRepository;
     private final AppointmentRepository appointmentRepository;
     private final PatientRepository patientRepository;
-    private final DoctorRepository doctorRepository;
     private final BookingOffer offers;
     private final ApplicationEventPublisher events;
 
@@ -53,7 +47,7 @@ public class BookingServiceImpl implements BookingService {
         Schedule schedule = offer.slot();
         Doctor doctor = offer.doctor();
         PricingAmounts amount = offer.amounts();
-        com.datlichkhambenh.backend.strategy.entity.BenefitRequest grant = offer.benefit();
+        BenefitRequest grant = offer.benefit();
 
         Patient patient = patientRepository.findById(patientUserId)
                 .orElseThrow(() -> new ResourceNotFoundException("Hồ sơ bệnh nhân không tồn tại"));
@@ -112,18 +106,15 @@ public class BookingServiceImpl implements BookingService {
 
         // Quan hệ Appointment-Schedule là 1-1. Tạo slot thay thế để giữ lịch sử
         // lịch đã hủy mà vẫn cho phép bệnh nhân khác đặt cùng khung giờ.
-        Schedule schedule = bookedSchedule;
-        if (schedule != null) {
-            schedule.setIsAvailable(false);
-            scheduleRepository.save(schedule);
-            scheduleRepository.save(Schedule.builder()
-                    .doctor(schedule.getDoctor())
-                    .workDate(schedule.getWorkDate())
-                    .startTime(schedule.getStartTime())
-                    .endTime(schedule.getEndTime())
-                    .isAvailable(true)
-                    .build());
-        }
+        bookedSchedule.setIsAvailable(false);
+        scheduleRepository.save(bookedSchedule);
+        scheduleRepository.save(Schedule.builder()
+                .doctor(bookedSchedule.getDoctor())
+                .workDate(bookedSchedule.getWorkDate())
+                .startTime(bookedSchedule.getStartTime())
+                .endTime(bookedSchedule.getEndTime())
+                .isAvailable(true)
+                .build());
 
         // Observer: báo cho các observer (email, cache slot…) rằng lịch hẹn đã bị hủy
         events.publishEvent(new AppointmentCancelledEvent(appointment));
@@ -138,7 +129,7 @@ public class BookingServiceImpl implements BookingService {
                 || ("PATIENT".equals(requesterRole) && appointment.getPatient().getUserId().equals(requesterUserId))
                 || ("DOCTOR".equals(requesterRole) && appointment.getDoctor().getUserId().equals(requesterUserId));
         if (!ownsAppointment) {
-            throw new AppException("Bạn không có quyền xem lịch hẹn này", org.springframework.http.HttpStatus.FORBIDDEN);
+            throw new AppException("Bạn không có quyền xem lịch hẹn này", HttpStatus.FORBIDDEN);
         }
         return mapToDto(appointment);
     }
@@ -177,8 +168,8 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<AppointmentDto> getDoctorAppointments(Long doctorUserId, java.time.LocalDate from,
-                                                       java.time.LocalDate to) {
+    public List<AppointmentDto> getDoctorAppointments(Long doctorUserId, LocalDate from,
+                                                       LocalDate to) {
         if (from.isAfter(to)) {
             throw new AppException("Ngày bắt đầu phải trước hoặc bằng ngày kết thúc");
         }

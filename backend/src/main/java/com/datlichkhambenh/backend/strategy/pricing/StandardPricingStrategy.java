@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
+/** Concrete Strategy: loại phí Tiêu chuẩn, mặc định không giảm (cấu hình app.pricing.standard-discount-rate). */
 @Component
 public class StandardPricingStrategy implements ConsultationPricingStrategy {
     private final BigDecimal discountRate;

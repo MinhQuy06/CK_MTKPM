@@ -1,12 +1,20 @@
 package com.datlichkhambenh.backend.strategy.dto.response;
 
-import java.math.BigDecimal;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalTime;
+
+/** Giá chào trả cho giao diện: loại phí, số tiền và ngày giờ của ca. */
 public record ConsultationQuoteDto(Long scheduleId, String strategyKey, String strategyName,
                                    BigDecimal basePrice, BigDecimal discountRate, BigDecimal finalPrice,
-                                   String currency, boolean simulated, java.time.LocalDate workDate,
-                                   java.time.LocalTime startTime, java.time.LocalTime endTime) {
-    /** JSON numbers lose configured rate precision in JavaScript; echo this string on confirmation. */
-    @com.fasterxml.jackson.annotation.JsonProperty("discountRateExact")
-    public String discountRateExact() { return discountRate.toPlainString(); }
+                                   String currency, boolean simulated, LocalDate workDate,
+                                   LocalTime startTime, LocalTime endTime) {
+
+    /** Số JSON trong JavaScript làm mất chữ số của tỷ lệ; giao diện gửi lại chuỗi chính xác này khi xác nhận. */
+    @JsonProperty("discountRateExact")
+    public String discountRateExact() {
+        return discountRate.toPlainString();
+    }
 }

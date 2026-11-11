@@ -3,7 +3,7 @@ package com.datlichkhambenh.backend.adapter;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-/** Converts phone numbers as the clinic stores them into the vendor's international (+84) form. */
+/** Đổi số điện thoại phòng khám lưu sang dạng quốc tế (+84) mà nhà cung cấp SMS yêu cầu. */
 public final class VietnamPhone {
     private static final Pattern SEPARATORS = Pattern.compile("[\\s.\\-]");
     private static final Pattern SUBSCRIBER = Pattern.compile("[1-9]\\d{8}");
@@ -11,7 +11,7 @@ public final class VietnamPhone {
     private VietnamPhone() {
     }
 
-    /** "0912 345 678", "84912345678", "+84912345678" → "+84912345678"; anything else → empty. */
+    /** "0912 345 678", "84912345678", "+84912345678" → "+84912345678"; dạng khác → rỗng. */
     public static Optional<String> toInternational(String stored) {
         if (stored == null) {
             return Optional.empty();

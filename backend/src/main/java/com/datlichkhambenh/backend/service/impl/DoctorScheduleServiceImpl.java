@@ -79,7 +79,7 @@ public class DoctorScheduleServiceImpl implements DoctorScheduleService {
             return cached;
         }
 
-        // 2. Cache miss -> query DB
+        // 2. Cache không có → đọc DB
         List<Schedule> slots = scheduleRepository.findByDoctorUserIdAndWorkDateAndIsAvailableTrue(doctorUserId, date);
         List<ScheduleDto> result = slots.stream().map(this::mapToDto).collect(Collectors.toList());
 

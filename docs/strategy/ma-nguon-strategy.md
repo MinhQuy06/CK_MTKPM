@@ -10,12 +10,12 @@ Thư mục gốc backend: `backend/src/main/java/com/datlichkhambenh/backend/` (
 
 ## 1. Thứ tự nên đọc khi ôn bài
 
-1. [ConsultationPricingStrategy.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/pricing/ConsultationPricingStrategy.java): interface, chỉ 12 dòng.
+1. [ConsultationPricingStrategy.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/pricing/ConsultationPricingStrategy.java): interface, 23 dòng kể cả chú thích.
 2. [StandardPricingStrategy.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/pricing/StandardPricingStrategy.java): một Concrete Strategy mẫu.
-3. [PricingContext.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/pricing/PricingContext.java): Context, hàm `calculate` ở dòng 33.
-4. [BookingOffer.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/offer/BookingOffer.java): Client duy nhất của Strategy (giá chào): `quote` dòng 62, `lockAndConfirm` dòng 80.
-5. [BookingServiceImpl.java](../../backend/src/main/java/com/datlichkhambenh/backend/service/impl/BookingServiceImpl.java): đặt lịch gọi `lockAndConfirm` rồi lưu, dòng 50–85.
-6. [BenefitService.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/service/BenefitService.java): điều kiện sử dụng (quyền hưởng còn hiệu lực), dòng 88–112.
+3. [PricingContext.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/pricing/PricingContext.java): Context, hàm `calculate` ở dòng 47.
+4. [BookingOffer.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/offer/BookingOffer.java): Client duy nhất của Strategy (giá chào): `quote` dòng 61, `lockAndConfirm` dòng 78.
+5. [BookingServiceImpl.java](../../backend/src/main/java/com/datlichkhambenh/backend/service/impl/BookingServiceImpl.java): đặt lịch gọi `lockAndConfirm` rồi lưu, dòng 44–79.
+6. [BenefitService.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/service/BenefitService.java): điều kiện sử dụng (quyền hưởng còn hiệu lực), dòng 141–172.
 
 ---
 
@@ -23,11 +23,11 @@ Thư mục gốc backend: `backend/src/main/java/com/datlichkhambenh/backend/` (
 
 | File | Vai trò | Nội dung chính | Dòng |
 | --- | --- | --- | --- |
-| [ConsultationPricingStrategy.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/pricing/ConsultationPricingStrategy.java) | ⭐ Strategy | Interface: `key()`, `name()`, `discountRate()`, `calculate(basePrice)`, `simulated()` | 6–12 |
-| [StandardPricingStrategy.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/pricing/StandardPricingStrategy.java) | ⭐ Concrete Strategy | Key `STANDARD`, giảm mặc định 0; kiểm tra tỷ lệ trong [0,1] ở constructor | 12–17, 25 |
-| [InsurancePricingStrategy.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/pricing/InsurancePricingStrategy.java) | ⭐ Concrete Strategy | Key `INSURANCE`, giảm mặc định 0.8 | 9, 13, 17 |
-| [VipPricingStrategy.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/pricing/VipPricingStrategy.java) | ⭐ Concrete Strategy | Key `VIP`, giảm mặc định 0.1 | 9, 13, 17 |
-| [PricingContext.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/pricing/PricingContext.java) | ⭐ Context | Constructor nhận `List<ConsultationPricingStrategy>` từ Spring, dựng registry bất biến, báo lỗi trùng key (17–25); `supports` (27); `choices` (28); `calculate(key, fee)` (33–51); `wholeVnd` làm tròn HALF_UP và kiểm tra giới hạn (53–60) | 13–61 |
+| [ConsultationPricingStrategy.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/pricing/ConsultationPricingStrategy.java) | ⭐ Strategy | Interface: `key()`, `name()`, `discountRate()`, `calculate(basePrice)`, `simulated()` | 9–23 |
+| [StandardPricingStrategy.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/pricing/StandardPricingStrategy.java) | ⭐ Concrete Strategy | Key `STANDARD`, giảm mặc định 0; kiểm tra tỷ lệ trong [0,1] ở constructor | 13–18, 26 |
+| [InsurancePricingStrategy.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/pricing/InsurancePricingStrategy.java) | ⭐ Concrete Strategy | Key `INSURANCE`, giảm mặc định 0.8 | 11, 13, 20 |
+| [VipPricingStrategy.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/pricing/VipPricingStrategy.java) | ⭐ Concrete Strategy | Key `VIP`, giảm mặc định 0.1 | 11, 13, 20 |
+| [PricingContext.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/pricing/PricingContext.java) | ⭐ Context | Constructor nhận `List<ConsultationPricingStrategy>` từ Spring, dựng registry bất biến, báo lỗi trùng key (22–30); `supports` (32); `choices` (37–43); `calculate(key, fee)` (47–65); `wholeVnd` làm tròn HALF_UP và kiểm tra giới hạn (68–77) | 18–78 |
 | [PricingAmounts.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/pricing/PricingAmounts.java) | ⭐ Kết quả | Record: key, tên, phí gốc, tỷ lệ, giá cuối | 5 |
 | [PricingChoice.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/pricing/PricingChoice.java) | ⭐ Kết quả | Record: key + tên loại phí để hiện trên UI | 3 |
 
@@ -71,12 +71,12 @@ Muốn thêm loại giá mới: tạo một lớp `@Component` implement interfa
 
 | File | Vai trò | Nội dung chính | Dòng |
 | --- | --- | --- | --- |
-| [strategy/offer/BookingOffer.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/offer/BookingOffer.java) | ⭐ Client (giá chào) | `pricingTypes` (52): loại phí áp dụng được; `quote` (62): giá chào chỉ đọc; `lockAndConfirm` (80): khóa ca → bác sĩ → quyền hưởng, kiểm tra lại, so với `Expectation` | 31–193 |
-| | | Luật dùng chung: `bookable` (106), `requireAgreedSlotTime`, `supported`, `pricingKey` (153), `requireUnchangedPrice` (166) | |
+| [strategy/offer/BookingOffer.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/offer/BookingOffer.java) | ⭐ Client (giá chào) | `pricingTypes` (51): loại phí áp dụng được; `quote` (61): giá chào chỉ đọc; `lockAndConfirm` (78): khóa ca → bác sĩ → quyền hưởng, kiểm tra lại, so với `Expectation` | 30–191 |
+| | | Luật dùng chung: `bookable` (104), `requireAgreedSlotTime`, `supported`, `pricingKey` (151), `requireUnchangedPrice` (164) | |
 | [strategy/offer/Expectation.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/offer/Expectation.java) | ⭐ Đầu vào | `ConfirmedQuote` (route `/confirm`), `LegacyQuote`, `LegacyStandard`; Facade tạo | |
 | [strategy/offer/BookingRejection.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/offer/BookingRejection.java) | ⭐ Lý do từ chối | 7 hằng: SLOT_MISSING/SLOT_UNAVAILABLE (`SLOT_UNAVAILABLE` 404/409), PRICE_CHANGED, BENEFIT_UNAVAILABLE, UNSUPPORTED_STRATEGY, DOCTOR_UNAVAILABLE, QUOTE_REQUIRED | |
 | [strategy/offer/Offer.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/offer/Offer.java), [LockedOffer.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/offer/LockedOffer.java) | ⭐ Kết quả | Giá chào; giá chào đã khóa (ca, bác sĩ, quyền hưởng, số tiền) | |
-| [service/impl/BookingServiceImpl.java](../../backend/src/main/java/com/datlichkhambenh/backend/service/impl/BookingServiceImpl.java) | 🔗 Điều phối đặt lịch | `createBooking(patientId, scheduleId, symptoms, expectation)`: `lockAndConfirm` (52), lưu snapshot, đóng ca, phát `AppointmentBookedEvent` (83) | 50–85 |
+| [service/impl/BookingServiceImpl.java](../../backend/src/main/java/com/datlichkhambenh/backend/service/impl/BookingServiceImpl.java) | 🔗 Điều phối đặt lịch | `createBooking(patientId, scheduleId, symptoms, expectation)`: `lockAndConfirm` (46), lưu snapshot, đóng ca, phát `AppointmentBookedEvent` (77) | 44–79 |
 
 ---
 
@@ -88,8 +88,8 @@ Muốn thêm loại giá mới: tạo một lớp `@Component` implement interfa
 | | `GET /api/v1/appointments/pricing-options` → `BookingOffer.pricingTypes` | 46–51 |
 | [controller/BookingController.java](../../backend/src/main/java/com/datlichkhambenh/backend/controller/BookingController.java) 🔗 + [facade/BookingFacade.java](../../backend/src/main/java/com/datlichkhambenh/backend/facade/BookingFacade.java) | `POST /api/v1/appointments/confirm`: Facade tạo `ConfirmedQuote` (Facade dòng 30) | 37–44 |
 | | `POST /api/v1/appointments`: luồng cũ, Facade tạo `LegacyQuote`/`LegacyStandard` (Facade dòng 41) | 26–35 |
-| [strategy/controller/PatientBenefitController.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/controller/PatientBenefitController.java) 🛂 | `POST/GET /api/v1/patients/me/benefit-requests`, `GET .../{id}` | 25–37 |
-| [strategy/controller/AdminBenefitController.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/controller/AdminBenefitController.java) 🛂 | `GET /api/v1/admin/benefit-requests`, `GET .../{id}`, `POST .../{id}/decision`, `POST .../{id}/revoke` | 21–32 |
+| [strategy/controller/PatientBenefitController.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/controller/PatientBenefitController.java) 🛂 | `POST/GET /api/v1/patients/me/benefit-requests`, `GET .../{id}` | 27–52 |
+| [strategy/controller/AdminBenefitController.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/controller/AdminBenefitController.java) 🛂 | `GET /api/v1/admin/benefit-requests`, `GET .../{id}`, `POST .../{id}/decision`, `POST .../{id}/revoke` | 26–56 |
 
 ---
 
@@ -97,17 +97,17 @@ Muốn thêm loại giá mới: tạo một lớp `@Component` implement interfa
 
 | File | Nội dung chính | Dòng |
 | --- | --- | --- |
-| [strategy/service/BenefitService.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/service/BenefitService.java) | `submit`: bệnh nhân gửi yêu cầu, kiểm tra gia hạn | 29–43 |
-| | `decide`: Admin duyệt/từ chối, khóa dòng, ghi lịch sử | 62–74 |
-| | `revoke`: thu hồi, không xóa lịch sử | 76–82 |
-| | `covering`: quyền hưởng còn hiệu lực hôm nay và ngày khám (loại phí, báo giá) | 88–91 |
-| | `lockCovering`: cùng quy tắc, khóa dòng quyền (đặt lịch) | 94–101 |
-| | `covers` / `inWindow`: một quy tắc ngày duy nhất | 106–112 |
-| | `effectiveStatus`: suy ra `EXPIRED` / `NOT_YET_VALID` | 113–120 |
-| [strategy/entity/BenefitRequest.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/entity/BenefitRequest.java) | Bảng `benefit_requests`: loại, mã hồ sơ, thời hạn, trạng thái, `@Version` | 14–27 |
-| [strategy/entity/BenefitDecision.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/entity/BenefitDecision.java) | Lịch sử quyết định: hành động, lý do, người duyệt, thời điểm | 11–21 |
-| [strategy/repository/BenefitRequestRepository.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/repository/BenefitRequestRepository.java) | `findForUpdate` (khóa bi quan, 11), `findApprovedIds` (13) | 8–18 |
-| [strategy/repository/BenefitDecisionRepository.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/repository/BenefitDecisionRepository.java) | Đọc lịch sử theo yêu cầu | 6–8 |
+| [strategy/service/BenefitService.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/service/BenefitService.java) | `submit`: bệnh nhân gửi yêu cầu, kiểm tra gia hạn | 48–71 |
+| | `decide`: Admin duyệt/từ chối, khóa dòng, ghi lịch sử | 98–118 |
+| | `revoke`: thu hồi, không xóa lịch sử | 122–132 |
+| | `covering`: quyền hưởng còn hiệu lực hôm nay và ngày khám (loại phí, báo giá) | 141–145 |
+| | `lockCovering`: cùng quy tắc, khóa dòng quyền (đặt lịch) | 149–159 |
+| | `covers` / `inWindow`: một quy tắc ngày duy nhất | 165–172 |
+| | `effectiveStatus`: suy ra `EXPIRED` / `NOT_YET_VALID` | 175–190 |
+| [strategy/entity/BenefitRequest.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/entity/BenefitRequest.java) | Bảng `benefit_requests`: loại, mã hồ sơ, thời hạn, trạng thái, `@Version` | 32–78 |
+| [strategy/entity/BenefitDecision.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/entity/BenefitDecision.java) | Lịch sử quyết định: hành động, lý do, người duyệt, thời điểm | 23–52 |
+| [strategy/repository/BenefitRequestRepository.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/repository/BenefitRequestRepository.java) | `findForUpdate` (khóa bi quan, 18), `findApprovedIds` (23) | 13–32 |
+| [strategy/repository/BenefitDecisionRepository.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/repository/BenefitDecisionRepository.java) | Đọc lịch sử theo yêu cầu | 8–12 |
 
 ---
 
@@ -116,12 +116,12 @@ Muốn thêm loại giá mới: tạo một lớp `@Component` implement interfa
 | File | Nội dung |
 | --- | --- |
 | [strategy/dto/request/ConsultationQuoteRequest.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/dto/request/ConsultationQuoteRequest.java) | `scheduleId`, `strategyKey` |
-| [strategy/dto/response/ConsultationQuoteDto.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/dto/response/ConsultationQuoteDto.java) | Kết quả báo giá; `discountRateExact()` trả chuỗi chính xác (dòng 11) |
+| [strategy/dto/response/ConsultationQuoteDto.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/dto/response/ConsultationQuoteDto.java) | Kết quả báo giá; `discountRateExact()` trả chuỗi chính xác (dòng 16) |
 | [strategy/dto/request/SubmitBenefitRequest.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/dto/request/SubmitBenefitRequest.java) | Bệnh nhân gửi: loại, mã hồ sơ, thời hạn, `renewalOfId` |
 | [strategy/dto/request/BenefitDecisionInput.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/dto/request/BenefitDecisionInput.java) | Admin duyệt: hành động, lý do, khoảng hiệu lực |
 | [strategy/dto/request/BenefitRevokeInput.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/dto/request/BenefitRevokeInput.java) | Lý do thu hồi |
 | [strategy/dto/response/BenefitRequestDto.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/dto/response/BenefitRequestDto.java), [BenefitDecisionDto.java](../../backend/src/main/java/com/datlichkhambenh/backend/strategy/dto/response/BenefitDecisionDto.java) | Dữ liệu trả về cho UI |
-| 🔗 [dto/request/CreateBookingDto.java](../../backend/src/main/java/com/datlichkhambenh/backend/dto/request/CreateBookingDto.java) | Thêm `strategyKey`, `expectedBasePrice`, `expectedDiscountRate`, `expectedPrice`, `expectedWorkDate/StartTime/EndTime` (dòng 11–16); không còn cờ `quoteRequired` |
+| 🔗 [dto/request/CreateBookingDto.java](../../backend/src/main/java/com/datlichkhambenh/backend/dto/request/CreateBookingDto.java) | Thêm `strategyKey`, `expectedBasePrice`, `expectedDiscountRate`, `expectedPrice`, `expectedWorkDate/StartTime/EndTime` (dòng 14–19); không còn cờ `quoteRequired` |
 | 🔗 [entity/Appointment.java](../../backend/src/main/java/com/datlichkhambenh/backend/entity/Appointment.java) | Snapshot: `pricingKey`, `basePrice`, `discountRate` DECIMAL(19,18), `benefitRequestId` (dòng 61–65) |
 | 🔗 [dto/response/AppointmentDto.java](../../backend/src/main/java/com/datlichkhambenh/backend/dto/response/AppointmentDto.java) | Trả snapshot cho UI (dòng 31–34) |
 
@@ -130,13 +130,13 @@ Muốn thêm loại giá mới: tạo một lớp `@Component` implement interfa
 | File | Hàm | Dòng |
 | --- | --- | --- |
 | [repository/ScheduleRepository.java](../../backend/src/main/java/com/datlichkhambenh/backend/repository/ScheduleRepository.java) | `findByIdForUpdate`: `PESSIMISTIC_WRITE` trên ca khám | 30–32 |
-| [repository/DoctorRepository.java](../../backend/src/main/java/com/datlichkhambenh/backend/repository/DoctorRepository.java) | `findByIdForUpdate`: giữ phí bác sĩ ổn định đến commit | 24–26 |
+| [repository/DoctorRepository.java](../../backend/src/main/java/com/datlichkhambenh/backend/repository/DoctorRepository.java) | `findByIdForUpdate`: giữ phí bác sĩ ổn định đến commit | 23–25 |
 
 ---
 
 ## 7. Cấu hình
 
-[backend/src/main/resources/application.yml](../../backend/src/main/resources/application.yml), dòng 100–105:
+[backend/src/main/resources/application.yml](../../backend/src/main/resources/application.yml), dòng 99–103:
 
 ```yaml
 app:
@@ -214,7 +214,7 @@ Bản gốc ở `frontend/`; bản giống hệt được Spring Boot phục v�
 | File | Công dụng |
 | --- | --- |
 | [scripts/strategy/run-browser-fixture.sh](../../scripts/strategy/run-browser-fixture.sh) | Chạy server demo H2 ở cổng 18081 |
-| [scripts/strategy/test-browser.py](../../scripts/strategy/test-browser.py) | Chạy 16 kịch bản Chrome |
+| [scripts/strategy/test-browser.py](../../scripts/strategy/test-browser.py) | Chạy 17 kịch bản Chrome |
 | [scripts/strategy/test-mysql-upgrades.py](../../scripts/strategy/test-mysql-upgrades.py) | Kiểm tra 5 SQL nâng cấp trên MySQL |
 | [scripts/strategy/generate-quote-diagrams.py](../../scripts/strategy/generate-quote-diagrams.py), [generate-booking-diagrams.py](../../scripts/strategy/generate-booking-diagrams.py) | Sinh file draw.io |
 | [scripts/strategy/export-diagrams.sh](../../scripts/strategy/export-diagrams.sh) | Xuất PNG bằng draw.io cục bộ |

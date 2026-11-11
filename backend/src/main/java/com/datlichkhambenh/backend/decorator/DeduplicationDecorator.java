@@ -5,9 +5,9 @@ import com.datlichkhambenh.backend.entity.Appointment;
 import com.datlichkhambenh.backend.service.AsyncEmailNotificationService;
 
 /**
- * Concrete Decorator: a notification of the same kind for the same booking that was already e-mailed
- * is not forwarded again; the skip is recorded instead. Outermost, so a duplicate triggers nothing
- * further down the chain (no second SMS either). The history table survives restarts.
+ * Concrete Decorator: thông báo cùng loại cho cùng lịch hẹn đã gửi email rồi thì không chuyển tiếp nữa, chỉ ghi
+ * SKIPPED_DUPLICATE. Nằm ngoài cùng nên lần gửi trùng không kích hoạt gì phía trong (kể cả SMS lần hai).
+ * Dựa trên bảng lịch sử nên vẫn đúng sau khi khởi động lại server.
  */
 public class DeduplicationDecorator extends NotificationServiceDecorator {
     private final NotificationLogRepository history;

@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/** Looks up the concrete creator for a role among every {@link AccountFactory} Spring knows. */
+/** Danh bạ: tìm Concrete Creator theo vai trò trong mọi {@link AccountFactory} mà Spring biết. Không có factory ADMIN. */
 @Component
 public class AccountFactories {
     private final Map<String, AccountFactory> byRole;
