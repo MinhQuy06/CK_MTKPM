@@ -15,7 +15,7 @@ Khung nét đứt là một mẫu. Luồng đặt lịch: Bệnh nhân → `Book
 | Strategy | Giá khám chỉ có một công thức; thêm Bảo hiểm/VIP phải sửa chỗ đặt lịch | Tính phí khám: Standard, Insurance, VIP | [strategy/](strategy/) |
 | Builder | Bản tin email dựng bằng constructor 9 tham số String, dễ truyền nhầm, không kiểm tra trường bắt buộc | Dựng bản tin thông báo + Director cho đặt lịch/hủy/nhắc lịch | [builder/](builder/) |
 | Observer | Dịch vụ đặt lịch gọi thẳng email và cache; thêm phản ứng mới phải sửa nó | Đặt/hủy lịch phát sự kiện; observer email và observer cache phản ứng | [observer/](observer/) |
-| Adapter | Không có chỗ cắm kênh SMS của nhà cung cấp có giao diện khác | Client SMS giả lập được bọc thành `NotificationChannel` | [adapter/](adapter/) |
+| Adapter | Không có chỗ cắm kênh SMS của nhà cung cấp có giao diện khác | Client SMS của nhà cung cấp (eSMS thật; bản giả lập chỉ trong test) được bọc thành `NotificationChannel` | [adapter/](adapter/) |
 | Decorator | Không có lịch sử thông báo, không chống gửi trùng, chỉ có email | Bọc dịch vụ thông báo: chống trùng → SMS → ghi lịch sử → email | [decorator/](decorator/) |
 | Factory Method | Tạo tài khoản Bệnh nhân/Bác sĩ lặp ở đăng ký và Admin | `AccountFactory` theo vai trò, dùng chung cho đăng ký và Admin | [factory/](factory/) |
 | Facade | Controller đặt lịch phải biết nhiều dịch vụ bên dưới | `BookingFacade` là cửa duy nhất của `BookingController` | [facade/](facade/) |
@@ -48,7 +48,7 @@ Sau khi gom luật giá chào về `BookingOffer` (11/11/2026, nhánh `booking-o
 
 Ghi chú: `browser-quote.cjs` từng hỏng từ 00:00 đến 07:00 giờ Việt Nam do lấy "ngày mai" theo UTC (lỗi có từ trước nhánh này); đã sửa để lấy theo giờ phòng khám.
 
-Theo từng mẫu: Builder, Observer, Adapter, Decorator, Factory, Facade đều có test qua API (MockMvc, profile `test`) quan sát ở biên: bản tin bắt tại RabbitTemplate, SMS tại client giả lập, bảng `notification_log`, cache ghi nhận. Hai test cũ đã sửa có lý do: `BookingServiceImplTests` (kiểm tra phát sự kiện thay vì gọi email, Observer) và `AuthServiceImplTests` (thêm tham số constructor, Factory).
+Theo từng mẫu: Builder, Observer, Adapter, Decorator, Factory, Facade đều có test qua API (MockMvc, profile `test`) quan sát ở biên: bản tin bắt tại RabbitTemplate, SMS tại client giả lập trong test, bảng `notification_log`, cache ghi nhận. Hai test cũ đã sửa có lý do: `BookingServiceImplTests` (kiểm tra phát sự kiện thay vì gọi email, Observer) và `AuthServiceImplTests` (thêm tham số constructor, Factory).
 
 ## Sinh lại sơ đồ
 

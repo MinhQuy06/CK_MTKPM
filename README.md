@@ -70,7 +70,10 @@ dat-lich-kham-benh-main/
 ├── frontend/                        # Mã nguồn giao diện độc lập
 ├── architecture.md                  # Quy ước kiến trúc 5 tầng
 ├── schema.md                        # Mô tả schema và quan hệ dữ liệu
-├── docker-compose.yml               # MySQL, Redis và RabbitMQ
+├── docker-compose.yml               # Hạ tầng cho dev: MySQL, Redis và RabbitMQ
+├── docker-compose.prod.yml          # Chạy production ở localhost: app + MySQL + Redis + RabbitMQ
+├── .env.example                     # Mẫu biến môi trường cho docker-compose.prod.yml
+├── scripts/prod-smoke.sh            # Kịch bản nghiệm thu chạy thật trên stack prod
 ├── run.bat                          # Chạy nhanh trên Windows với profile dev
 └── DatLichKhamBenh.postman_collection.json
 ```
@@ -140,9 +143,33 @@ Sau khi log xuất hiện thông báo `Started BackendApplication`, mở:
 
 Tài khoản RabbitMQ local mặc định là `guest` / `guest`.
 
+## Chạy production ở localhost (Docker Compose)
+
+Một lệnh dựng cả ứng dụng và hạ tầng với profile `prod`: không dữ liệu mẫu, không mật khẩu mặc định, schema do Flyway quản lý.
+
+```bash
+cp .env.example .env     # điền giá trị thật; thiếu biến nào thì compose/app báo lỗi và không chạy
+docker compose -f docker-compose.prod.yml up -d --build
+```
+
+Truy cập `http://localhost:18081` (giao diện web và API); kiểm tra sức khỏe tại `/actuator/health`. Chỉ cổng của ứng dụng được mở ra máy; MySQL, Redis và RabbitMQ nằm trong mạng nội bộ của Compose.
+
+- **Tài khoản đầu tiên**: Admin được tạo từ `ADMIN_EMAIL` / `ADMIN_PASSWORD` khi hệ thống chưa có Admin nào. Bác sĩ, bệnh nhân, chuyên khoa và dịch vụ khám được tạo thật qua giao diện hoặc API.
+- **Email thật**: cần `MAIL_USERNAME` / `MAIL_PASSWORD` (Gmail App Password). Thiếu thì app không khởi động. Email lỗi được thử lại 3 lần rồi bỏ, không ảnh hưởng đặt lịch.
+- **SMS**: mặc định tắt (`SMS_ENABLED=false`), lịch sử thông báo ghi `SKIPPED_DISABLED`. Bật bằng `SMS_ENABLED=true` cùng khóa eSMS; thử trước bằng `ESMS_SANDBOX=true`.
+- **Dừng và xóa dữ liệu**: `docker compose -f docker-compose.prod.yml down` giữ dữ liệu; thêm `-v` để xóa sạch.
+
+Kiểm tra nhanh toàn luồng (tạo chuyên khoa và bác sĩ, mở ca, bệnh nhân xin quyền Bảo hiểm, Admin duyệt, báo giá, đặt lịch):
+
+```bash
+ADMIN_EMAIL=... ADMIN_PASSWORD=... ./scripts/prod-smoke.sh
+```
+
+Đặt thêm `MAILPIT=http://localhost:8025` nếu bạn dùng Mailpit làm SMTP thử để kiểm tra email đến hộp thư.
+
 ## Các dịch vụ Docker
 
-`docker-compose.yml` chỉ khởi chạy hạ tầng; backend vẫn chạy bằng Maven hoặc file JAR.
+`docker-compose.yml` chỉ khởi chạy hạ tầng cho chế độ dev; backend vẫn chạy bằng Maven hoặc file JAR. Để chạy cả ứng dụng ở chế độ production, dùng `docker-compose.prod.yml` (mục ở trên).
 
 | Dịch vụ | Container | Cổng máy host |
 |---|---|---|
@@ -225,6 +252,12 @@ Các giá trị local mặc định khớp với `docker-compose.yml`.
 | `MAIL_PORT` | `587` | Cổng SMTP |
 | `MAIL_USERNAME` | Trống | Tài khoản gửi email |
 | `MAIL_PASSWORD` | Trống | Mật khẩu ứng dụng SMTP |
+| `MAIL_FROM` | `MAIL_USERNAME` (prod) | Người gửi email |
+| `SMS_ENABLED` | `false` | Bật gửi SMS thật qua eSMS (tốn phí theo tin) |
+| `ESMS_API_KEY`, `ESMS_SECRET_KEY` | Trống | Khóa eSMS, bắt buộc khi `SMS_ENABLED=true` |
+| `ESMS_SANDBOX` | `false` | `true`: eSMS nhận tin nhưng không gửi và không trừ tiền |
+| `ADMIN_EMAIL`, `ADMIN_PASSWORD` | Chỉ prod, bắt buộc | Admin đầu tiên (mật khẩu từ 8 ký tự) |
+| `CORS_ALLOWED_ORIGINS` | Chỉ prod, bắt buộc | Origin được phép gọi API |
 
 Ví dụ cấu hình PowerShell trước khi chạy ở môi trường không dùng profile `dev`:
 
@@ -374,10 +407,12 @@ $env:SERVER_PORT = "8081"
 
 ## Lưu ý production
 
-- Không chạy với profile `dev`.
-- Bắt buộc cung cấp `JWT_SECRET` đủ mạnh và ngẫu nhiên.
-- Không dùng tài khoản/mật khẩu mẫu hoặc tài khoản RabbitMQ `guest`.
-- Dùng migration tool như Flyway hoặc Liquibase và đặt `JPA_DDL_AUTO=validate`.
-- Chỉ cho phép CORS từ domain frontend thực tế.
-- Bật HTTPS, quản lý secret bằng biến môi trường hoặc secret manager.
-- Cấu hình backup MySQL, giám sát health/metrics và chính sách lưu log.
+Đã làm trong `docker-compose.prod.yml` và profile `prod`:
+
+- Không dữ liệu mẫu, không tài khoản mặc định (Admin đầu tiên lấy từ biến môi trường).
+- Mọi bí mật (`JWT_SECRET`, mật khẩu DB, Redis, RabbitMQ, SMTP) bắt buộc đến từ `.env`; thiếu thì không khởi động.
+- Schema do Flyway quản lý (`db/migration`), Hibernate chỉ `validate`.
+- Chỉ lộ `/actuator/health`; CORS giới hạn theo `CORS_ALLOWED_ORIGINS`; log mức INFO.
+- SMS và email thật; SMS mặc định tắt.
+
+Phạm vi đồ án (chạy ở localhost) chưa làm: HTTPS và domain, sao lưu MySQL tự động, rate limit, giám sát và lưu log tập trung. Cần bổ sung nếu đưa ra mạng thật.
