@@ -11,7 +11,7 @@
         <mxCell id="dec" value="Decorator SMS&#10;(chuỗi thông báo)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="40" y="320" width="250" height="130" as="geometry" />
         </mxCell>
-        <mxCell id="vendor" value="Nhà cung cấp SMS&#10;(giả lập) → Bệnh nhân" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
+        <mxCell id="vendor" value="Nhà cung cấp SMS&#10;(eSMS) → Bệnh nhân" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=17;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="1780" y="320" width="280" height="130" as="geometry" />
         </mxCell>
         <mxCell id="p1" value="1.0&#10;Kiểm tra &amp;&#10;chuẩn hóa số" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;fontStyle=1;" vertex="1" parent="1">
@@ -49,7 +49,7 @@
         <mxCell id="e6" value="submitSms(msisdn, text)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=1;exitY=0.35;entryX=0;entryY=0.35;" edge="1" parent="1" source="p3" target="vendor">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e7" value="mã 0 / 400" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=0;exitY=0.7;entryX=1;entryY=0.7;" edge="1" parent="1" source="vendor" target="p3">
+        <mxCell id="e7" value="mã 0 / 400 (tắt: -1)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=0;exitY=0.7;entryX=1;entryY=0.7;" edge="1" parent="1" source="vendor" target="p3">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="e8" value="DeliveryResult (SENT / FAILED)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=0.5;exitY=0;entryX=0.15;entryY=0;" edge="1" parent="1" source="p3" target="dec">

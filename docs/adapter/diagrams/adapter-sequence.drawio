@@ -17,7 +17,7 @@
         <mxCell id="p2" value="VietnamPhone" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
           <mxGeometry x="785" y="80" width="250" height="75" as="geometry" />
         </mxCell>
-        <mxCell id="p3" value="SimulatedSmsGateway&#10;Client «Adaptee»" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+        <mxCell id="p3" value="SmsGatewayClient&#10;«Adaptee»" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
           <mxGeometry x="1165" y="80" width="250" height="75" as="geometry" />
         </mxCell>
         <mxCell id="l1" value="send(&quot;0912 345 678&quot;, message)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=0;verticalAlign=bottom;">
@@ -71,13 +71,13 @@
             <mxPoint x="1290" y="703" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="l10" value="int code (0 = OK, 400 = REJECTED)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
+        <mxCell id="l10" value="int code (0 = OK, 400 = REJECTED, -1 = DISABLED)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="1290" y="765" as="sourcePoint" />
             <mxPoint x="530" y="765" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="l11" value="code = 0 → DeliveryResult(SENT, msisdn) · khác 0 → FAILED" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
+        <mxCell id="l11" value="0 → SENT · -1 → SKIPPED_DISABLED · khác → FAILED" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="530" y="827" as="sourcePoint" />
             <mxPoint x="150" y="827" as="targetPoint" />
