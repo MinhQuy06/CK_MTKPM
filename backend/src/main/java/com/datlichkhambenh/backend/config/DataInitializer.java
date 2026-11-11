@@ -9,6 +9,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.annotation.Order;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -26,7 +27,9 @@ import com.datlichkhambenh.backend.strategy.repository.BenefitRequestRepository;
 
 @Slf4j
 @Component
-@Profile("dev")
+// dev: chạy local bằng Maven; demo: bật thêm trên prod để có dữ liệu trình diễn (xem docs/production.md).
+@Profile({"dev", "demo"})
+@Order(1)
 @RequiredArgsConstructor
 public class DataInitializer implements ApplicationRunner {
 

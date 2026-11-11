@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Kịch bản nghiệm thu chạy thật trên stack docker-compose.prod.yml (không dữ liệu mẫu):
+# Kịch bản nghiệm thu chạy thật trên stack docker-compose.prod.yml (tự tạo dữ liệu riêng, chạy được cả khi có hay không có dữ liệu mẫu):
 # admin tạo chuyên khoa + bác sĩ → bác sĩ mở ca → bệnh nhân đăng ký, xin quyền hưởng Bảo hiểm →
 # admin duyệt → báo giá → đặt lịch → kiểm tra giá chốt và (nếu có MAILPIT) email đến hộp thư.
 #
@@ -9,6 +9,9 @@ set -euo pipefail
 BASE="${BASE:-http://localhost:18081}"
 : "${ADMIN_EMAIL:?cần ADMIN_EMAIL}" "${ADMIN_PASSWORD:?cần ADMIN_PASSWORD}"
 RUN="$(date +%s)"
+# Số điện thoại riêng cho mỗi lượt chạy, tránh trùng với dữ liệu mẫu (số điện thoại là duy nhất).
+DOC_PHONE="08${RUN: -8}"
+PAT_PHONE="09${RUN: -8}"
 TOMORROW="$(date -v+1d +%F 2>/dev/null || date -d tomorrow +%F)"
 NEXT_YEAR="$(date -v+1y +%F 2>/dev/null || date -d '+1 year' +%F)"
 TODAY="$(date +%F)"
@@ -26,7 +29,7 @@ ADMIN=$(api POST /api/v1/auth/login "" "{\"email\":\"$ADMIN_EMAIL\",\"password\"
 step "2. Admin tạo chuyên khoa và bác sĩ"
 SPEC=$(api POST /api/v1/admin/specialties "$ADMIN" "{\"name\":\"Khoa thu $RUN\",\"description\":\"smoke\"}" | jget "['data']['id']")
 DOC_EMAIL="bs.$RUN@clinic.test"
-api POST /api/v1/admin/doctors "$ADMIN" "{\"email\":\"$DOC_EMAIL\",\"password\":\"Doctor#12345\",\"fullName\":\"BS Smoke $RUN\",\"phone\":\"0911000111\",\"specialtyId\":$SPEC,\"degree\":\"ThS\",\"experienceYears\":5,\"consultationFee\":300000,\"approved\":true}" >/dev/null
+api POST /api/v1/admin/doctors "$ADMIN" "{\"email\":\"$DOC_EMAIL\",\"password\":\"Doctor#12345\",\"fullName\":\"BS Smoke $RUN\",\"phone\":\"$DOC_PHONE\",\"specialtyId\":$SPEC,\"degree\":\"ThS\",\"experienceYears\":5,\"consultationFee\":300000,\"approved\":true}" >/dev/null
 echo "bác sĩ $DOC_EMAIL, chuyên khoa $SPEC"
 
 step "3. Bác sĩ mở ca khám ngày mai"
@@ -36,7 +39,7 @@ echo "ca $SLOT ngày $TOMORROW 09:00"
 
 step "4. Bệnh nhân đăng ký và đăng nhập"
 PAT_EMAIL="bn.${RUN}@clinic.test"
-api POST /api/v1/auth/register "" "{\"email\":\"$PAT_EMAIL\",\"password\":\"Patient#12345\",\"role\":\"PATIENT\",\"fullName\":\"BN Smoke $RUN\",\"phone\":\"0912345678\",\"gender\":\"MALE\"}" >/dev/null
+api POST /api/v1/auth/register "" "{\"email\":\"$PAT_EMAIL\",\"password\":\"Patient#12345\",\"role\":\"PATIENT\",\"fullName\":\"BN Smoke $RUN\",\"phone\":\"$PAT_PHONE\",\"gender\":\"MALE\"}" >/dev/null
 PAT=$(api POST /api/v1/auth/login "" "{\"email\":\"$PAT_EMAIL\",\"password\":\"Patient#12345\"}" | jget "['data']['accessToken']")
 
 step "5. Giá Tiêu chuẩn khi chưa có quyền hưởng; xin quyền Bảo hiểm"

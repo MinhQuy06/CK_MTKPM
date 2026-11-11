@@ -71,8 +71,9 @@ dat-lich-kham-benh-main/
 ├── architecture.md                  # Quy ước kiến trúc 5 tầng
 ├── schema.md                        # Mô tả schema và quan hệ dữ liệu
 ├── docker-compose.yml               # Hạ tầng cho dev: MySQL, Redis và RabbitMQ
-├── docker-compose.prod.yml          # Chạy production ở localhost: app + MySQL + Redis + RabbitMQ
+├── docker-compose.prod.yml          # Chạy production ở localhost: app + MySQL + Redis + RabbitMQ + Mailpit
 ├── .env.example                     # Mẫu biến môi trường cho docker-compose.prod.yml
+├── scripts/demo-up.sh               # Dựng stack prod ở chế độ demo (tự tạo .env)
 ├── scripts/prod-smoke.sh            # Kịch bản nghiệm thu chạy thật trên stack prod
 ├── run.bat                          # Chạy nhanh trên Windows với profile dev
 └── DatLichKhamBenh.postman_collection.json
@@ -145,27 +146,17 @@ Tài khoản RabbitMQ local mặc định là `guest` / `guest`.
 
 ## Chạy production ở localhost (Docker Compose)
 
-Một lệnh dựng cả ứng dụng và hạ tầng với profile `prod`: không dữ liệu mẫu, không mật khẩu mặc định, schema do Flyway quản lý.
+Hướng dẫn đầy đủ (chế độ demo và chế độ thật, các thành phần nằm ở đâu, cách hoạt động, biến môi trường, xử lý sự cố): **[docs/production.md](docs/production.md)**.
+
+Chạy demo nhanh (có dữ liệu mẫu, email vào hộp thư nội bộ Mailpit, SMS tắt, không gửi gì ra ngoài):
 
 ```bash
-cp .env.example .env     # điền giá trị thật; thiếu biến nào thì compose/app báo lỗi và không chạy
-docker compose -f docker-compose.prod.yml up -d --build
+./scripts/demo-up.sh
 ```
 
-Truy cập `http://localhost:18081` (giao diện web và API); kiểm tra sức khỏe tại `/actuator/health`. Chỉ cổng của ứng dụng được mở ra máy; MySQL, Redis và RabbitMQ nằm trong mạng nội bộ của Compose.
-
-- **Tài khoản đầu tiên**: Admin được tạo từ `ADMIN_EMAIL` / `ADMIN_PASSWORD` khi hệ thống chưa có Admin nào. Bác sĩ, bệnh nhân, chuyên khoa và dịch vụ khám được tạo thật qua giao diện hoặc API.
-- **Email thật**: cần `MAIL_USERNAME` / `MAIL_PASSWORD` (Gmail App Password). Thiếu thì app không khởi động. Email lỗi được thử lại 3 lần rồi bỏ, không ảnh hưởng đặt lịch.
-- **SMS**: mặc định tắt (`SMS_ENABLED=false`), lịch sử thông báo ghi `SKIPPED_DISABLED`. Bật bằng `SMS_ENABLED=true` cùng khóa eSMS; thử trước bằng `ESMS_SANDBOX=true`.
-- **Dừng và xóa dữ liệu**: `docker compose -f docker-compose.prod.yml down` giữ dữ liệu; thêm `-v` để xóa sạch.
-
-Kiểm tra nhanh toàn luồng (tạo chuyên khoa và bác sĩ, mở ca, bệnh nhân xin quyền Bảo hiểm, Admin duyệt, báo giá, đặt lịch):
-
-```bash
-ADMIN_EMAIL=... ADMIN_PASSWORD=... ./scripts/prod-smoke.sh
-```
-
-Đặt thêm `MAILPIT=http://localhost:8025` nếu bạn dùng Mailpit làm SMTP thử để kiểm tra email đến hộp thư.
+- Ứng dụng: `http://localhost:18081`. Hộp thư Mailpit: `http://localhost:8025`.
+- Tài khoản mẫu: xem mục bên dưới hoặc `docs/production.md`.
+- Chế độ thật: trong `.env` đặt `APP_PROFILES=prod`, điền `MAIL_*` (và `ESMS_*` nếu bật SMS), rồi `docker compose -f docker-compose.prod.yml down -v` và `up -d --build`.
 
 ## Các dịch vụ Docker
 
@@ -286,7 +277,7 @@ Queue mặc định: `clinic.email.queue`.
 
 ## Tài khoản mẫu (Demo Accounts)
 
-Hệ thống cung cấp sẵn 3 tài khoản cho mỗi nhóm người dùng (**3 Admin**, **3 Bác sĩ**, **3 Bệnh nhân**) để kiểm tra và đăng nhập ngay mà không cần tạo mới. Dữ liệu được khởi tạo tự động khi ứng dụng chạy (profile `dev`).
+Hệ thống cung cấp sẵn 3 tài khoản cho mỗi nhóm người dùng (**3 Admin**, **3 Bác sĩ**, **3 Bệnh nhân**) để kiểm tra và đăng nhập ngay mà không cần tạo mới. Dữ liệu được khởi tạo tự động khi ứng dụng chạy với profile `dev` (Maven) hoặc `demo` (`./scripts/demo-up.sh`).
 
 ### 1. Quản trị viên (Admin)
 | STT | Tên tài khoản | Email | Mật khẩu | Quyền hạn & Ghi chú |
@@ -310,7 +301,7 @@ Hệ thống cung cấp sẵn 3 tài khoản cho mỗi nhóm người dùng (**3
 | 3 | Trần Thị Bình | `0911223344` | `patient@clinic` | `user@2026` | Có lịch khám chuyên khoa Thần kinh |
 
 > [!NOTE]
-> Mọi mật khẩu đều được băm bảo mật bằng thuật toán **BCrypt** trước khi lưu vào cơ sở dữ liệu. Không sử dụng các tài khoản mẫu này cho môi trường production.
+> Mọi mật khẩu đều được băm bảo mật bằng thuật toán **BCrypt** trước khi lưu vào cơ sở dữ liệu. Không sử dụng các tài khoản mẫu này ở chế độ thật (`APP_PROFILES=prod`).
 
 ## API và Postman
 
@@ -407,12 +398,12 @@ $env:SERVER_PORT = "8081"
 
 ## Lưu ý production
 
-Đã làm trong `docker-compose.prod.yml` và profile `prod`:
+Đã làm trong `docker-compose.prod.yml` và profile `prod` (chi tiết: [docs/production.md](docs/production.md)):
 
-- Không dữ liệu mẫu, không tài khoản mặc định (Admin đầu tiên lấy từ biến môi trường).
-- Mọi bí mật (`JWT_SECRET`, mật khẩu DB, Redis, RabbitMQ, SMTP) bắt buộc đến từ `.env`; thiếu thì không khởi động.
+- Mặc định chạy chế độ demo (`APP_PROFILES=prod,demo`): có dữ liệu mẫu, email vào Mailpit, SMS tắt. `DemoModeGuard` không cho bật gửi thật khi đang demo.
+- Chế độ thật (`APP_PROFILES=prod`): không dữ liệu mẫu, Admin đầu tiên lấy từ biến môi trường, email SMTP thật, SMS eSMS khi bật.
+- `JWT_SECRET`, mật khẩu Redis và RabbitMQ bắt buộc đến từ `.env`; thiếu thì không khởi động.
 - Schema do Flyway quản lý (`db/migration`), Hibernate chỉ `validate`.
 - Chỉ lộ `/actuator/health`; CORS giới hạn theo `CORS_ALLOWED_ORIGINS`; log mức INFO.
-- SMS và email thật; SMS mặc định tắt.
 
-Phạm vi đồ án (chạy ở localhost) chưa làm: HTTPS và domain, sao lưu MySQL tự động, rate limit, giám sát và lưu log tập trung. Cần bổ sung nếu đưa ra mạng thật.
+Chưa làm (ngoài phạm vi chạy ở localhost): MySQL tạm chưa đặt user/mật khẩu (không mở cổng ra ngoài), HTTPS và domain, sao lưu MySQL tự động, rate limit, giám sát và lưu log tập trung.

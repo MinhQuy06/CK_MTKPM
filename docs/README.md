@@ -62,3 +62,5 @@ Mọi mẫu dùng chung bộ vẽ `scripts/common/drawio_kit.py` (đen trắng, 
 ## Spec và ticket
 
 [Spec](../.scratch/design-patterns-redesign/spec.md) · [Danh sách ticket](../.scratch/design-patterns-redesign/tickets.md) · GitHub issue #21
+
+Chạy hệ thống ở chế độ production/demo bằng Docker Compose: [production.md](production.md).
