@@ -115,6 +115,16 @@ app:
     doctor-list-ttl: ${CACHE_DOCTOR_LIST_TTL:300}          # 5 phút
     available-slots-ttl: ${CACHE_AVAILABLE_SLOTS_TTL:60}   # 1 phút
 
+  # ─── SMS (Adapter → eSMS). Mặc định TẮT: SMS thật tốn phí theo tin. ──────────
+  sms:
+    enabled: ${SMS_ENABLED:false}
+    esms:
+      endpoint: ${ESMS_ENDPOINT:https://rest.esms.vn/MainService.svc/json/SendMultipleMessage_V4_post_json/}
+      api-key: ${ESMS_API_KEY:}
+      secret-key: ${ESMS_SECRET_KEY:}
+      sms-type: ${ESMS_SMS_TYPE:8}
+      sandbox: ${ESMS_SANDBOX:false}   # true: eSMS nhận nhưng không gửi và không trừ tiền
+
   messaging:
     email-exchange: clinic.email.exchange
     email-queue: clinic.email.queue

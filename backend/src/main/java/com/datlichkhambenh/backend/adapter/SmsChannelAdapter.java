@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class SmsChannelAdapter implements NotificationChannel {
-    private final SimulatedSmsGatewayClient gateway;
+    private final SmsGatewayClient gateway;
 
     @Override
     public String name() {
@@ -29,7 +29,10 @@ public class SmsChannelAdapter implements NotificationChannel {
             return DeliveryResult.failed("Số điện thoại không hợp lệ: " + patientPhone);
         }
         int code = gateway.submitSms(msisdn.get(), text(message));
-        return code == SimulatedSmsGatewayClient.OK
+        if (code == SmsGatewayClient.DISABLED) {
+            return DeliveryResult.skippedDisabled();
+        }
+        return code == SmsGatewayClient.OK
                 ? DeliveryResult.sent(msisdn.get())
                 : DeliveryResult.failed("Nhà cung cấp SMS từ chối, mã " + code);
     }

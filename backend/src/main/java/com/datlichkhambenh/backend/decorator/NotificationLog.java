@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 
 /**
  * Một lần gửi thông báo: loại nào, cho lịch hẹn nào, qua kênh nào và kết quả ra sao.
- * Trạng thái: SENT (đã giao cho kênh / hàng đợi), FAILED, SKIPPED_DUPLICATE hoặc SKIPPED_NO_PHONE.
+ * Trạng thái: SENT (đã giao cho kênh / hàng đợi), FAILED, SKIPPED_DUPLICATE, SKIPPED_NO_PHONE hoặc SKIPPED_DISABLED.
  */
 @Entity
 @Table(name = "notification_log", indexes = @Index(name = "idx_notification_log_booking", columnList = "booking_code, type"))
