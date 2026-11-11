@@ -62,7 +62,7 @@
         </div>
         <div class="modal-body px-4 pb-4">
           <p class="text-muted small mb-3">
-            Tính năng đặt lại mật khẩu qua email đang được phát triển. Trong thời gian này, vui lòng liên hệ quản trị viên để được hỗ trợ đặt lại mật khẩu.
+            Hệ thống chưa hỗ trợ tự đặt lại mật khẩu qua email. Vui lòng liên hệ quản trị viên để được đặt lại mật khẩu.
           </p>
           <div class="alert alert-info d-flex align-items-start gap-2 rounded-3" style="font-size:.88rem;">
             <i class="bi bi-info-circle-fill mt-1 flex-shrink-0"></i>
@@ -72,12 +72,8 @@
               Cung cấp email tài khoản để được hỗ trợ đặt lại mật khẩu nhanh chóng.
             </div>
           </div>
-          <div class="mb-3">
-            <label class="form-label fw-semibold">Email tài khoản của bạn</label>
-            <input type="email" id="forgot-email" class="form-control" placeholder="Nhập email tài khoản..." autocomplete="email">
-          </div>
-          <button class="btn btn-primary w-100 rounded-pill fw-semibold" id="btn-forgot-send" onclick="sendForgotPassword()">
-            <i class="bi bi-send me-1"></i> Gửi Yêu Cầu Đặt Lại Mật Khẩu
+          <button type="button" class="btn btn-outline-secondary w-100 rounded-pill fw-semibold" data-bs-dismiss="modal">
+            Đã hiểu
           </button>
         </div>
       </div>
@@ -100,8 +96,6 @@
 
     function openForgotPassword(e) {
       e.preventDefault();
-      const emailVal = document.getElementById('email').value;
-      if (emailVal) document.getElementById('forgot-email').value = emailVal;
       forgotModal.show();
     }
 
@@ -115,24 +109,6 @@
         input.type = 'password';
         icon.className = 'bi bi-eye';
       }
-    }
-
-    function sendForgotPassword() {
-      const email = document.getElementById('forgot-email').value.trim();
-      const btn = document.getElementById('btn-forgot-send');
-      if (!email) {
-        Utils.showToast('Vui lòng nhập email tài khoản của bạn.', 'error');
-        return;
-      }
-      // Giả lập gửi yêu cầu (chức năng thực sẽ được tích hợp sau)
-      btn.disabled = true;
-      btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Đang gửi...';
-      setTimeout(() => {
-        btn.disabled = false;
-        btn.innerHTML = '<i class="bi bi-send me-1"></i> Gửi Yêu Cầu Đặt Lại Mật Khẩu';
-        forgotModal.hide();
-        Utils.showToast('Yêu cầu đặt lại mật khẩu đã được ghi nhận. Quản trị viên sẽ liên hệ với bạn qua email: ' + email, 'success');
-      }, 1200);
     }
 
     document.getElementById('login-form').addEventListener('submit', async (e) => {

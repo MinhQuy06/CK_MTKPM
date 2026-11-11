@@ -19,6 +19,9 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 import com.datlichkhambenh.backend.strategy.entity.BenefitDecision;
 import com.datlichkhambenh.backend.strategy.entity.BenefitRequest;
@@ -143,7 +146,8 @@ public class DataInitializer implements ApplicationRunner {
             Schedule sc5 = createSchedule(doc1, today.plusDays(2), LocalTime.of(14, 30), LocalTime.of(15, 0), true);
 
             // BS. Trần Thị Bích (Nhi khoa)
-            Schedule sc6 = createSchedule(doc2, today.plusDays(1), LocalTime.of(9, 0), LocalTime.of(9, 30), false);
+            // Ca đã khám (lịch hẹn 2 là COMPLETED) nên phải nằm trong quá khứ
+            Schedule sc6 = createSchedule(doc2, today.minusDays(3), LocalTime.of(9, 0), LocalTime.of(9, 30), false);
             Schedule sc7 = createSchedule(doc2, today.plusDays(1), LocalTime.of(9, 30), LocalTime.of(10, 0), true);
             Schedule sc8 = createSchedule(doc2, today.plusDays(2), LocalTime.of(10, 0), LocalTime.of(10, 30), true);
 
@@ -241,6 +245,9 @@ public class DataInitializer implements ApplicationRunner {
 
         // 7. Luôn có slot trống trong 7 ngày tới (DB cũ chỉ có slot của lần chạy đầu tiên)
         ensureUpcomingSlots();
+
+        // 7b. Lịch sử khám 6 tháng + vài lịch sắp tới để dashboard/thống kê có dữ liệu thật trong DB
+        ensureDemoHistory();
 
         // 8. Dữ liệu demo Strategy: quyền Insurance/VIP còn hiệu lực + 1 yêu cầu chờ duyệt
         Long adminId = userRepository.findByEmailIgnoreCase("admin@clinic.vn").map(User::getId).orElse(null);
@@ -395,6 +402,104 @@ public class DataInitializer implements ApplicationRunner {
                     log.info("[Seed] Created development patient account: {} ({})", fullName, email);
                     return saved;
                 });
+    }
+
+    private static final String HISTORY_PREFIX = "BK-H";
+    private static final int HISTORY_DOCTORS = 12;
+    private static final int HISTORY_DAYS = 180;
+    private static final String[][] DEMO_VISITS = {
+            {"Đau đầu, chóng mặt khi thay đổi tư thế", "Rối loạn tiền đình", "Nghỉ ngơi, tránh thay đổi tư thế đột ngột. Betahistine 16mg x 2 lần/ngày trong 10 ngày."},
+            {"Sốt nhẹ, ho khan, đau họng 3 ngày", "Viêm họng cấp", "Súc miệng nước muối 3 lần/ngày, uống nhiều nước. Paracetamol 500mg khi sốt trên 38.5 độ."},
+            {"Tức ngực, hồi hộp khi leo cầu thang", "Tăng huyết áp độ 1", "Giảm muối, tập thể dục 30 phút/ngày. Amlodipine 5mg mỗi sáng, tái khám sau 1 tháng."},
+            {"Ngứa, nổi mẩn đỏ vùng cổ tay", "Viêm da tiếp xúc", "Tránh tiếp xúc chất tẩy rửa. Bôi kem corticoid nhẹ 2 lần/ngày trong 7 ngày."},
+            {"Đau thượng vị sau ăn, ợ chua", "Viêm dạ dày", "Ăn đúng bữa, tránh cay nóng và rượu bia. Omeprazole 20mg trước ăn sáng trong 4 tuần."},
+            {"Mờ mắt, mỏi mắt khi làm việc máy tính", "Tật khúc xạ, khô mắt", "Nghỉ mắt 5 phút mỗi giờ. Nước mắt nhân tạo 4 lần/ngày, đo lại khúc xạ sau 3 tháng."},
+            {"Đau mỏi vai gáy, tê tay", "Hội chứng cổ vai cánh tay", "Tập vận động cổ 15 phút/ngày, điều chỉnh tư thế ngồi. Eperisone 50mg x 3 lần/ngày."},
+            {"Nghẹt mũi, chảy mũi kéo dài 2 tuần", "Viêm mũi xoang cấp", "Rửa mũi nước muối sinh lý 2 lần/ngày. Kháng sinh theo đơn 7 ngày, tái khám nếu không đỡ."},
+            {"Khám sức khỏe định kỳ", "Sức khỏe ổn định", "Duy trì chế độ ăn uống và vận động hiện tại, khám định kỳ sau 6 tháng."},
+            {"Đau khớp gối khi đi lại nhiều", "Thoái hóa khớp gối giai đoạn sớm", "Giảm cân, hạn chế leo cầu thang. Glucosamine 1500mg/ngày, vật lý trị liệu 2 buổi/tuần."}
+    };
+
+    /**
+     * Lịch sử khám cho các bác sĩ đầu danh sách: ~6 tháng ca đã khám (kèm bệnh án), một ít ca đã hủy,
+     * và vài lịch đã xác nhận trong 3 ngày tới (đặt vào ca trống có sẵn). Chạy một lần (đánh dấu bằng mã BK-H…).
+     */
+    private void ensureDemoHistory() {
+        if (appointmentRepository.existsByBookingCodeStartingWith(HISTORY_PREFIX)) return;
+        List<Doctor> doctors = doctorRepository.findAll().stream()
+                .filter(d -> Boolean.TRUE.equals(d.getIsApproved()))
+                .sorted(java.util.Comparator.comparing(Doctor::getUserId))
+                .limit(HISTORY_DOCTORS).toList();
+        List<Patient> patients = patientRepository.findAll();
+        if (doctors.isEmpty() || patients.isEmpty()) return;
+
+        Random random = new Random(2026);
+        LocalDate today = LocalDate.now(CLINIC_ZONE);
+        int code = 0;
+        int completedTotal = 0;
+        int cancelledTotal = 0;
+        int upcomingTotal = 0;
+        for (int di = 0; di < doctors.size(); di++) {
+            Doctor doctor = doctors.get(di);
+            BigDecimal fee = doctor.getConsultationFee() != null ? doctor.getConsultationFee() : BigDecimal.valueOf(200000);
+            int visits = 20 + random.nextInt(21);
+            Set<String> used = new HashSet<>();
+            for (int i = 0; i < visits; i++) {
+                LocalDate day;
+                LocalTime start;
+                while (true) {
+                    LocalDate d = today.minusDays(1 + random.nextInt(HISTORY_DAYS));
+                    LocalTime t = LocalTime.of(7, 30).plusMinutes(30L * random.nextInt(18));
+                    if (used.add(d + "@" + t) && scheduleRepository.findByDoctorUserIdAndWorkDate(doctor.getUserId(), d)
+                            .stream().noneMatch(existing -> t.equals(existing.getStartTime()))) {
+                        day = d;
+                        start = t;
+                        break;
+                    }
+                }
+                boolean cancelled = random.nextInt(8) == 0;
+                Schedule slot = createSchedule(doctor, day, start, start.plusMinutes(30), cancelled);
+                String[] visit = DEMO_VISITS[random.nextInt(DEMO_VISITS.length)];
+                Appointment appointment = demoAppointment(String.format("%s%05d", HISTORY_PREFIX, ++code), doctor,
+                        patients.get(random.nextInt(patients.size())), slot, visit[0],
+                        cancelled ? "CANCELLED" : "COMPLETED", fee,
+                        day.minusDays(1 + random.nextInt(5)).atTime(start.minusHours(2)));
+                if (cancelled) {
+                    cancelledTotal++;
+                } else {
+                    completedTotal++;
+                    medicalRecordRepository.save(MedicalRecord.builder().appointment(appointment)
+                            .diagnosis(visit[1]).doctorNotes(visit[2])
+                            .createdAt(day.atTime(start.plusMinutes(30))).build());
+                }
+            }
+            for (int k = 1; k <= 3; k++) {
+                List<Schedule> free = scheduleRepository.findByDoctorUserIdAndWorkDateAndIsAvailableTrue(doctor.getUserId(), today.plusDays(k));
+                if (free.isEmpty()) continue;
+                Schedule slot = free.get(random.nextInt(free.size()));
+                slot.setIsAvailable(false);
+                scheduleRepository.save(slot);
+                String[] visit = DEMO_VISITS[random.nextInt(DEMO_VISITS.length)];
+                demoAppointment(String.format("%s%05d", HISTORY_PREFIX, ++code), doctor,
+                        patients.get(random.nextInt(patients.size())), slot, visit[0], "CONFIRMED", fee,
+                        LocalDateTime.now(CLINIC_ZONE).minusHours(1 + random.nextInt(48)));
+                upcomingTotal++;
+            }
+        }
+        log.info("[Seed] Demo history for {} doctors: {} completed, {} cancelled, {} upcoming",
+                doctors.size(), completedTotal, cancelledTotal, upcomingTotal);
+    }
+
+    private Appointment demoAppointment(String bookingCode, Doctor doctor, Patient patient, Schedule slot,
+                                        String symptoms, String status, BigDecimal fee, LocalDateTime createdAt) {
+        Appointment appointment = Appointment.builder()
+                .bookingCode(bookingCode).patient(patient).doctor(doctor).schedule(slot)
+                .symptoms(symptoms).status(status).price(fee).createdAt(createdAt).build();
+        // Giá chốt loại Tiêu chuẩn: giá cuối = phí gốc, không giảm.
+        appointment.setPricingKey("STANDARD");
+        appointment.setBasePrice(fee);
+        appointment.setDiscountRate(BigDecimal.ZERO);
+        return appointmentRepository.save(appointment);
     }
 
     private Schedule createSchedule(Doctor doctor, LocalDate workDate, LocalTime startTime, LocalTime endTime, boolean isAvailable) {

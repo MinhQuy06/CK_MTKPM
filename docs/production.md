@@ -48,7 +48,13 @@ Script sẽ:
 | Bệnh nhân | `bn.tranvannam@gmail.com` | `Patient@123` | Có cả Bảo hiểm và VIP |
 | Bệnh nhân | `patient@clinic` | `user@2026` | Có yêu cầu Bảo hiểm **đang chờ duyệt** |
 
-Ngoài ra có thêm khoảng 50 bác sĩ và 40 bệnh nhân sinh tự động để danh sách trông đầy đủ. Ca khám được tạo cho 7 ngày kể từ ngày mai, tính theo ngày khởi động.
+Ngoài ra có thêm khoảng 50 bác sĩ và 40 bệnh nhân sinh tự động để danh sách trông đầy đủ. Ca khám trống được tạo cho 7 ngày kể từ ngày mai, tính theo ngày khởi động.
+
+Để dashboard và thống kê có số liệu, 12 bác sĩ đầu danh sách có **lịch sử khám 6 tháng** lưu thật trong DB (mã lịch hẹn bắt đầu bằng `BK-H`). Tổng cộng khoảng 330 ca đã khám kèm bệnh án, khoảng 40 ca đã hủy, và mỗi bác sĩ có vài lịch đã xác nhận trong 3 ngày tới. Giao diện chỉ hiển thị dữ liệu lấy từ API, không tự sinh số liệu. Các trang đọc dữ liệu này:
+
+- Dashboard bác sĩ: thẻ thống kê và danh sách ca kèm chẩn đoán.
+- Admin → Quản lý người dùng: số ca của từng bác sĩ và nút "Lịch khám".
+- Thống kê và Báo cáo: doanh thu theo tháng, xếp hạng bác sĩ, bảng "Lịch hẹn & phí khám".
 
 ### Kịch bản demo gợi ý (minh họa các mẫu thiết kế)
 
@@ -196,6 +202,13 @@ MySQL hiện **không dùng user/mật khẩu riêng**: app kết nối bằng `
 | Gmail từ chối (`535 Authentication failed`) | Phải dùng App Password, không dùng mật khẩu đăng nhập. Tài khoản cần bật xác minh 2 bước. |
 | Cổng 18081 hoặc 8025 đang bận | Đổi `APP_PORT` / `MAILPIT_UI_PORT` trong `.env` (khi đổi `APP_PORT` thì đổi cả `CORS_ALLOWED_ORIGINS`). |
 
-## 7. Chưa làm (ngoài phạm vi chạy ở localhost)
+## 7. Giao diện web và đồng bộ
 
-HTTPS và domain, sao lưu MySQL tự động, mật khẩu MySQL, rate limit, giám sát và lưu log tập trung. eSMS và Gmail thật chưa được nhóm kiểm chứng bằng tài khoản thật: thử `ESMS_SANDBOX=true` và gửi một thư thật trước khi dùng.
+- Có hai bản giao diện giống hệt nhau. `frontend/` là bản để sửa và để chạy test Node/Playwright. `backend/src/main/resources/static/` là bản Spring Boot phục vụ và bản được đóng vào Docker.
+- Sửa ở `frontend/`, rồi chạy `./scripts/check-frontend-sync.sh --fix` để chép sang `static/`. Chạy không có `--fix` thì chỉ kiểm tra; mã thoát khác 0 nghĩa là hai bản đang lệch.
+- "Doanh thu" chỉ tính phí khám của lịch đã khám (`COMPLETED`). Bảng "Lịch hẹn & phí khám" liệt kê lịch hẹn kèm giá đã chốt và trạng thái thật. Hệ thống **chưa có chức năng thanh toán**, nên không có mã giao dịch hay phương thức thanh toán.
+- "Quên mật khẩu" chỉ hướng dẫn liên hệ Admin, vì hệ thống chưa có chức năng tự đặt lại mật khẩu.
+
+## 8. Chưa làm (ngoài phạm vi chạy ở localhost)
+
+HTTPS và domain, sao lưu MySQL tự động, mật khẩu MySQL, rate limit, giám sát và lưu log tập trung, thanh toán trực tuyến, tự đặt lại mật khẩu qua email, đánh giá bác sĩ. eSMS và Gmail thật chưa được nhóm kiểm chứng bằng tài khoản thật: thử `ESMS_SANDBOX=true` và gửi một thư thật trước khi dùng.

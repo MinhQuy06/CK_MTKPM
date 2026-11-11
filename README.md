@@ -74,12 +74,15 @@ dat-lich-kham-benh-main/
 ├── docker-compose.prod.yml          # Chạy production ở localhost: app + MySQL + Redis + RabbitMQ + Mailpit
 ├── .env.example                     # Mẫu biến môi trường cho docker-compose.prod.yml
 ├── scripts/demo-up.sh               # Dựng stack prod ở chế độ demo (tự tạo .env)
+├── scripts/check-frontend-sync.sh   # Kiểm tra / đồng bộ frontend/ → backend/.../static/
 ├── scripts/prod-smoke.sh            # Kịch bản nghiệm thu chạy thật trên stack prod
 ├── run.bat                          # Chạy nhanh trên Windows với profile dev
 └── DatLichKhamBenh.postman_collection.json
 ```
 
 Hai thư mục `frontend/` và `backend/src/main/resources/static/` đang chứa cùng một phiên bản giao diện. Khi chạy Spring Boot, giao diện trong thư mục `static/` được phục vụ tại cổng của backend và không cần cài Node.js.
+
+Sửa giao diện ở `frontend/`, rồi chạy `./scripts/check-frontend-sync.sh --fix` để chép sang `static/`. Chạy không có `--fix` để kiểm tra hai bản có lệch không. Giao diện chỉ hiển thị dữ liệu từ API, không tự sinh số liệu.
 
 ## Yêu cầu môi trường
 

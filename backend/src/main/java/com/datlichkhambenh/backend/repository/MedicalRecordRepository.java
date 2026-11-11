@@ -16,6 +16,9 @@ public interface MedicalRecordRepository extends JpaRepository<MedicalRecord, Lo
     // Lấy hồ sơ khám theo appointment (quan hệ 1-1 — luôn trả về tối đa 1 bản ghi)
     Optional<MedicalRecord> findByAppointmentId(Long appointmentId);
 
+    // Nạp bệnh án của nhiều lịch hẹn trong một truy vấn (tránh N+1 khi trả danh sách lịch hẹn)
+    List<MedicalRecord> findByAppointmentIdIn(java.util.Collection<Long> appointmentIds);
+
     // Lấy danh sách hồ sơ khám của 1 bệnh nhân
     List<MedicalRecord> findByAppointmentPatientUserId(Long patientUserId);
 }

@@ -124,6 +124,8 @@ const Api = {
     stats: () => Api.get('/admin/stats'),
     analytics: (year) => Api.get(`/admin/analytics?year=${year}`),
     doctors: () => Api.get('/admin/doctors'),
+    doctorAppointments: (id) => Api.get(`/admin/doctors/${id}/appointments`),
+    doctorAppointmentStats: () => Api.get('/admin/doctors/appointment-stats'),
     createDoctor: (body) => Api.post('/admin/doctors', body),
     updateDoctor: (id, body) => Api.put(`/admin/doctors/${id}`, body),
     deleteDoctor: (id) => Api.delete(`/admin/doctors/${id}`),
