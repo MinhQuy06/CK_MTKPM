@@ -34,3 +34,6 @@ __pycache__/
 .DS_Store
 .idea/
 .vscode/
+
+# Cấu hình bí mật cho docker-compose.prod.yml
+.env

@@ -191,33 +191,33 @@
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body p-4">
-          <!-- Stats Cards (từ 2000 ngẫu nhiên trở lên) -->
+          <!-- Thống kê đếm từ lịch hẹn thật của bác sĩ -->
           <div class="row g-3 mb-4 text-center">
             <div class="col-md-4">
               <div class="bg-primary-subtle text-primary p-3 rounded-4">
                 <small class="fw-bold text-uppercase d-block mb-1 text-secondary" style="font-size: 0.75rem;">Tổng ca khám</small>
-                <h3 class="fw-bold mb-0" id="sched-total">2000</h3>
+                <h3 class="fw-bold mb-0" id="sched-total">—</h3>
               </div>
             </div>
             <div class="col-md-4">
               <div class="bg-warning-subtle text-warning p-3 rounded-4">
                 <small class="fw-bold text-uppercase d-block mb-1 text-secondary" style="font-size: 0.75rem;">Cần khám (Chờ)</small>
-                <h3 class="fw-bold mb-0" id="sched-pending">10</h3>
+                <h3 class="fw-bold mb-0" id="sched-pending">—</h3>
               </div>
             </div>
             <div class="col-md-4">
               <div class="bg-success-subtle text-success p-3 rounded-4">
                 <small class="fw-bold text-uppercase d-block mb-1 text-secondary" style="font-size: 0.75rem;">Đã chuẩn đoán xong</small>
-                <h3 class="fw-bold mb-0" id="sched-completed">1990</h3>
+                <h3 class="fw-bold mb-0" id="sched-completed">—</h3>
               </div>
             </div>
           </div>
 
           <!-- Detailed Schedule Table -->
           <h6 class="fw-bold text-dark mb-3"><i class="bi bi-clock-history text-primary me-2"></i>Lịch hẹn khám chi tiết (Ngày, Giờ, Bệnh nhân, Ca khám gì)</h6>
-          <div class="table-responsive">
+          <div class="table-responsive" style="max-height: 420px; overflow-y: auto;">
             <table class="table table-hover align-middle border">
-              <thead class="table-light">
+              <thead class="table-light" style="position: sticky; top: 0;">
                 <tr>
                   <th>Ngày khám</th>
                   <th>Khung giờ</th>
@@ -245,7 +245,7 @@
   <script src="../js/auth.js"></script>
   <script>
     Auth.checkAuth(['ADMIN']);
-    let currentType = 'DOCTOR', records = [], accountMap = new Map(), specialties = [];
+    let currentType = 'DOCTOR', records = [], accountMap = new Map(), specialties = [], statsMap = new Map();
     let modal = null;
     let schedModal = null;
 
@@ -283,71 +283,16 @@
       await load();
     }
 
-    // Sinh số liệu thống kê ngẫu nhiên từ 2000 trở lên cho bác sĩ
-    function generateDocStats(userId) {
-      const seed = (userId * 19) % 100;
-      const total = 2100 + (seed * 8); // Tối thiểu từ 2100 đến 2900 (trên 2000 ngẫu nhiên)
-      const pending = 10 + (seed % 15); // Cần khám
-      const completed = total - pending; // Đã chuẩn đoán xong
-      return { total, pending, completed };
-    }
-
-    // Sinh lịch trình ca khám ngẫu nhiên cho Bác sĩ
-    function generateDocSchedule(userId) {
-      const seed = (userId * 19) % 100;
-      const patients = [
-        "Phan Thanh Hùng", "Trần Thu Trang", "Nguyễn Minh Khôi", "Lê Gia Bảo", "Vũ Hoàng Yến",
-        "Hoàng Minh Đức", "Đỗ Khánh An", "Bùi Hồng Anh", "Đặng Minh Triết", "Nguyễn Lê Vy"
-      ];
-      const symptoms = [
-        "Khám sức khỏe tổng quát", "Đau rát họng, khản tiếng kéo dài", "Ho khan kéo dài, sốt nhẹ về chiều",
-        "Đau nhức khớp vai khi vận động mạnh", "Mỏi mắt, nhìn mờ sau khi làm việc máy tính", "Dị ứng mẩn đỏ toàn thân",
-        "Đau đầu, chóng mặt kéo dài", "Tim đập nhanh, khó thở nhẹ khi leo cầu thang"
-      ];
-      const times = [
-        { start: "08:00", end: "08:30" },
-        { start: "08:30", end: "09:00" },
-        { start: "09:00", end: "09:30" },
-        { start: "10:00", end: "10:30" },
-        { start: "14:00", end: "14:30" },
-        { start: "14:30", end: "15:00" },
-        { start: "15:30", end: "16:00" }
-      ];
-
-      const schedule = [];
-      const today = new Date();
-      
-      for (let i = 0; i < 6; i++) {
-        const dayOffset = Math.floor(i / 2); // 2 ca mỗi ngày
-        const targetDate = new Date();
-        targetDate.setDate(today.getDate() + dayOffset);
-        const dateStr = Utils.formatDate(targetDate.toISOString().split('T')[0]);
-        
-        const timeIdx = (seed + i * 2) % times.length;
-        const patIdx = (seed + i * 3) % patients.length;
-        const symIdx = (seed + i * 5) % symptoms.length;
-        const statusText = i < 3 ? "Đã chuẩn đoán xong" : "Đang chờ khám";
-        const badgeColor = i < 3 ? "bg-success-subtle text-success" : "bg-warning-subtle text-warning";
-
-        schedule.push({
-          date: dateStr,
-          time: `${times[timeIdx].start} - ${times[timeIdx].end}`,
-          patient: patients[patIdx],
-          symptom: symptoms[symIdx],
-          status: `<span class="badge ${badgeColor}">${statusText}</span>`
-        });
-      }
-      return schedule;
-    }
-
     async function load() {
       try {
-        const [dataResponse, accountResponse] = await Promise.all([
+        const [dataResponse, accountResponse, statsResponse] = await Promise.all([
           currentType === 'DOCTOR' ? Api.admin.doctors() : Api.admin.patients(),
-          Api.admin.users(currentType)
+          Api.admin.users(currentType),
+          currentType === 'DOCTOR' ? Api.admin.doctorAppointmentStats() : Promise.resolve({ data: [] })
         ]);
         records = dataResponse.data || [];
         accountMap = new Map((accountResponse.data || []).map(item => [item.id, item]));
+        statsMap = new Map((statsResponse.data || []).map(item => [item.doctorId, item]));
         render();
       } catch (err) {
         console.error("Lỗi tải danh sách người dùng", err);
@@ -369,26 +314,39 @@
       load();
     }
 
-    function showDoctorSchedule(userId, fullName) {
-      const stats = generateDocStats(userId);
-      const schedule = generateDocSchedule(userId);
-      
+    const SCHEDULE_STATUS = {
+      CONFIRMED: '<span class="badge bg-warning-subtle text-warning">Đang chờ khám</span>',
+      COMPLETED: '<span class="badge bg-success-subtle text-success">Đã chẩn đoán xong</span>',
+      CANCELLED: '<span class="badge bg-secondary-subtle text-secondary">Đã hủy</span>'
+    };
+
+    async function showDoctorSchedule(userId, fullName) {
       document.getElementById('scheduleModalTitle').innerHTML = `<i class="bi bi-calendar3 me-2"></i>Sơ đồ lịch khám bệnh — Bác sĩ: ${fullName}`;
-      document.getElementById('sched-total').innerText = stats.total.toLocaleString('vi-VN');
-      document.getElementById('sched-pending').innerText = stats.pending.toLocaleString('vi-VN');
-      document.getElementById('sched-completed').innerText = stats.completed.toLocaleString('vi-VN');
-
-      document.getElementById('schedTableRows').innerHTML = schedule.map(sch => `
-        <tr>
-          <td class="fw-semibold text-dark">${sch.date}</td>
-          <td><span class="badge bg-light text-dark fw-bold">${sch.time}</span></td>
-          <td><i class="bi bi-person-fill text-primary me-1"></i>${sch.patient}</td>
-          <td>${sch.symptom}</td>
-          <td>${sch.status}</td>
-        </tr>
-      `).join('');
-
+      ['sched-total', 'sched-pending', 'sched-completed'].forEach(id => document.getElementById(id).innerText = '—');
+      const rows = document.getElementById('schedTableRows');
+      rows.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">Đang tải...</td></tr>';
       schedModal.show();
+
+      try {
+        const list = (await Api.admin.doctorAppointments(userId)).data || [];
+        const pending = list.filter(a => a.status === 'CONFIRMED').length;
+        const completed = list.filter(a => a.status === 'COMPLETED').length;
+        document.getElementById('sched-total').innerText = list.length.toLocaleString('vi-VN');
+        document.getElementById('sched-pending').innerText = pending.toLocaleString('vi-VN');
+        document.getElementById('sched-completed').innerText = completed.toLocaleString('vi-VN');
+
+        rows.innerHTML = list.map(a => `
+          <tr>
+            <td class="fw-semibold text-dark">${Utils.formatDate(a.workDate)}</td>
+            <td><span class="badge bg-light text-dark fw-bold">${Utils.formatTime(a.startTime)} - ${Utils.formatTime(a.endTime)}</span></td>
+            <td><i class="bi bi-person-fill text-primary me-1"></i>${a.patientName || '—'}</td>
+            <td>${a.symptoms || '—'}${a.diagnosis ? `<div class="small text-success mt-1"><i class="bi bi-clipboard2-pulse me-1"></i>${a.diagnosis}</div>` : ''}</td>
+            <td>${SCHEDULE_STATUS[a.status] || a.status}</td>
+          </tr>
+        `).join('') || '<tr><td colspan="5" class="text-center text-muted py-4">Bác sĩ chưa có lịch hẹn nào</td></tr>';
+      } catch (err) {
+        rows.innerHTML = `<tr><td colspan="5" class="text-center text-danger py-4">${err.message}</td></tr>`;
+      }
     }
 
     function render() {
@@ -407,7 +365,7 @@
             ? '<span class="badge bg-success">Đã duyệt</span>' 
             : '<span class="badge bg-warning text-dark">Chờ duyệt</span>';
           
-          const stats = generateDocStats(item.userId);
+          const stats = statsMap.get(item.userId) || {};
 
           return `
             <tr>
@@ -424,9 +382,9 @@
               </td>
               <td><span class="badge bg-info-subtle text-info">${item.specialtyName || ''}</span></td>
               <td class="fw-semibold text-primary">${Utils.formatCurrency(item.consultationFee)}</td>
-              <td class="fw-bold text-dark">${stats.total}</td>
-              <td class="fw-bold text-warning">${stats.pending}</td>
-              <td class="fw-bold text-success">${stats.completed}</td>
+              <td class="fw-bold text-dark">${stats.total || 0}</td>
+              <td class="fw-bold text-warning">${stats.confirmed || 0}</td>
+              <td class="fw-bold text-success">${stats.completed || 0}</td>
               <td>${approvedBadge}</td>
               <td>${isActiveBadge}</td>
               ${actions(item, account)}

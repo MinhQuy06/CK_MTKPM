@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bao Cao Doanh Thu & Giao Dich - DatLichKhamBenh</title>
+  <title>Bao Cao Doanh Thu & Lich Hen - DatLichKhamBenh</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" href="../css/style.css">
@@ -23,11 +23,6 @@
     .month-pill:hover,.month-pill.active { background:#0284c7; color:#fff; border-color:#0284c7; box-shadow:0 3px 10px rgba(2,132,199,.25); }
 
     .badge-method { font-size:.76rem; padding:4px 10px; border-radius:20px; font-weight:600; }
-    .method-vietqr  { background:#e0f2fe; color:#0369a1; }
-    .method-momo    { background:#fce7f3; color:#be185d; }
-    .method-zalopay { background:#dcfce7; color:#15803d; }
-    .method-card    { background:#f3e8ff; color:#6b21a8; }
-    .method-cash    { background:#fef3c7; color:#b45309; }
 
     .tbl th { background:#f8fafc; font-size:.8rem; text-transform:uppercase; letter-spacing:.5px; color:#64748b; }
     #chart-wrap { position:relative; height:320px; }
@@ -76,8 +71,8 @@
       <!-- Header -->
       <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
         <div>
-          <h2 class="fw-bold text-dark mb-1"><i class="bi bi-graph-up-arrow text-primary me-2"></i>Bao Cao Bien Dong Doanh Thu &amp; Giao Dich</h2>
-          <p class="text-muted mb-0">Theo doi doanh thu theo thang, giao dich benh nhan va hieu suat bac si</p>
+          <h2 class="fw-bold text-dark mb-1"><i class="bi bi-graph-up-arrow text-primary me-2"></i>Bao Cao Bien Dong Doanh Thu &amp; Lich Hen</h2>
+          <p class="text-muted mb-0">Theo doi doanh thu phi kham theo thang, lich hen va hieu suat bac si</p>
         </div>
         <div class="d-flex align-items-center gap-2">
           <label class="fw-semibold text-secondary small"><i class="bi bi-calendar3 me-1"></i>Nam:</label>
@@ -118,7 +113,7 @@
           <div class="stat-card p-3 d-flex align-items-center gap-3">
             <div class="bg-warning-subtle text-warning p-3 rounded-4"><i class="bi bi-receipt fs-2"></i></div>
             <div>
-              <small class="text-muted fw-semibold d-block">So Giao Dich</small>
+              <small class="text-muted fw-semibold d-block">So Lich Hen</small>
               <strong id="stat-tx" class="fs-5 text-warning">...</strong>
             </div>
           </div>
@@ -130,7 +125,7 @@
         <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
           <div>
             <h5 class="fw-bold mb-0"><i class="bi bi-bar-chart-fill text-primary me-2"></i>So Do Bien Dong Doanh Thu Theo Thang</h5>
-            <small class="text-muted" id="chart-label">Nhan vao cot de loc giao dich theo thang tuong ung</small>
+            <small class="text-muted" id="chart-label">Doanh thu tinh tu phi kham cua lich da kham. Nhan vao cot de loc lich hen theo thang</small>
           </div>
           <div class="btn-group btn-group-sm">
             <button class="btn btn-primary" id="btn-bar" onclick="switchChart('bar')">Bieu Do Cot</button>
@@ -145,12 +140,12 @@
         </div>
       </div>
 
-      <!-- CHI TIET BENH NHAN CHUYEN TIEN THANH TOAN -->
+      <!-- LICH HEN & PHI KHAM -->
       <div class="section-card">
         <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-3">
           <div>
-            <h5 class="fw-bold mb-0"><i class="bi bi-credit-card-2-front text-success me-2"></i>Chi Tiet Benh Nhan Chuyen Tien Thanh Toan</h5>
-            <small class="text-muted" id="tx-subtitle">Hien thi toan bo giao dich thanh cong</small>
+            <h5 class="fw-bold mb-0"><i class="bi bi-receipt text-success me-2"></i>Lich Hen &amp; Phi Kham</h5>
+            <small class="text-muted" id="tx-subtitle">Toan bo lich hen trong nam kem phi kham va trang thai</small>
           </div>
           <div class="input-group" style="max-width:240px;">
             <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
@@ -169,12 +164,12 @@
           <table class="table table-hover align-middle tbl mb-0">
             <thead>
               <tr>
-                <th>Ma Giao Dich</th>
+                <th>Ma Lich Hen</th>
                 <th>Benh Nhan</th>
                 <th>Bac Si / Chuyen Khoa</th>
-                <th>Thoi Gian</th>
-                <th>Phuong Thuc</th>
-                <th class="text-end">So Tien</th>
+                <th>Ngay Kham</th>
+                <th>Loai Phi</th>
+                <th class="text-end">Phi Kham</th>
                 <th class="text-center">Trang Thai</th>
               </tr>
             </thead>
@@ -223,15 +218,15 @@
     var n = Number(v) || 0;
     return n.toLocaleString('vi-VN') + ' d';
   }
-  function methodBadge(m) {
-    var map = {
-      'VietQR Banking': ['method-vietqr','bi-qr-code-scan','VietQR'],
-      'Vi MoMo':        ['method-momo','bi-wallet2','MoMo'],
-      'ZaloPay':        ['method-zalopay','bi-wallet-fill','ZaloPay'],
-      'The ATM/Visa':   ['method-card','bi-credit-card','The ATM'],
-    };
-    var found = map[m] || ['method-cash','bi-cash','Tien mat'];
-    return '<span class="badge-method ' + found[0] + '"><i class="bi ' + found[1] + ' me-1"></i>' + found[2] + '</span>';
+  var PRICING_LABEL = { STANDARD: 'Tieu chuan', INSURANCE: 'Bao hiem', VIP: 'VIP' };
+  var FEE_STATUS = {
+    COMPLETED: ['bg-success-subtle text-success border-success-subtle', 'bi-check-circle-fill', 'Da kham'],
+    CONFIRMED: ['bg-warning-subtle text-warning border-warning-subtle', 'bi-hourglass-split', 'Cho kham'],
+    CANCELLED: ['bg-secondary-subtle text-secondary', 'bi-x-circle', 'Da huy']
+  };
+  function statusBadge(st) {
+    var f = FEE_STATUS[st] || ['bg-light text-dark', 'bi-dot', st || ''];
+    return '<span class="badge border rounded-pill px-3 ' + f[0] + '"><i class="bi ' + f[1] + ' me-1"></i>' + f[2] + '</span>';
   }
 
   /* ---- state ---- */
@@ -277,7 +272,7 @@
     document.getElementById('stat-revenue').textContent = vnd(_data.yearRevenue);
     document.getElementById('stat-apps').textContent    = String(Number(_data.yearAppointments || 0).toLocaleString('vi-VN'));
     document.getElementById('stat-avg').textContent     = vnd(_data.avgPerAppointment);
-    document.getElementById('stat-tx').textContent      = ((_data.transactions || []).length) + ' giao dich';
+    document.getElementById('stat-tx').textContent      = ((_data.appointmentFees || []).length) + ' lich hen';
   }
 
   /* ---- bieu do ---- */
@@ -382,18 +377,17 @@
     _month = m; _page = 1;
     buildMonthPills();
     document.getElementById('tx-subtitle').textContent =
-      m === 0 ? 'Hien thi toan bo giao dich thanh cong' : 'Giao dich trong Thang ' + m;
+      m === 0 ? 'Toan bo lich hen trong nam kem phi kham va trang thai' : 'Lich hen co ngay kham trong Thang ' + m;
     renderTable();
   }
 
-  /* ---- bang giao dich ---- */
+  /* ---- bang lich hen & phi kham (he thong chua co chuc nang thanh toan) ---- */
   function getFiltered() {
     var key  = (document.getElementById('searchTx').value || '').toLowerCase();
-    var list = (_data.transactions || []).slice();
+    var list = (_data.appointmentFees || []).slice();
     if (_month > 0) list = list.filter(function(t){ return t.month === _month; });
     if (key) list = list.filter(function(t){
       return (t.patientName   || '').toLowerCase().indexOf(key) >= 0 ||
-             (t.transactionId || '').toLowerCase().indexOf(key) >= 0 ||
              (t.bookingCode   || '').toLowerCase().indexOf(key) >= 0 ||
              (t.patientPhone  || '').indexOf(key) >= 0;
     });
@@ -409,26 +403,24 @@
     var slice = list.slice((_page-1)*PG, _page*PG);
 
     document.getElementById('tx-count').textContent = list.length > 0
-      ? 'Hien thi ' + ((_page-1)*PG+1) + '-' + Math.min(_page*PG, list.length) + ' / ' + list.length + ' giao dich'
-      : 'Khong co giao dich';
+      ? 'Hien thi ' + ((_page-1)*PG+1) + '-' + Math.min(_page*PG, list.length) + ' / ' + list.length + ' lich hen'
+      : 'Khong co lich hen';
 
     var tbody = document.getElementById('tx-body');
     if (slice.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-muted">Khong tim thay giao dich phu hop</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-muted">Khong co lich hen phu hop</td></tr>';
     } else {
       tbody.innerHTML = slice.map(function(t) {
         return '<tr>' +
-          '<td><div class="font-monospace fw-bold text-primary small">' + (t.transactionId||'') + '</div>' +
-               '<small class="text-muted">' + (t.bookingCode||'') + '</small></td>' +
+          '<td><div class="font-monospace fw-bold text-primary small">' + (t.bookingCode||'') + '</div></td>' +
           '<td><div class="fw-semibold">' + (t.patientName||'') + '</div>' +
                '<small class="text-muted"><i class="bi bi-telephone me-1"></i>' + (t.patientPhone||'') + '</small></td>' +
           '<td><div class="small fw-semibold">' + (t.doctorName||'') + '</div>' +
                '<span class="badge bg-light text-secondary border">' + (t.specialty||'') + '</span></td>' +
-          '<td><small>' + (t.paymentDate||'') + '</small></td>' +
-          '<td>' + methodBadge(t.paymentMethod) + '</td>' +
-          '<td class="text-end"><strong class="text-success">+' + vnd(t.amount) + '</strong></td>' +
-          '<td class="text-center"><span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3">' +
-               '<i class="bi bi-check-circle-fill me-1"></i>Thanh cong</span></td>' +
+          '<td><small>' + Utils.formatDate(t.workDate) + (t.startTime ? ' ' + Utils.formatTime(t.startTime) : '') + '</small></td>' +
+          '<td><span class="badge bg-light text-dark border">' + (PRICING_LABEL[t.pricingKey] || 'Tieu chuan') + '</span></td>' +
+          '<td class="text-end"><strong class="' + (t.status === 'COMPLETED' ? 'text-success' : 'text-muted') + '">' + vnd(t.amount) + '</strong></td>' +
+          '<td class="text-center">' + statusBadge(t.status) + '</td>' +
         '</tr>';
       }).join('');
     }

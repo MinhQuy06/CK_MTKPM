@@ -36,6 +36,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -50,6 +51,7 @@ public class AdminManagementServiceImpl implements AdminManagementService {
     private final SpecialtyRepository specialtyRepository;
     private final PatientRepository patientRepository;
     private final AppointmentRepository appointmentRepository;
+    private final AppointmentDtoMapper appointmentMapper;
     private final RedisCacheService redisCacheService;
     private final UserRepository userRepository;
     private final ScheduleRepository scheduleRepository;
@@ -217,20 +219,23 @@ public class AdminManagementServiceImpl implements AdminManagementService {
             totalYearRevenue = totalYearRevenue.add(monthTotalRevenue);
             totalYearApps += totalMonthApps;
 
+            // Hệ thống chưa có chức năng thanh toán: đây là danh sách lịch hẹn kèm phí khám đã chốt,
+            // với trạng thái thật của lịch hẹn (không phải giao dịch thanh toán).
             for (Appointment app : entries) {
-                Map<String, Object> tx = new HashMap<>();
-                tx.put("transactionId", String.format("TXN-%d%02d-%05d", year, m, app.getId()));
-                tx.put("bookingCode", app.getBookingCode());
-                tx.put("patientName", app.getPatient() != null ? app.getPatient().getFullName() : "Bệnh nhân");
-                tx.put("patientPhone", app.getPatient() != null ? app.getPatient().getPhone() : "");
-                tx.put("amount", app.getPrice() != null ? app.getPrice() : BigDecimal.ZERO);
-                tx.put("paymentMethod", "VietQR Banking");
-                tx.put("paymentDate", app.getCreatedAt() != null ? app.getCreatedAt().toString() : "");
-                tx.put("month", m);
-                tx.put("doctorName", app.getDoctor() != null ? app.getDoctor().getFullName() : "Bác sĩ");
-                tx.put("specialty", app.getDoctor() != null && app.getDoctor().getSpecialty() != null ? app.getDoctor().getSpecialty().getName() : "Đa khoa");
-                tx.put("status", "COMPLETED".equals(app.getStatus()) ? "SUCCESS" : app.getStatus());
-                allTransactions.add(tx);
+                Map<String, Object> row = new HashMap<>();
+                row.put("appointmentId", app.getId());
+                row.put("bookingCode", app.getBookingCode());
+                row.put("patientName", app.getPatient() != null ? app.getPatient().getFullName() : null);
+                row.put("patientPhone", app.getPatient() != null ? app.getPatient().getPhone() : null);
+                row.put("doctorName", app.getDoctor() != null ? app.getDoctor().getFullName() : null);
+                row.put("specialty", app.getDoctor() != null && app.getDoctor().getSpecialty() != null ? app.getDoctor().getSpecialty().getName() : null);
+                row.put("workDate", app.getSchedule().getWorkDate().toString());
+                row.put("startTime", app.getSchedule().getStartTime() != null ? app.getSchedule().getStartTime().toString() : null);
+                row.put("amount", app.getPrice() != null ? app.getPrice() : BigDecimal.ZERO);
+                row.put("pricingKey", app.getPricingKey());
+                row.put("status", app.getStatus());
+                row.put("month", m);
+                allTransactions.add(row);
             }
 
             months.add(Map.of(
@@ -281,9 +286,10 @@ public class AdminManagementServiceImpl implements AdminManagementService {
         result.put("doctorRankings", rankings);
         result.put("statusCounts", statusCounts);
         result.put("dailyRevenue", dailyRevenue);
-        // Trả về toàn bộ giao dịch (hiện chỉ 60 bản/năm — 5 tx × 12 tháng)
-        result.put("transactions", allTransactions);
-        result.put("totalTransactions", allTransactions.size());
+        // Lịch hẹn kèm phí khám trong năm (doanh thu chỉ tính lịch đã khám - COMPLETED)
+        allTransactions.sort((a, b) -> ((String) b.get("workDate")).compareTo((String) a.get("workDate")));
+        result.put("appointmentFees", allTransactions);
+        result.put("totalAppointmentFees", allTransactions.size());
         result.put("yearAppointments", totalYearApps);
         result.put("yearRevenue", totalYearRevenue.doubleValue());
         result.put("avgPerAppointment", totalYearApps > 0
@@ -381,34 +387,46 @@ public class AdminManagementServiceImpl implements AdminManagementService {
         int safeSize = Math.min(Math.max(size, 1), 100);
         Pageable pageable = PageRequest.of(
                 safePage, safeSize, Sort.by(Sort.Direction.DESC, "createdAt"));
-        return appointmentRepository.findAll(pageable).stream().map(this::mapAppointment).toList();
+        return appointmentMapper.toDtos(appointmentRepository.findAll(pageable).getContent());
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<AppointmentDto> getPatientAppointments(Long patientId) {
-        return appointmentRepository.findByPatientUserId(patientId).stream().map(this::mapAppointment).toList();
+        return appointmentMapper.toDtos(appointmentRepository.findByPatientUserId(patientId));
     }
 
-    private AppointmentDto mapAppointment(Appointment a) {
-        Schedule s = a.getSchedule();
-        return AppointmentDto.builder()
-                .id(a.getId())
-                .bookingCode(a.getBookingCode())
-                .patientId(a.getPatient() != null ? a.getPatient().getUserId() : null)
-                .patientName(a.getPatient() != null ? a.getPatient().getFullName() : null)
-                .patientPhone(a.getPatient() != null ? a.getPatient().getPhone() : null)
-                .doctorId(a.getDoctor() != null ? a.getDoctor().getUserId() : null)
-                .doctorName(a.getDoctor() != null ? a.getDoctor().getFullName() : null)
-                .scheduleId(s != null ? s.getId() : null)
-                .workDate(s != null ? s.getWorkDate() : null)
-                .startTime(s != null ? s.getStartTime() : null)
-                .endTime(s != null ? s.getEndTime() : null)
-                .symptoms(a.getSymptoms())
-                .status(a.getStatus())
-                .price(a.getPrice())
-                .createdAt(a.getCreatedAt())
-                .build();
+    @Override
+    @Transactional(readOnly = true)
+    public List<AppointmentDto> getDoctorAppointments(Long doctorUserId) {
+        if (!doctorRepository.existsById(doctorUserId)) {
+            throw new ResourceNotFoundException("Bác sĩ không tồn tại");
+        }
+        List<AppointmentDto> list = appointmentMapper.toDtos(appointmentRepository.findByDoctorUserId(doctorUserId));
+        list.sort((a, b) -> {
+            int byDate = b.getWorkDate().compareTo(a.getWorkDate());
+            return byDate != 0 ? byDate : a.getStartTime().compareTo(b.getStartTime());
+        });
+        return list;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Map<String, Object>> getDoctorAppointmentStats() {
+        return appointmentRepository.countByDoctorAndStatus().stream()
+                .collect(Collectors.groupingBy(row -> (Long) row[0], LinkedHashMap::new, Collectors.toList()))
+                .entrySet().stream().map(e -> {
+                    Map<String, Object> stat = new LinkedHashMap<>();
+                    stat.put("doctorId", e.getKey());
+                    long total = 0;
+                    for (Object[] row : e.getValue()) {
+                        long count = (Long) row[2];
+                        stat.put(((String) row[1]).toLowerCase(), count);
+                        total += count;
+                    }
+                    stat.put("total", total);
+                    return stat;
+                }).toList();
     }
 
     private void validateUniqueIdentity(String email, String phone) {

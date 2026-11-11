@@ -13,6 +13,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
@@ -80,6 +81,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponseDto<Void>> handleDataConflict(DataIntegrityViolationException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(ApiResponseDto.error("Dữ liệu bị trùng hoặc đang được sử dụng"));
+    }
+
+    /** Đường dẫn không tồn tại (kể cả endpoint actuator không được mở) là 404, không phải lỗi hệ thống. */
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ApiResponseDto<Void>> handleNotFound(NoResourceFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponseDto.error("Không tìm thấy đường dẫn"));
     }
 
     @ExceptionHandler(Exception.class)

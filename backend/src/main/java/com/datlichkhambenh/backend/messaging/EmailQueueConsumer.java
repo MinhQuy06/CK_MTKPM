@@ -1,25 +1,34 @@
 package com.datlichkhambenh.backend.messaging;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class EmailQueueConsumer {
     private final JavaMailSender mailSender;
+    private final String from;
+
+    public EmailQueueConsumer(JavaMailSender mailSender, @Value("${app.mail.from:}") String from) {
+        this.mailSender = mailSender;
+        this.from = from;
+    }
 
     @RabbitListener(queues = "${app.messaging.email-queue}")
     public void consume(EmailNotificationMessage notification) {
         SimpleMailMessage message = new SimpleMailMessage();
+        if (!from.isBlank()) {
+            message.setFrom(from);
+        }
         message.setTo(notification.recipientEmail());
         message.setSubject(subject(notification));
         message.setText(body(notification));
         mailSender.send(message);
+        // Lỗi SMTP được ném ra: RabbitMQ thử lại theo cấu hình retry rồi bỏ tin, không ảnh hưởng đặt lịch.
         log.info("Sent {} email for booking {}", notification.type(), notification.bookingCode());
     }
 

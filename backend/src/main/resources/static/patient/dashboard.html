@@ -25,7 +25,6 @@
     .slot-btn.selected { background-color: #10b981 !important; border-color: #10b981 !important; color: #fff !important; box-shadow: 0 4px 14px rgba(16,185,129,0.35); }
     .slot-btn.unavailable { background-color: #f1f5f9 !important; border-color: #cbd5e1 !important; color: #94a3b8 !important; cursor: not-allowed; text-decoration: line-through; }
     
-    .rating-stars { color: #f59e0b; font-size: 0.85rem; }
     .stat-badge { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 6px 12px; }
   </style>
 </head>
@@ -514,15 +513,6 @@
               <i class="bi bi-person-fill"></i>
             </div>
             
-            <div class="rating-stars mb-1">
-              <i class="bi bi-star-fill"></i>
-              <i class="bi bi-star-fill"></i>
-              <i class="bi bi-star-fill"></i>
-              <i class="bi bi-star-fill"></i>
-              <i class="bi bi-star-fill"></i>
-              <span class="text-muted ms-1">(5.0)</span>
-            </div>
-
             <h5 class="fw-bold text-dark mb-1">${d.fullName}</h5>
             <div class="mb-3">
               <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-1 fw-semibold">
@@ -579,13 +569,13 @@
           <div class="col-md-6">
             <div class="bg-light p-3 rounded-3">
               <small class="text-muted d-block mb-1"><i class="bi bi-award me-1"></i>Kinh nghiệm:</small>
-              <strong class="text-dark">${doc.experienceYears} năm làm việc tại bệnh viện lớn</strong>
+              <strong class="text-dark">${doc.experienceYears != null ? doc.experienceYears + ' năm kinh nghiệm' : '—'}</strong>
             </div>
           </div>
           <div class="col-md-6">
             <div class="bg-light p-3 rounded-3">
               <small class="text-muted d-block mb-1"><i class="bi bi-telephone me-1"></i>Điện thoại liên hệ:</small>
-              <strong class="text-dark">${doc.phone || '0901234567'}</strong>
+              <strong class="text-dark">${doc.phone || '—'}</strong>
             </div>
           </div>
           <div class="col-md-6">
@@ -745,7 +735,7 @@
         const createdApp = res.data || {};
         document.getElementById('success-price').textContent = Utils.formatCurrency(createdApp.price);
         document.getElementById('success-pricing-kind').textContent = ({STANDARD:'Tiêu chuẩn',INSURANCE:'Bảo hiểm',VIP:'VIP'})[createdApp.pricingKey] || '';
-        document.getElementById('success-booking-code').innerText = createdApp.bookingCode || 'BK-SUCCESS';
+        document.getElementById('success-booking-code').innerText = createdApp.bookingCode || '—';
         document.getElementById('success-doctor-name').innerText = docName;
         document.getElementById('success-date-time').innerText = Utils.formatDate(createdApp.workDate) + ' · ' + Utils.formatTime(createdApp.startTime) + ' - ' + Utils.formatTime(createdApp.endTime);
         successBsModal.show();

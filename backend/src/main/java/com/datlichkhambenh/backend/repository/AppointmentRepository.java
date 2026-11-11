@@ -43,4 +43,11 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     List<Object[]> findTopDoctors();
 
     long countByStatus(String status);
+
+    // Dữ liệu lịch sử demo đã được nạp chưa (mã bắt đầu bằng tiền tố riêng)
+    boolean existsByBookingCodeStartingWith(String prefix);
+
+    // Số lịch hẹn theo bác sĩ và trạng thái: [doctorUserId, status, count]
+    @Query("select a.doctor.userId, a.status, count(a) from Appointment a group by a.doctor.userId, a.status")
+    List<Object[]> countByDoctorAndStatus();
 }

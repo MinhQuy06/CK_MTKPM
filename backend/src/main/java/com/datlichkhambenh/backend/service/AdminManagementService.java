@@ -36,4 +36,10 @@ public interface AdminManagementService {
     void deletePatient(Long patientId);
     List<AppointmentDto> getAppointments(int page, int size);
     List<AppointmentDto> getPatientAppointments(Long patientId);
+
+    /** Lịch hẹn của một bác sĩ (mới nhất trước), kèm chẩn đoán nếu đã có bệnh án. */
+    List<AppointmentDto> getDoctorAppointments(Long doctorUserId);
+
+    /** Số lịch hẹn của từng bác sĩ theo trạng thái: doctorId, total, confirmed, completed, cancelled. */
+    List<java.util.Map<String, Object>> getDoctorAppointmentStats();
 }

@@ -133,6 +133,16 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Flyway: quản lý migration schema ở profile prod -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-mysql</artifactId>
+        </dependency>
+
         <!-- H2 in-memory DB - dung cho test profile, khong can MySQL that -->
         <dependency>
             <groupId>com.h2database</groupId>

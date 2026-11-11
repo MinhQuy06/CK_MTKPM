@@ -25,7 +25,7 @@ Phòng khám muốn gửi thêm SMS khi đặt/hủy/nhắc lịch. SDK của nh
 
 Nếu gọi thẳng SDK ở chỗ gửi thông báo, mọi chi tiết đó lan vào nghiệp vụ, và đổi nhà cung cấp là sửa nghiệp vụ.
 
-> Không có nhà cung cấp thật: `SimulatedSmsGatewayClient` đóng vai SDK, chỉ lưu tin trong bộ nhớ và ghi log.
+> Nhà cung cấp thật là eSMS (`EsmsGatewayClient`, bật bằng `SMS_ENABLED=true`). Khi tắt (mặc định), `DisabledSmsGatewayClient` không gửi gì và Adapter trả `SKIPPED_DISABLED`. Bản giả lập `SimulatedSmsGatewayClient` chỉ nằm trong `src/test` để kiểm chứng Adapter.
 
 **Phương án đã cân nhắc:**
 
@@ -40,7 +40,7 @@ Nếu gọi thẳng SDK ở chỗ gửi thông báo, mọi chi tiết đó lan v
 | Vai trò | Lớp | Ghi chú |
 |---|---|---|
 | Target | [`NotificationChannel`](../../backend/src/main/java/com/datlichkhambenh/backend/adapter/NotificationChannel.java) | `name()`, `send(patientPhone, message): DeliveryResult` |
-| Adaptee | [`SimulatedSmsGatewayClient`](../../backend/src/main/java/com/datlichkhambenh/backend/adapter/SimulatedSmsGatewayClient.java) | `submitSms(msisdn, text): int` (giả lập) |
+| Adaptee | [`SmsGatewayClient`](../../backend/src/main/java/com/datlichkhambenh/backend/adapter/SmsGatewayClient.java): [`EsmsGatewayClient`](../../backend/src/main/java/com/datlichkhambenh/backend/adapter/EsmsGatewayClient.java) (thật), [`DisabledSmsGatewayClient`](../../backend/src/main/java/com/datlichkhambenh/backend/adapter/DisabledSmsGatewayClient.java) (khi tắt) | `submitSms(msisdn, text): int` |
 | Adapter | [`SmsChannelAdapter`](../../backend/src/main/java/com/datlichkhambenh/backend/adapter/SmsChannelAdapter.java) | Bỏ qua khi không có số, chuẩn hóa số, soạn SMS ngắn, dịch mã → `DeliveryResult` |
 | Hỗ trợ | [`VietnamPhone`](../../backend/src/main/java/com/datlichkhambenh/backend/adapter/VietnamPhone.java), [`DeliveryResult`](../../backend/src/main/java/com/datlichkhambenh/backend/adapter/DeliveryResult.java) | `0xxx` / `84xxx` / `+84xxx` → `+84xxx`; kết quả SENT / SKIPPED_NO_PHONE / FAILED |
 | Client | [`SmsNotificationDecorator`](../../backend/src/main/java/com/datlichkhambenh/backend/decorator/SmsNotificationDecorator.java) | Chỉ biết `NotificationChannel` |
@@ -74,6 +74,6 @@ Nguồn `.drawio` trong [diagrams/](diagrams/), sinh bằng `python3 scripts/ada
 
 ## 7. Hạn chế
 
-- Nhà cung cấp là giả lập; chưa có retry, giới hạn tốc độ hay xác nhận đã nhận tin.
+- Client eSMS chưa có retry, giới hạn tốc độ hay xác nhận đã nhận tin (chỉ biết nhà cung cấp đã nhận). Chưa thử với tài khoản eSMS thật: nên thử `ESMS_SANDBOX=true` trước.
 - `VietnamPhone` chỉ nhận số 10 chữ số kiểu hiện hành; số cũ 11 chữ số hay số nước ngoài bị coi là sai.
 - Nội dung SMS cố định trong Adapter; muốn nhiều mẫu tin nhắn cần tách ra.

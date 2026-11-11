@@ -70,12 +70,19 @@ dat-lich-kham-benh-main/
 ├── frontend/                        # Mã nguồn giao diện độc lập
 ├── architecture.md                  # Quy ước kiến trúc 5 tầng
 ├── schema.md                        # Mô tả schema và quan hệ dữ liệu
-├── docker-compose.yml               # MySQL, Redis và RabbitMQ
+├── docker-compose.yml               # Hạ tầng cho dev: MySQL, Redis và RabbitMQ
+├── docker-compose.prod.yml          # Chạy production ở localhost: app + MySQL + Redis + RabbitMQ + Mailpit
+├── .env.example                     # Mẫu biến môi trường cho docker-compose.prod.yml
+├── scripts/demo-up.sh               # Dựng stack prod ở chế độ demo (tự tạo .env)
+├── scripts/check-frontend-sync.sh   # Kiểm tra / đồng bộ frontend/ → backend/.../static/
+├── scripts/prod-smoke.sh            # Kịch bản nghiệm thu chạy thật trên stack prod
 ├── run.bat                          # Chạy nhanh trên Windows với profile dev
 └── DatLichKhamBenh.postman_collection.json
 ```
 
 Hai thư mục `frontend/` và `backend/src/main/resources/static/` đang chứa cùng một phiên bản giao diện. Khi chạy Spring Boot, giao diện trong thư mục `static/` được phục vụ tại cổng của backend và không cần cài Node.js.
+
+Sửa giao diện ở `frontend/`, rồi chạy `./scripts/check-frontend-sync.sh --fix` để chép sang `static/`. Chạy không có `--fix` để kiểm tra hai bản có lệch không. Giao diện chỉ hiển thị dữ liệu từ API, không tự sinh số liệu.
 
 ## Yêu cầu môi trường
 
@@ -140,9 +147,23 @@ Sau khi log xuất hiện thông báo `Started BackendApplication`, mở:
 
 Tài khoản RabbitMQ local mặc định là `guest` / `guest`.
 
+## Chạy production ở localhost (Docker Compose)
+
+Hướng dẫn đầy đủ (chế độ demo và chế độ thật, các thành phần nằm ở đâu, cách hoạt động, biến môi trường, xử lý sự cố): **[docs/production.md](docs/production.md)**.
+
+Chạy demo nhanh (có dữ liệu mẫu, email vào hộp thư nội bộ Mailpit, SMS tắt, không gửi gì ra ngoài):
+
+```bash
+./scripts/demo-up.sh
+```
+
+- Ứng dụng: `http://localhost:18081`. Hộp thư Mailpit: `http://localhost:8025`.
+- Tài khoản mẫu: xem mục bên dưới hoặc `docs/production.md`.
+- Chế độ thật: trong `.env` đặt `APP_PROFILES=prod`, điền `MAIL_*` (và `ESMS_*` nếu bật SMS), rồi `docker compose -f docker-compose.prod.yml down -v` và `up -d --build`.
+
 ## Các dịch vụ Docker
 
-`docker-compose.yml` chỉ khởi chạy hạ tầng; backend vẫn chạy bằng Maven hoặc file JAR.
+`docker-compose.yml` chỉ khởi chạy hạ tầng cho chế độ dev; backend vẫn chạy bằng Maven hoặc file JAR. Để chạy cả ứng dụng ở chế độ production, dùng `docker-compose.prod.yml` (mục ở trên).
 
 | Dịch vụ | Container | Cổng máy host |
 |---|---|---|
@@ -225,6 +246,12 @@ Các giá trị local mặc định khớp với `docker-compose.yml`.
 | `MAIL_PORT` | `587` | Cổng SMTP |
 | `MAIL_USERNAME` | Trống | Tài khoản gửi email |
 | `MAIL_PASSWORD` | Trống | Mật khẩu ứng dụng SMTP |
+| `MAIL_FROM` | `MAIL_USERNAME` (prod) | Người gửi email |
+| `SMS_ENABLED` | `false` | Bật gửi SMS thật qua eSMS (tốn phí theo tin) |
+| `ESMS_API_KEY`, `ESMS_SECRET_KEY` | Trống | Khóa eSMS, bắt buộc khi `SMS_ENABLED=true` |
+| `ESMS_SANDBOX` | `false` | `true`: eSMS nhận tin nhưng không gửi và không trừ tiền |
+| `ADMIN_EMAIL`, `ADMIN_PASSWORD` | Chỉ prod, bắt buộc | Admin đầu tiên (mật khẩu từ 8 ký tự) |
+| `CORS_ALLOWED_ORIGINS` | Chỉ prod, bắt buộc | Origin được phép gọi API |
 
 Ví dụ cấu hình PowerShell trước khi chạy ở môi trường không dùng profile `dev`:
 
@@ -253,7 +280,7 @@ Queue mặc định: `clinic.email.queue`.
 
 ## Tài khoản mẫu (Demo Accounts)
 
-Hệ thống cung cấp sẵn 3 tài khoản cho mỗi nhóm người dùng (**3 Admin**, **3 Bác sĩ**, **3 Bệnh nhân**) để kiểm tra và đăng nhập ngay mà không cần tạo mới. Dữ liệu được khởi tạo tự động khi ứng dụng chạy (profile `dev`).
+Hệ thống cung cấp sẵn 3 tài khoản cho mỗi nhóm người dùng (**3 Admin**, **3 Bác sĩ**, **3 Bệnh nhân**) để kiểm tra và đăng nhập ngay mà không cần tạo mới. Dữ liệu được khởi tạo tự động khi ứng dụng chạy với profile `dev` (Maven) hoặc `demo` (`./scripts/demo-up.sh`).
 
 ### 1. Quản trị viên (Admin)
 | STT | Tên tài khoản | Email | Mật khẩu | Quyền hạn & Ghi chú |
@@ -277,7 +304,7 @@ Hệ thống cung cấp sẵn 3 tài khoản cho mỗi nhóm người dùng (**3
 | 3 | Trần Thị Bình | `0911223344` | `patient@clinic` | `user@2026` | Có lịch khám chuyên khoa Thần kinh |
 
 > [!NOTE]
-> Mọi mật khẩu đều được băm bảo mật bằng thuật toán **BCrypt** trước khi lưu vào cơ sở dữ liệu. Không sử dụng các tài khoản mẫu này cho môi trường production.
+> Mọi mật khẩu đều được băm bảo mật bằng thuật toán **BCrypt** trước khi lưu vào cơ sở dữ liệu. Không sử dụng các tài khoản mẫu này ở chế độ thật (`APP_PROFILES=prod`).
 
 ## API và Postman
 
@@ -374,10 +401,12 @@ $env:SERVER_PORT = "8081"
 
 ## Lưu ý production
 
-- Không chạy với profile `dev`.
-- Bắt buộc cung cấp `JWT_SECRET` đủ mạnh và ngẫu nhiên.
-- Không dùng tài khoản/mật khẩu mẫu hoặc tài khoản RabbitMQ `guest`.
-- Dùng migration tool như Flyway hoặc Liquibase và đặt `JPA_DDL_AUTO=validate`.
-- Chỉ cho phép CORS từ domain frontend thực tế.
-- Bật HTTPS, quản lý secret bằng biến môi trường hoặc secret manager.
-- Cấu hình backup MySQL, giám sát health/metrics và chính sách lưu log.
+Đã làm trong `docker-compose.prod.yml` và profile `prod` (chi tiết: [docs/production.md](docs/production.md)):
+
+- Mặc định chạy chế độ demo (`APP_PROFILES=prod,demo`): có dữ liệu mẫu, email vào Mailpit, SMS tắt. `DemoModeGuard` không cho bật gửi thật khi đang demo.
+- Chế độ thật (`APP_PROFILES=prod`): không dữ liệu mẫu, Admin đầu tiên lấy từ biến môi trường, email SMTP thật, SMS eSMS khi bật.
+- `JWT_SECRET`, mật khẩu Redis và RabbitMQ bắt buộc đến từ `.env`; thiếu thì không khởi động.
+- Schema do Flyway quản lý (`db/migration`), Hibernate chỉ `validate`.
+- Chỉ lộ `/actuator/health`; CORS giới hạn theo `CORS_ALLOWED_ORIGINS`; log mức INFO.
+
+Chưa làm (ngoài phạm vi chạy ở localhost): MySQL tạm chưa đặt user/mật khẩu (không mở cổng ra ngoài), HTTPS và domain, sao lưu MySQL tự động, rate limit, giám sát và lưu log tập trung.

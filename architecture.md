@@ -91,3 +91,14 @@ BookingController → BookingServiceImpl
 4. Danh sách bác sĩ / slot rảnh ưu tiên đọc từ Redis Cache trước khi query DB.
 5. Mọi endpoint (trừ AuthController) phải đi qua JwtTokenFilter + Role-Based Authorization.
 6. Password luôn hash bằng BCrypt, không lưu plaintext.
+
+## Cấu hình theo profile
+
+| Profile | Dùng cho | Schema | Dữ liệu | SMS / email |
+|---|---|---|---|---|
+| `dev` | Chạy local bằng `run.sh` / `run.bat` | Hibernate `ddl-auto: update` | `DataInitializer` nạp dữ liệu mẫu | Theo biến môi trường (SMS tắt mặc định) |
+| `test` | `mvn test` | H2, `create-drop` | Test tự tạo | Adaptee SMS giả lập nằm trong `src/test` |
+| `prod` | `docker-compose.prod.yml`, chế độ thật (`APP_PROFILES=prod`) | Flyway (`db/migration`), Hibernate `validate` | Không seed; `AdminBootstrap` tạo Admin đầu tiên từ biến môi trường | Email thật (SMTP) qua RabbitMQ; SMS thật qua eSMS khi `SMS_ENABLED=true` |
+| `prod` + `demo` | `docker-compose.prod.yml` mặc định (`APP_PROFILES=prod,demo`) | Như `prod` | `DataInitializer` nạp dữ liệu mẫu (chạy trước `AdminBootstrap`, nên bước tạo Admin tự bỏ qua) | Email vào Mailpit; SMS tắt; `DemoModeGuard` chặn gửi thật |
+
+Ở `prod`, mọi bí mật không có giá trị mặc định: thiếu biến nào thì ứng dụng không khởi động. Hướng dẫn chạy: [docs/production.md](docs/production.md).

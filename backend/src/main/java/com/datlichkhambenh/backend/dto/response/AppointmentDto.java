@@ -33,4 +33,7 @@ public class AppointmentDto {
     private BigDecimal basePrice;
     private BigDecimal discountRate;
     private LocalDateTime createdAt;
+    /** Chẩn đoán và lời dặn từ bệnh án (null nếu chưa có bệnh án). */
+    private String diagnosis;
+    private String doctorNotes;
 }

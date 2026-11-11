@@ -150,6 +150,16 @@ public class AdminController {
         return ResponseEntity.ok(ApiResponseDto.success(adminManagementService.getAppointments(page, size)));
     }
 
+    @GetMapping("/doctors/{doctorId}/appointments")
+    public ResponseEntity<ApiResponseDto<List<AppointmentDto>>> getDoctorAppointments(@PathVariable Long doctorId) {
+        return ResponseEntity.ok(ApiResponseDto.success(adminManagementService.getDoctorAppointments(doctorId)));
+    }
+
+    @GetMapping("/doctors/appointment-stats")
+    public ResponseEntity<ApiResponseDto<List<java.util.Map<String, Object>>>> getDoctorAppointmentStats() {
+        return ResponseEntity.ok(ApiResponseDto.success(adminManagementService.getDoctorAppointmentStats()));
+    }
+
     @GetMapping("/patients/{patientId}/appointments")
     public ResponseEntity<ApiResponseDto<List<AppointmentDto>>> getPatientHistory(
             @PathVariable Long patientId) {

@@ -27,7 +27,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +37,7 @@ public class BookingServiceImpl implements BookingService {
     private final PatientRepository patientRepository;
     private final BookingOffer offers;
     private final ApplicationEventPublisher events;
+    private final AppointmentDtoMapper appointmentMapper;
 
     @Override
     @Transactional
@@ -76,7 +76,7 @@ public class BookingServiceImpl implements BookingService {
         // 5. Observer: báo cho các observer (email, cache slot…) rằng lịch hẹn đã được đặt
         events.publishEvent(new AppointmentBookedEvent(savedAppointment));
 
-        return mapToDto(savedAppointment);
+        return appointmentMapper.toDto(savedAppointment);
     }
 
     @Override
@@ -131,15 +131,13 @@ public class BookingServiceImpl implements BookingService {
         if (!ownsAppointment) {
             throw new AppException("Bạn không có quyền xem lịch hẹn này", HttpStatus.FORBIDDEN);
         }
-        return mapToDto(appointment);
+        return appointmentMapper.toDto(appointment);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<AppointmentDto> getPatientAppointments(Long patientUserId) {
-        List<AppointmentDto> list = appointmentRepository.findByPatientUserId(patientUserId).stream()
-                .map(this::mapToDto)
-                .collect(Collectors.toList());
+        List<AppointmentDto> list = appointmentMapper.toDtos(appointmentRepository.findByPatientUserId(patientUserId));
 
         // Sắp xếp lịch hẹn theo ngày giảm dần (mới nhất lên đầu)
         list.sort((a, b) -> {
@@ -153,17 +151,14 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional(readOnly = true)
     public List<AppointmentDto> getDoctorAppointments(Long doctorUserId) {
-        return appointmentRepository.findByDoctorUserId(doctorUserId).stream()
-                .map(this::mapToDto)
-                .collect(Collectors.toList());
+        return appointmentMapper.toDtos(appointmentRepository.findByDoctorUserId(doctorUserId));
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<AppointmentDto> getCompletedDoctorAppointments(Long doctorUserId) {
-        return appointmentRepository
-                .findByDoctorUserIdAndStatusOrderByScheduleWorkDateDesc(doctorUserId, "COMPLETED")
-                .stream().map(this::mapToDto).toList();
+        return appointmentMapper.toDtos(appointmentRepository
+                .findByDoctorUserIdAndStatusOrderByScheduleWorkDateDesc(doctorUserId, "COMPLETED"));
     }
 
     @Override
@@ -173,8 +168,8 @@ public class BookingServiceImpl implements BookingService {
         if (from.isAfter(to)) {
             throw new AppException("Ngày bắt đầu phải trước hoặc bằng ngày kết thúc");
         }
-        return appointmentRepository.findByDoctorUserIdAndScheduleWorkDateBetween(doctorUserId, from, to)
-                .stream().map(this::mapToDto).toList();
+        return appointmentMapper.toDtos(
+                appointmentRepository.findByDoctorUserIdAndScheduleWorkDateBetween(doctorUserId, from, to));
     }
 
     @Override @Transactional
@@ -188,27 +183,5 @@ public class BookingServiceImpl implements BookingService {
                 appointment.getSchedule().getWorkDate(), appointment.getSchedule().getStartTime());
         if (appointmentTime.isAfter(LocalDateTime.now())) throw new AppException("Chưa đến giờ khám");
         appointment.setStatus(status); appointmentRepository.save(appointment);
-    }
-
-    private AppointmentDto mapToDto(Appointment appointment) {
-        Schedule schedule = appointment.getSchedule();
-        return AppointmentDto.builder()
-                .id(appointment.getId())
-                .bookingCode(appointment.getBookingCode())
-                .patientId(appointment.getPatient().getUserId())
-                .patientName(appointment.getPatient().getFullName())
-                .patientPhone(appointment.getPatient().getPhone())
-                .doctorId(appointment.getDoctor().getUserId())
-                .doctorName(appointment.getDoctor().getFullName())
-                .scheduleId(schedule != null ? schedule.getId() : null)
-                .workDate(schedule != null ? schedule.getWorkDate() : null)
-                .startTime(schedule != null ? schedule.getStartTime() : null)
-                .endTime(schedule != null ? schedule.getEndTime() : null)
-                .symptoms(appointment.getSymptoms())
-                .status(appointment.getStatus())
-                .price(appointment.getPrice())
-                .pricingKey(appointment.getPricingKey()).basePrice(appointment.getBasePrice()).discountRate(appointment.getDiscountRate()).benefitRequestId(appointment.getBenefitRequestId())
-                .createdAt(appointment.getCreatedAt())
-                .build();
     }
 }

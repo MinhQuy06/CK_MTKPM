@@ -39,11 +39,6 @@
       border-radius: 20px;
       font-weight: 600;
     }
-    .method-vietqr { background-color: #e0f2fe; color: #0369a1; }
-    .method-momo { background-color: #fce7f3; color: #be185d; }
-    .method-zalopay { background-color: #dcfce7; color: #15803d; }
-    .method-card { background-color: #f3e8ff; color: #6b21a8; }
-    .method-cash { background-color: #fef3c7; color: #b45309; }
 
     .month-pill {
       border: 1px solid #e2e8f0;
@@ -128,7 +123,7 @@
         <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
           <div>
             <h2 class="fw-bold text-dark mb-1"><i class="bi bi-graph-up-arrow text-primary me-2"></i>Thống Kê Tổng Quan & Doanh Thu</h2>
-            <p class="text-muted mb-0">Theo dõi doanh thu chi tiết theo tháng và thông tin các bệnh nhân chuyển tiền</p>
+            <p class="text-muted mb-0">Theo dõi doanh thu phí khám theo tháng và danh sách lịch hẹn kèm phí khám</p>
           </div>
           <div class="d-flex align-items-center gap-2">
             <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-2 fw-semibold">
@@ -216,8 +211,8 @@
         <div class="chart-container mb-4">
           <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
             <div>
-              <h5 class="fw-bold text-dark mb-0"><i class="bi bi-bar-chart-fill text-primary me-2"></i>Sơ Đồ Biến Động Doanh Thu Theo Tháng (Năm 2026)</h5>
-              <small class="text-muted">Nhấp chuột vào từng cột tháng trên sơ đồ để xem chi tiết bệnh nhân chuyển tiền tháng đó</small>
+              <h5 class="fw-bold text-dark mb-0"><i class="bi bi-bar-chart-fill text-primary me-2"></i>Sơ Đồ Biến Động Doanh Thu Theo Tháng (Năm <span id="chart-year"></span>)</h5>
+              <small class="text-muted">Doanh thu tính từ phí khám của các lịch đã khám. Nhấp vào cột tháng để lọc danh sách lịch hẹn của tháng đó</small>
             </div>
             <div class="btn-group btn-group-sm rounded-pill border p-1 bg-light">
               <button class="btn btn-primary rounded-pill px-3 active" id="btn-chart-bar" onclick="switchChartType('bar')">Biểu Đồ Cột</button>
@@ -232,21 +227,21 @@
           </div>
         </div>
 
-        <!-- Bảng Chi Tiết Bệnh Nhân Chuyển Tiền Theo Tháng -->
+        <!-- Bảng lịch hẹn kèm phí khám theo tháng (hệ thống chưa có chức năng thanh toán) -->
         <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
           <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-3">
             <div>
               <h5 class="fw-bold text-dark mb-0">
-                <i class="bi bi-credit-card-2-front text-success me-2"></i>Chi Tiết Bệnh Nhân Chuyển Tiền Thanh Toán
+                <i class="bi bi-receipt text-success me-2"></i>Lịch Hẹn & Phí Khám
               </h5>
-              <small class="text-muted" id="tx-subtitle">Hiển thị danh sách các khoản thanh toán thành công của bệnh nhân</small>
+              <small class="text-muted" id="tx-subtitle">Danh sách lịch hẹn trong năm kèm phí khám đã chốt và trạng thái</small>
             </div>
 
             <!-- Tìm kiếm -->
             <div class="d-flex gap-2">
               <div class="input-group shadow-sm" style="max-width: 280px;">
                 <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
-                <input type="text" id="searchTxInput" class="form-control border-start-0 ps-0" placeholder="Tìm tên bệnh nhân / mã GD..." oninput="onSearchTx()">
+                <input type="text" id="searchTxInput" class="form-control border-start-0 ps-0" placeholder="Tìm tên / SĐT bệnh nhân / mã lịch hẹn..." oninput="onSearchTx()">
               </div>
             </div>
           </div>
@@ -260,24 +255,24 @@
             <table class="table table-hover align-middle table-custom mb-0">
               <thead>
                 <tr>
-                  <th>Mã Giao Dịch</th>
-                  <th>Bệnh Nhân Chuyển Tiền</th>
+                  <th>Mã Lịch Hẹn</th>
+                  <th>Bệnh Nhân</th>
                   <th>Bác Sĩ Khám</th>
-                  <th>Thời Gian Chuyển</th>
-                  <th>Phương Thức</th>
-                  <th class="text-end">Số Tiền Chuyển</th>
+                  <th>Ngày Khám</th>
+                  <th>Loại Phí</th>
+                  <th class="text-end">Phí Khám</th>
                   <th class="text-center">Trạng Thái</th>
                 </tr>
               </thead>
               <tbody id="transactionRows">
-                <tr><td colspan="7" class="text-center py-4 text-muted"><div class="spinner-border spinner-border-sm text-primary me-2"></div>Đang tải chi tiết giao dịch...</td></tr>
+                <tr><td colspan="7" class="text-center py-4 text-muted"><div class="spinner-border spinner-border-sm text-primary me-2"></div>Đang tải danh sách lịch hẹn...</td></tr>
               </tbody>
             </table>
           </div>
 
           <!-- Pagination Controls -->
           <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top flex-wrap gap-2">
-            <div class="small text-muted" id="tx-pagination-info">Hiển thị 0 - 0 trong 0 giao dịch</div>
+            <div class="small text-muted" id="tx-pagination-info">Hiển thị 0 - 0 trong 0 lịch hẹn</div>
             <nav>
               <ul class="pagination pagination-sm mb-0" id="tx-pagination-controls">
                 <!-- JS Render -->
@@ -335,15 +330,12 @@
       return n.toLocaleString('vi-VN') + ' ₫';
     }
 
-    function getMethodBadge(method) {
-      switch(method) {
-        case 'VietQR Banking': return '<span class="badge badge-method method-vietqr"><i class="bi bi-qr-code-scan me-1"></i>VietQR</span>';
-        case 'Ví MoMo': return '<span class="badge badge-method method-momo"><i class="bi bi-wallet2 me-1"></i>MoMo</span>';
-        case 'ZaloPay': return '<span class="badge badge-method method-zalopay"><i class="bi bi-wallet-fill me-1"></i>ZaloPay</span>';
-        case 'Thẻ ATM/Visa': return '<span class="badge badge-method method-card"><i class="bi bi-credit-card me-1"></i>Thẻ ATM</span>';
-        default: return '<span class="badge badge-method method-cash"><i class="bi bi-cash me-1"></i>Tiền mặt</span>';
-      }
-    }
+    const PRICING_LABEL = { STANDARD: 'Tiêu chuẩn', INSURANCE: 'Bảo hiểm', VIP: 'VIP' };
+    const FEE_STATUS = {
+      COMPLETED: '<span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1"><i class="bi bi-check-circle-fill me-1"></i>Đã khám</span>',
+      CONFIRMED: '<span class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill px-3 py-1"><i class="bi bi-hourglass-split me-1"></i>Chờ khám</span>',
+      CANCELLED: '<span class="badge bg-secondary-subtle text-secondary border rounded-pill px-3 py-1"><i class="bi bi-x-circle me-1"></i>Đã hủy</span>'
+    };
 
     async function loadDashboardData() {
       try {
@@ -356,6 +348,7 @@
 
         // Load analytics & transaction detailed data
         const year = new Date().getFullYear();
+        document.getElementById('chart-year').textContent = year;
         const resAnalytics = await Api.admin.analytics(year);
         analyticsData = resAnalytics.data || {};
 
@@ -367,7 +360,7 @@
         // Render Chart
         renderRevenueChart();
 
-        // Render Transactions Table
+        // Bảng lịch hẹn kèm phí khám
         renderTxTable();
 
       } catch (err) {
@@ -392,9 +385,9 @@
 
       const subtitle = document.getElementById('tx-subtitle');
       if (m === 0) {
-        subtitle.innerText = 'Hiển thị toàn bộ các giao dịch chuyển tiền thanh toán trong năm';
+        subtitle.innerText = 'Danh sách lịch hẹn trong năm kèm phí khám đã chốt và trạng thái';
       } else {
-        subtitle.innerText = `Hiển thị danh sách bệnh nhân đã chuyển tiền thanh toán trong Tháng ${m}`;
+        subtitle.innerText = `Danh sách lịch hẹn có ngày khám trong Tháng ${m}`;
       }
     }
 
@@ -501,18 +494,17 @@
     }
 
     function renderTxTable() {
-      if (!analyticsData || !analyticsData.transactions) return;
+      if (!analyticsData || !analyticsData.appointmentFees) return;
       const searchKey = (document.getElementById('searchTxInput').value || '').toLowerCase().trim();
       const tbody = document.getElementById('transactionRows');
 
-      let list = analyticsData.transactions || [];
+      let list = analyticsData.appointmentFees || [];
       if (selectedMonth > 0) {
         list = list.filter(t => t.month === selectedMonth);
       }
       if (searchKey) {
         list = list.filter(t =>
           (t.patientName || '').toLowerCase().includes(searchKey) ||
-          (t.transactionId || '').toLowerCase().includes(searchKey) ||
           (t.patientPhone || '').includes(searchKey) ||
           (t.bookingCode || '').toLowerCase().includes(searchKey)
         );
@@ -526,10 +518,10 @@
       const endIndex = Math.min(startIndex + txPageSize, totalItems);
       const pageItems = list.slice(startIndex, endIndex);
 
-      document.getElementById('tx-pagination-info').innerText = `Hiển thị ${totalItems > 0 ? startIndex + 1 : 0} - ${endIndex} trong tổng số ${totalItems.toLocaleString('vi-VN')} giao dịch chuyển tiền`;
+      document.getElementById('tx-pagination-info').innerText = `Hiển thị ${totalItems > 0 ? startIndex + 1 : 0} - ${endIndex} trong tổng số ${totalItems.toLocaleString('vi-VN')} lịch hẹn`;
 
       if (pageItems.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-muted">Không tìm thấy thông tin chuyển tiền phù hợp</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-muted">Không có lịch hẹn phù hợp</td></tr>`;
         renderTxPagination(0);
         return;
       }
@@ -537,28 +529,25 @@
       tbody.innerHTML = pageItems.map(t => `
         <tr>
           <td>
-            <div class="font-monospace fw-bold text-primary small">${t.transactionId}</div>
-            <small class="text-muted font-monospace">${t.bookingCode}</small>
+            <div class="font-monospace fw-bold text-primary small">${t.bookingCode}</div>
           </td>
           <td>
-            <div class="fw-bold text-dark">${t.patientName}</div>
-            <small class="text-muted"><i class="bi bi-telephone me-1"></i>${t.patientPhone}</small>
+            <div class="fw-bold text-dark">${t.patientName || '—'}</div>
+            <small class="text-muted"><i class="bi bi-telephone me-1"></i>${t.patientPhone || '—'}</small>
           </td>
           <td>
-            <div class="fw-semibold text-dark small">${t.doctorName}</div>
-            <span class="badge bg-light text-secondary border small">${t.specialty}</span>
+            <div class="fw-semibold text-dark small">${t.doctorName || '—'}</div>
+            <span class="badge bg-light text-secondary border small">${t.specialty || '—'}</span>
           </td>
           <td>
-            <div class="small fw-semibold text-dark"><i class="bi bi-clock me-1 text-primary"></i>${t.paymentDate}</div>
+            <div class="small fw-semibold text-dark"><i class="bi bi-calendar3 me-1 text-primary"></i>${Utils.formatDate(t.workDate)} ${t.startTime ? Utils.formatTime(t.startTime) : ''}</div>
           </td>
-          <td>${getMethodBadge(t.paymentMethod)}</td>
+          <td><span class="badge bg-light text-dark border">${PRICING_LABEL[t.pricingKey] || 'Tiêu chuẩn'}</span></td>
           <td class="text-end">
-            <strong class="text-success fs-6">+${formatVND(t.amount)}</strong>
+            <strong class="${t.status === 'COMPLETED' ? 'text-success' : 'text-muted'} fs-6">${formatVND(t.amount)}</strong>
           </td>
           <td class="text-center">
-            <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1">
-              <i class="bi bi-check-circle-fill me-1"></i>Đã nhận tiền
-            </span>
+            ${FEE_STATUS[t.status] || t.status}
           </td>
         </tr>
       `).join('');

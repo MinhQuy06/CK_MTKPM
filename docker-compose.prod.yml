@@ -1,0 +1,120 @@
+# =====================================================================
+# docker-compose.prod.yml — chạy "production" ở localhost: app + MySQL + Redis + RabbitMQ + Mailpit
+# Hướng dẫn đầy đủ: docs/production.md
+#
+#   ./scripts/demo-up.sh        # cách nhanh: tự tạo .env (bí mật ngẫu nhiên) rồi dựng stack
+#   hoặc: cp .env.example .env  # tự điền; thiếu biến bắt buộc thì compose báo lỗi ngay
+#         docker compose -f docker-compose.prod.yml up -d --build
+#   → http://localhost:18081  (web + API; /actuator/health)   http://localhost:8025 (hộp thư Mailpit)
+#
+# Mặc định APP_PROFILES=prod,demo: có dữ liệu mẫu, email vào Mailpit, SMS tắt (KHÔNG gửi gì ra ngoài).
+# Chế độ thật: APP_PROFILES=prod + tài khoản SMTP/eSMS thật trong .env.
+#
+# Khác docker-compose.yml (hạ tầng cho dev, mật khẩu mặc định, mở cổng ra máy): ở đây
+# MySQL/Redis/RabbitMQ KHÔNG mở cổng ra ngoài, chỉ app ở cổng ${APP_PORT}.
+# =====================================================================
+name: clinic-prod
+
+services:
+  mysql:
+    image: mysql:8.0
+    restart: unless-stopped
+    # Tạm thời không đặt user/mật khẩu: app kết nối bằng root không mật khẩu.
+    # MySQL không mở cổng ra máy, chỉ app trong mạng Compose truy cập được.
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: datlichkhambenh
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD:?Thiếu REDIS_PASSWORD trong .env}"]
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a $$REDIS_PASSWORD ping | grep -q PONG"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME:?Thiếu RABBITMQ_USERNAME trong .env}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:?Thiếu RABBITMQ_PASSWORD trong .env}
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+
+  # Hộp thư nội bộ cho chế độ demo: nhận mọi email qua SMTP, xem tại http://localhost:8025.
+  mailpit:
+    image: axllent/mailpit:v1.21
+    restart: unless-stopped
+    command: ["--smtp-auth-accept-any", "--smtp-auth-allow-insecure"]
+    ports:
+      - "${MAILPIT_UI_PORT:-8025}:8025"
+
+  app:
+    build: ./backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      mailpit:
+        condition: service_started
+    ports:
+      - "${APP_PORT:-18081}:18081"
+    environment:
+      SPRING_PROFILES_ACTIVE: ${APP_PROFILES:-prod,demo}
+      DB_URL: jdbc:mysql://mysql:3306/datlichkhambenh?useSSL=false&serverTimezone=Asia/Ho_Chi_Minh&allowPublicKeyRetrieval=true&characterEncoding=UTF-8
+      DB_USERNAME: root
+      DB_PASSWORD: ""
+      REDIS_HOST: redis
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      # Mặc định gửi vào Mailpit (demo). Chế độ thật: đặt MAIL_* của Gmail trong .env.
+      MAIL_HOST: ${MAIL_HOST:-mailpit}
+      MAIL_PORT: ${MAIL_PORT:-1025}
+      MAIL_USERNAME: ${MAIL_USERNAME:-demo@clinic.local}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-demo}
+      MAIL_FROM: ${MAIL_FROM:-}
+      JWT_SECRET: ${JWT_SECRET:?Thiếu JWT_SECRET trong .env (openssl rand -hex 64)}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:18081}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:?Thiếu ADMIN_EMAIL trong .env}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?Thiếu ADMIN_PASSWORD trong .env}
+      SMS_ENABLED: ${SMS_ENABLED:-false}
+      ESMS_API_KEY: ${ESMS_API_KEY:-}
+      ESMS_SECRET_KEY: ${ESMS_SECRET_KEY:-}
+      ESMS_SMS_TYPE: ${ESMS_SMS_TYPE:-8}
+      ESMS_SANDBOX: ${ESMS_SANDBOX:-false}
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs http://localhost:18081/actuator/health | grep -q UP"]
+      interval: 15s
+      timeout: 5s
+      start_period: 60s
+      retries: 6
+
+volumes:
+  mysql_data:
+  redis_data:
+  rabbitmq_data:
