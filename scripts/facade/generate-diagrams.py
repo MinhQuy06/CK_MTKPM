@@ -119,9 +119,39 @@ def dfd():
     d.save('facade-dfd.drawio')
 
 
+def use_case():
+    d = Diagram('Facade — Use Case', 1800, 940, OUT)
+    d.title('MẪU FACADE — MỘT CỬA CHO THAO TÁC LỊCH HẸN — SƠ ĐỒ USE CASE', 1700)
+    d.system('Hệ thống đặt lịch khám — Thao tác lịch hẹn (Facade)', 280, 80, 1260, 760)
+    d.actor('patient', 'Bệnh nhân', 120, 360)
+    d.actor('doctor', 'Bác sĩ', 1640, 560)
+    d.actor('admin', 'Admin', 1640, 720)
+    d.case('uc-confirm', 'Đặt lịch khám\n(có giá đã đồng ý)', 330, 130)
+    d.case('uc-legacy', 'Đặt lịch kiểu cũ\n(client cũ)', 330, 250)
+    d.case('uc-cancel', 'Hủy lịch khám', 330, 370)
+    d.case('uc-mine', 'Xem lịch hẹn của tôi', 330, 490)
+    d.case('uc-detail', 'Xem chi tiết lịch hẹn', 330, 660)
+    d.case('uc-facade', 'Thao tác qua cửa đặt lịch\n(BookingFacade)', 760, 380)
+    d.case('uc-who', 'Xác định người đăng nhập', 1170, 200)
+    d.case('uc-offer', 'Khóa và xác nhận giá chào\n(BookingOffer)', 1170, 380)
+    for base in ('uc-confirm', 'uc-legacy', 'uc-cancel', 'uc-mine'):
+        d.assoc('patient', base)
+        d.include(base, 'uc-facade')
+    d.assoc('patient', 'uc-detail')
+    d.assoc('doctor', 'uc-detail')
+    d.assoc('admin', 'uc-detail')
+    d.include('uc-detail', 'uc-facade')
+    d.include('uc-facade', 'uc-who')
+    d.extend('uc-offer', 'uc-facade', 'đặt lịch')
+    d.text('scope', 'Mọi thao tác lịch hẹn đi qua một use case "Thao tác qua cửa đặt lịch"; tác nhân không chạm trực tiếp '
+           'các phần phía sau. Báo giá và quyền hưởng (Strategy) không đi qua Facade.', 280, 855, 1260, 50, 14)
+    d.save('facade-use-case.drawio')
+
+
 if __name__ == '__main__':
     class_diagram()
     sequence()
     erd()
     dfd()
-    print('Generated Facade class, sequence, ERD and DFD in', OUT.relative_to(REPO))
+    use_case()
+    print('Generated Facade class, sequence, ERD, DFD and use case in', OUT.relative_to(REPO))

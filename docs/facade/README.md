@@ -53,6 +53,10 @@ Các controller Strategy (báo giá, quyền hưởng) **không** đi qua Facade
 |---|---|
 | ![erd](diagrams/facade-erd.png) | ![dfd](diagrams/facade-dfd.png) |
 
+**Use case**
+
+![use case](diagrams/facade-use-case.png)
+
 Nguồn `.drawio` trong [diagrams/](diagrams/), sinh bằng `python3 scripts/facade/generate-diagrams.py`.
 
 ## 5. Quyết định thiết kế

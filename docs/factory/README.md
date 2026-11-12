@@ -54,6 +54,10 @@ Thêm vai trò mới (ví dụ y tá) phải sửa cả ba chỗ; chỉ một ch
 |---|---|
 | ![erd](diagrams/factory-erd.png) | ![dfd](diagrams/factory-dfd.png) |
 
+**Use case**
+
+![use case](diagrams/factory-use-case.png)
+
 Nguồn `.drawio` trong [diagrams/](diagrams/), sinh bằng `python3 scripts/factory/generate-diagrams.py`.
 
 ## 5. Quyết định thiết kế

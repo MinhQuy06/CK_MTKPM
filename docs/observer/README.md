@@ -50,6 +50,10 @@ Ví dụ ngoài đời: đăng ký kênh YouTube. Kênh (Subject) đăng video t
 |---|---|
 | ![erd](diagrams/observer-erd.png) | ![dfd](diagrams/observer-dfd.png) |
 
+**Use case**
+
+![use case](diagrams/observer-use-case.png)
+
 Nguồn `.drawio` trong [diagrams/](diagrams/), sinh bằng `python3 scripts/observer/generate-diagrams.py`.
 
 ## 5. Quyết định thiết kế

@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" type="device">
+  <diagram id="Factory — Use Case" name="Factory — Use Case">
+    <mxGraphModel grid="0" page="1" pageScale="1" pageWidth="1800" pageHeight="1080" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="MẪU FACTORY METHOD — MỞ TÀI KHOẢN THEO VAI TRÒ — SƠ ĐỒ USE CASE" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=21;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="15" width="1700" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="system" value="Hệ thống đặt lịch khám — Mở tài khoản (Factory Method)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;verticalAlign=top;fontSize=17;fontStyle=1;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="280" y="80" width="1260" height="900" as="geometry" />
+        </mxCell>
+        <mxCell id="guest" value="Khách" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;fontSize=16;fontStyle=1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="120" y="230" width="40" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="admin" value="Admin" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;fontSize=16;fontStyle=1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="120" y="660" width="40" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-reg-patient" value="Đăng ký tài khoản&#10;bệnh nhân" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="330" y="130" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-reg-doctor" value="Đăng ký tài khoản bác sĩ" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="330" y="300" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-adm-doctor" value="Tạo tài khoản bác sĩ" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="330" y="560" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-adm-patient" value="Tạo tài khoản bệnh nhân" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="330" y="730" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-open" value="Mở tài khoản theo vai trò&#10;(AccountFactory)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="780" y="430" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-login" value="Tạo login&#10;(mã hóa mật khẩu, gán vai trò)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="300" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-profile" value="Tạo hồ sơ theo vai trò&#10;(factory method)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="560" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-reject" value="Từ chối vai trò&#10;không có factory" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="780" y="160" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-approve" value="Duyệt bác sĩ tự đăng ký" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="330" y="880" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;endArrow=none;" edge="1" parent="1" source="guest" target="uc-reg-patient">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;endArrow=none;" edge="1" parent="1" source="guest" target="uc-reg-doctor">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;endArrow=none;" edge="1" parent="1" source="admin" target="uc-adm-doctor">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;endArrow=none;" edge="1" parent="1" source="admin" target="uc-adm-patient">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;endArrow=none;" edge="1" parent="1" source="admin" target="uc-approve">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" value="«include»" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;dashed=1;" edge="1" parent="1" source="uc-reg-patient" target="uc-open">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" value="«include»" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;dashed=1;" edge="1" parent="1" source="uc-reg-doctor" target="uc-open">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" value="«include»" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;dashed=1;" edge="1" parent="1" source="uc-adm-doctor" target="uc-open">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" value="«include»" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;dashed=1;" edge="1" parent="1" source="uc-adm-patient" target="uc-open">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" value="«include»" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;dashed=1;" edge="1" parent="1" source="uc-open" target="uc-login">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" value="«include»" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;dashed=1;" edge="1" parent="1" source="uc-open" target="uc-profile">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" value="«extend»&#10;[ADMIN, NURSE…]" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;dashed=1;" edge="1" parent="1" source="uc-reject" target="uc-open">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="scope" value="Bốn cách mở tài khoản đều đi qua &quot;Mở tài khoản theo vai trò&quot;. Không có factory ADMIN nên không ai tự đăng ký được Admin. Bác sĩ tự đăng ký chờ Admin duyệt; bác sĩ do Admin tạo được duyệt sẵn." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="280" y="995" width="1260" height="50" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

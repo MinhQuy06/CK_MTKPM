@@ -57,6 +57,10 @@ Thứ tự từ ngoài vào trong: **chống trùng → SMS → ghi lịch sử 
 |---|---|
 | ![erd](diagrams/decorator-erd.png) | ![dfd](diagrams/decorator-dfd.png) |
 
+**Use case**
+
+![use case](diagrams/decorator-use-case.png)
+
 Nguồn `.drawio` trong [diagrams/](diagrams/), sinh bằng `python3 scripts/decorator/generate-diagrams.py`.
 
 ## 5. Quyết định thiết kế

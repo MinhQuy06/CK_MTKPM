@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" type="device">
+  <diagram id="Observer — Use Case" name="Observer — Use Case">
+    <mxGraphModel grid="0" page="1" pageScale="1" pageWidth="1800" pageHeight="900" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="MẪU OBSERVER — PHẢN ỨNG KHI ĐẶT / HỦY LỊCH — SƠ ĐỒ USE CASE" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=21;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="15" width="1700" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="system" value="Hệ thống đặt lịch khám — Sự kiện lịch hẹn (Observer)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;verticalAlign=top;fontSize=17;fontStyle=1;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="280" y="80" width="1260" height="720" as="geometry" />
+        </mxCell>
+        <mxCell id="patient" value="Bệnh nhân" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;fontSize=16;fontStyle=1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="120" y="380" width="40" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="queue" value="Hàng đợi email&#10;(RabbitMQ)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;fontSize=16;fontStyle=1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="1640" y="180" width="40" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="redis" value="Redis cache" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;fontSize=16;fontStyle=1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="1640" y="500" width="40" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-book" value="Đặt lịch khám" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="330" y="150" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-cancel" value="Hủy lịch khám" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="330" y="340" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-slots" value="Xem ca trống của bác sĩ" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="330" y="600" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-event" value="Phát sự kiện lịch hẹn&#10;(AppointmentBooked / Cancelled)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="760" y="250" width="360" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-mail" value="Gửi email thông báo&#10;(AppointmentEmailObserver)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="160" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-cache" value="Làm mới danh sách ca trống&#10;(SlotCacheObserver)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="460" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;endArrow=none;" edge="1" parent="1" source="patient" target="uc-book">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;endArrow=none;" edge="1" parent="1" source="patient" target="uc-cancel">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;endArrow=none;" edge="1" parent="1" source="patient" target="uc-slots">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;endArrow=none;" edge="1" parent="1" source="uc-mail" target="queue">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;endArrow=none;" edge="1" parent="1" source="uc-cache" target="redis">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" value="«include»" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;dashed=1;" edge="1" parent="1" source="uc-book" target="uc-event">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" value="«include»" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;dashed=1;" edge="1" parent="1" source="uc-cancel" target="uc-event">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" value="«include»" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;dashed=1;" edge="1" parent="1" source="uc-event" target="uc-mail">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" value="«include»" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;dashed=1;" edge="1" parent="1" source="uc-event" target="uc-cache">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" value="đọc danh sách đã làm mới" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;dashed=1;endArrow=none;" edge="1" parent="1" source="uc-slots" target="uc-cache">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="scope" value="Đặt lịch bị từ chối (ca kín, đổi giá, mất quyền hưởng) không phát sự kiện, nên không có email hay thao tác cache. Thêm phản ứng mới = thêm một use case observer, không đổi &quot;Đặt lịch khám&quot;." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="280" y="815" width="1260" height="50" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

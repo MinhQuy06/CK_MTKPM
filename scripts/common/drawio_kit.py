@@ -102,6 +102,30 @@ class Diagram:
     def note(self, key, text, x, y, w, h):
         return self.box(key, text, x, y, w, h, NOTE)
 
+    # ------------------------------------------------------------ sơ đồ use case (cùng kiểu với Strategy)
+    def system(self, label, x, y, w, h):
+        """Khung hệ thống; use case nằm bên trong, actor nằm bên ngoài."""
+        self.box('system', label, x, y, w, h, 'verticalAlign=top;fontSize=17;fontStyle=1;spacingTop=8;')
+
+    def actor(self, key, label, x, y):
+        self.box(key, label, x, y, 40, 80,
+                 'shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;fontSize=16;fontStyle=1;'
+                 'whiteSpace=wrap;')
+
+    def case(self, key, label, x, y, w=320, h=80):
+        self.box(key, label, x, y, w, h, 'ellipse;whiteSpace=wrap;fontSize=15;')
+
+    def assoc(self, a, b, style=''):
+        """Actor ↔ use case: đường thẳng không mũi tên."""
+        return self.edge(a, b, '', 'edgeStyle=none;endArrow=none;' + style)
+
+    def include(self, base, included, style=''):
+        return self.edge(base, included, '«include»', 'edgeStyle=none;dashed=1;' + style)
+
+    def extend(self, extension, base, condition='', style=''):
+        label = '«extend»' + ('\n[' + condition + ']' if condition else '')
+        return self.edge(extension, base, label, 'edgeStyle=none;dashed=1;' + style)
+
 
 # Class-diagram relationship styles (UML)
 IMPLEMENTS = 'dashed=1;endArrow=block;endFill=0;endSize=14;'

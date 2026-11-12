@@ -127,9 +127,39 @@ def dfd():
     d.save('observer-dfd.drawio')
 
 
+def use_case():
+    d = Diagram('Observer — Use Case', 1800, 900, OUT)
+    d.title('MẪU OBSERVER — PHẢN ỨNG KHI ĐẶT / HỦY LỊCH — SƠ ĐỒ USE CASE', 1700)
+    d.system('Hệ thống đặt lịch khám — Sự kiện lịch hẹn (Observer)', 280, 80, 1260, 720)
+    d.actor('patient', 'Bệnh nhân', 120, 380)
+    d.actor('queue', 'Hàng đợi email\n(RabbitMQ)', 1640, 180)
+    d.actor('redis', 'Redis cache', 1640, 500)
+    d.case('uc-book', 'Đặt lịch khám', 330, 150)
+    d.case('uc-cancel', 'Hủy lịch khám', 330, 340)
+    d.case('uc-slots', 'Xem ca trống của bác sĩ', 330, 600)
+    d.case('uc-event', 'Phát sự kiện lịch hẹn\n(AppointmentBooked / Cancelled)', 760, 250, 360, 90)
+    d.case('uc-mail', 'Gửi email thông báo\n(AppointmentEmailObserver)', 1170, 160)
+    d.case('uc-cache', 'Làm mới danh sách ca trống\n(SlotCacheObserver)', 1170, 460)
+    d.assoc('patient', 'uc-book')
+    d.assoc('patient', 'uc-cancel')
+    d.assoc('patient', 'uc-slots')
+    d.assoc('uc-mail', 'queue')
+    d.assoc('uc-cache', 'redis')
+    d.include('uc-book', 'uc-event')
+    d.include('uc-cancel', 'uc-event')
+    d.include('uc-event', 'uc-mail')
+    d.include('uc-event', 'uc-cache')
+    d.edge('uc-slots', 'uc-cache', 'đọc danh sách đã làm mới', 'edgeStyle=none;dashed=1;endArrow=none;')
+    d.text('scope', 'Đặt lịch bị từ chối (ca kín, đổi giá, mất quyền hưởng) không phát sự kiện, nên không có email hay '
+           'thao tác cache. Thêm phản ứng mới = thêm một use case observer, không đổi "Đặt lịch khám".',
+           280, 815, 1260, 50, 14)
+    d.save('observer-use-case.drawio')
+
+
 if __name__ == '__main__':
     class_diagram()
     sequence()
     erd()
     dfd()
-    print('Generated Observer class, sequence, ERD and DFD in', OUT.relative_to(REPO))
+    use_case()
+    print('Generated Observer class, sequence, ERD, DFD and use case in', OUT.relative_to(REPO))

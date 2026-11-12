@@ -1,6 +1,6 @@
 # Thiết kế lại hệ thống đặt lịch khám bằng 7 mẫu thiết kế
 
-Hệ thống đặt lịch khám bệnh (Spring Boot + HTML/JS) được refactor để áp dụng 7 mẫu thiết kế GoF. Mỗi mẫu giải quyết một vấn đề có thật trong code đang chạy, nối vào đúng một luồng, có test chứng minh và 4 sơ đồ: class, sequence, ERD, DFD.
+Hệ thống đặt lịch khám bệnh (Spring Boot + HTML/JS) được refactor để áp dụng 7 mẫu thiết kế GoF. Mỗi mẫu giải quyết một vấn đề có thật trong code đang chạy, nối vào đúng một luồng, có test chứng minh và 5 sơ đồ: class, sequence, ERD, DFD, use case.
 
 ## Bản đồ 7 mẫu
 
@@ -20,7 +20,7 @@ Khung nét đứt là một mẫu. Luồng đặt lịch: Bệnh nhân → `Book
 | Factory Method | Tạo tài khoản Bệnh nhân/Bác sĩ lặp ở đăng ký và Admin | `AccountFactory` theo vai trò, dùng chung cho đăng ký và Admin | [factory/](factory/) |
 | Facade | Controller đặt lịch phải biết nhiều dịch vụ bên dưới | `BookingFacade` là cửa duy nhất của `BookingController` | [facade/](facade/) |
 
-Mỗi thư mục có `README.md` (định nghĩa, bài toán, vai trò trong code, 4 sơ đồ, quyết định thiết kế, kiểm thử, hạn chế), `kich-ban-thuyet-trinh.md` (≈ 5 phút) và `diagrams/`.
+Mỗi thư mục có `README.md` (định nghĩa, bài toán, vai trò trong code, 5 sơ đồ, quyết định thiết kế, kiểm thử, hạn chế), `kich-ban-thuyet-trinh.md` (≈ 5 phút) và `diagrams/`.
 
 ## Thành viên
 

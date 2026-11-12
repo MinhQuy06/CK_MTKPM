@@ -125,9 +125,40 @@ def dfd():
     d.save('builder-dfd.drawio')
 
 
+def use_case():
+    d = Diagram('Builder — Use Case', 1800, 900, OUT)
+    d.title('MẪU BUILDER — DỰNG BẢN TIN THÔNG BÁO — SƠ ĐỒ USE CASE', 1700)
+    d.system('Hệ thống đặt lịch khám — Thông báo lịch hẹn (Builder)', 280, 80, 1260, 720)
+    d.actor('patient', 'Bệnh nhân', 120, 330)
+    d.actor('job', 'Job nhắc lịch\n(chưa có)', 120, 600)
+    d.actor('queue', 'Hàng đợi email\n(RabbitMQ)', 1640, 90)
+    d.case('uc-book', 'Đặt lịch khám', 330, 150)
+    d.case('uc-cancel', 'Hủy lịch khám', 330, 330)
+    d.case('uc-remind', 'Nhắc lịch khám', 330, 600)
+    d.case('uc-notify', 'Gửi thông báo lịch hẹn', 780, 330)
+    d.case('uc-recipe', 'Chọn công thức bản tin\n(Director)', 1170, 170)
+    d.case('uc-build', 'Dựng bản tin từng trường\n(Builder)', 1170, 330)
+    d.case('uc-check', 'Kiểm tra trường bắt buộc\n(type, email, mã lịch)', 1170, 500)
+    d.case('uc-missing', 'Báo lỗi thiếu trường', 780, 620)
+    d.assoc('patient', 'uc-book')
+    d.assoc('patient', 'uc-cancel')
+    d.assoc('job', 'uc-remind')
+    d.edge('uc-notify', 'queue', '', 'edgeStyle=none;endArrow=none;exitX=0.5;exitY=0;', points=[(940, 130)])
+    for base in ('uc-book', 'uc-cancel', 'uc-remind'):
+        d.include(base, 'uc-notify')
+    d.include('uc-notify', 'uc-recipe')
+    d.include('uc-recipe', 'uc-build')
+    d.include('uc-build', 'uc-check')
+    d.extend('uc-missing', 'uc-check', 'thiếu type / email / mã lịch')
+    d.text('scope', 'Phạm vi: bản tin email cho đặt / hủy / nhắc lịch. Dịch vụ đã hỗ trợ nhắc lịch nhưng chưa có job gọi '
+           '(actor đánh dấu "chưa có"). Builder không ghi DB.', 280, 815, 1260, 50, 14)
+    d.save('builder-use-case.drawio')
+
+
 if __name__ == '__main__':
     class_diagram()
     sequence()
     erd()
     dfd()
-    print('Generated Builder class, sequence, ERD and DFD in', OUT.relative_to(REPO))
+    use_case()
+    print('Generated Builder class, sequence, ERD, DFD and use case in', OUT.relative_to(REPO))

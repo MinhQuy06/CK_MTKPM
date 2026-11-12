@@ -51,6 +51,10 @@ Ví dụ ngoài đời: quầy bánh mì. Nhân viên (Director) thuộc công t
 |---|---|
 | ![erd](diagrams/builder-erd.png) | ![dfd](diagrams/builder-dfd.png) |
 
+**Use case**
+
+![use case](diagrams/builder-use-case.png)
+
 Nguồn `.drawio` trong [diagrams/](diagrams/), sinh bằng `python3 scripts/builder/generate-diagrams.py`.
 
 ## 5. Quyết định thiết kế

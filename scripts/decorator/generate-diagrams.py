@@ -141,9 +141,39 @@ def dfd():
     d.save('decorator-dfd.drawio')
 
 
+def use_case():
+    d = Diagram('Decorator — Use Case', 1800, 1000, OUT)
+    d.title('MẪU DECORATOR — BỌC DỊCH VỤ THÔNG BÁO — SƠ ĐỒ USE CASE', 1700)
+    d.system('Hệ thống đặt lịch khám — Chuỗi thông báo (Decorator)', 280, 80, 1260, 820)
+    d.actor('patient', 'Bệnh nhân', 120, 420)
+    d.actor('queue', 'Hàng đợi email\n(RabbitMQ)', 1640, 390)
+    d.actor('sms', 'Kênh SMS\n(Adapter)', 1640, 580)
+    d.case('uc-notify', 'Nhận thông báo\nđặt / hủy / nhắc lịch', 330, 410)
+    d.case('uc-dedup', 'Chống gửi trùng', 760, 260)
+    d.case('uc-sms', 'Gửi thêm SMS', 760, 580)
+    d.case('uc-mail', 'Gửi email', 760, 420)
+    d.case('uc-log', 'Ghi lịch sử thông báo\n(notification_log)', 1170, 500)
+    d.case('uc-skip', 'Bỏ qua lần gửi trùng', 760, 120)
+    d.case('uc-smsfail', 'Ghi lỗi SMS, không chặn\nemail và đặt lịch', 760, 750)
+    d.assoc('patient', 'uc-notify')
+    d.assoc('uc-sms', 'sms')
+    d.assoc('uc-mail', 'queue')
+    for part in ('uc-dedup', 'uc-sms', 'uc-mail'):
+        d.include('uc-notify', part)
+    d.include('uc-mail', 'uc-log')
+    d.include('uc-sms', 'uc-log')
+    d.extend('uc-skip', 'uc-dedup', 'đã gửi email cùng loại')
+    d.extend('uc-smsfail', 'uc-sms', 'kênh SMS lỗi')
+    d.text('scope', 'Mỗi use case bên trong là một lớp bọc; thứ tự chạy: chống trùng → SMS → ghi lịch sử → email. '
+           'Thêm hành vi (ví dụ thử lại) = thêm một use case / lớp bọc, không sửa "Gửi email".',
+           280, 915, 1260, 50, 14)
+    d.save('decorator-use-case.drawio')
+
+
 if __name__ == '__main__':
     class_diagram()
     sequence()
     erd()
     dfd()
-    print('Generated Decorator class, sequence, ERD and DFD in', OUT.relative_to(REPO))
+    use_case()
+    print('Generated Decorator class, sequence, ERD, DFD and use case in', OUT.relative_to(REPO))

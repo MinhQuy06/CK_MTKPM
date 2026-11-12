@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" type="device">
+  <diagram id="Adapter — Use Case" name="Adapter — Use Case">
+    <mxGraphModel grid="0" page="1" pageScale="1" pageWidth="1800" pageHeight="940" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="MẪU ADAPTER — KÊNH SMS CỦA NHÀ CUNG CẤP — SƠ ĐỒ USE CASE" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=21;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="15" width="1700" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="system" value="Hệ thống đặt lịch khám — Kênh SMS (Adapter)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;verticalAlign=top;fontSize=17;fontStyle=1;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="280" y="80" width="1260" height="760" as="geometry" />
+        </mxCell>
+        <mxCell id="patient" value="Bệnh nhân" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;fontSize=16;fontStyle=1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="120" y="200" width="40" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ops" value="Người vận hành" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;fontSize=16;fontStyle=1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="120" y="650" width="40" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="vendor" value="Nhà cung cấp SMS&#10;(eSMS)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;fontSize=16;fontStyle=1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="1640" y="470" width="40" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-receive" value="Nhận SMS thông báo lịch hẹn" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="330" y="180" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-toggle" value="Bật / tắt kênh SMS&#10;(SMS_ENABLED)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="330" y="640" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-send" value="Gửi SMS qua kênh chung&#10;(NotificationChannel)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="760" y="300" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-phone" value="Chuẩn hóa số sang +84" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="140" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-text" value="Soạn nội dung SMS ngắn" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="300" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-submit" value="Gọi API nhà cung cấp&#10;và dịch mã trả về" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="460" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-nophone" value="Bỏ qua khi bệnh nhân&#10;không có số" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="330" y="420" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-disabled" value="Bỏ qua khi SMS đang tắt" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;ellipse;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="760" y="690" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;endArrow=none;" edge="1" parent="1" source="patient" target="uc-receive">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;endArrow=none;" edge="1" parent="1" source="ops" target="uc-toggle">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;endArrow=none;" edge="1" parent="1" source="uc-submit" target="vendor">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="«include»" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;dashed=1;" edge="1" parent="1" source="uc-receive" target="uc-send">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" value="«include»" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;dashed=1;" edge="1" parent="1" source="uc-send" target="uc-phone">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" value="«include»" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;dashed=1;" edge="1" parent="1" source="uc-send" target="uc-text">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" value="«include»" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;dashed=1;" edge="1" parent="1" source="uc-send" target="uc-submit">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" value="«extend»&#10;[số rỗng]" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;dashed=1;" edge="1" parent="1" source="uc-nophone" target="uc-send">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" value="«extend»&#10;[SMS_ENABLED=false]" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;edgeStyle=none;dashed=1;" edge="1" parent="1" source="uc-disabled" target="uc-send">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="scope" value="Phần còn lại của hệ thống chỉ biết &quot;Gửi SMS qua kênh chung&quot;; mọi chi tiết của nhà cung cấp nằm trong &quot;Gọi API nhà cung cấp&quot;. Đổi nhà cung cấp = thay client phía sau, không đổi use case nào khác." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="280" y="855" width="1260" height="50" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -55,6 +55,10 @@ Nếu gọi thẳng SDK ở chỗ gửi thông báo, mọi chi tiết đó lan v
 |---|---|
 | ![erd](diagrams/adapter-erd.png) | ![dfd](diagrams/adapter-dfd.png) |
 
+**Use case**
+
+![use case](diagrams/adapter-use-case.png)
+
 Nguồn `.drawio` trong [diagrams/](diagrams/), sinh bằng `python3 scripts/adapter/generate-diagrams.py`.
 
 ## 5. Quyết định thiết kế
