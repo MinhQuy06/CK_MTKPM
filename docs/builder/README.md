@@ -1,6 +1,6 @@
 # Builder: dựng bản tin thông báo lịch hẹn
 
-[← Bản đồ 7 mẫu](../README.md) · [Kịch bản thuyết trình](kich-ban-thuyet-trinh.md)
+[← Bản đồ 7 mẫu](../README.md) · [Tài liệu chi tiết](tai-lieu-builder.md) · [Kịch bản thuyết trình](kich-ban-thuyet-trinh.md)
 
 ## 1. Mẫu Builder là gì
 

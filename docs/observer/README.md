@@ -1,6 +1,6 @@
 # Observer: phản ứng khi đặt / hủy lịch
 
-[← Bản đồ 7 mẫu](../README.md) · [Kịch bản thuyết trình](kich-ban-thuyet-trinh.md)
+[← Bản đồ 7 mẫu](../README.md) · [Tài liệu chi tiết](tai-lieu-observer.md) · [Kịch bản thuyết trình](kich-ban-thuyet-trinh.md)
 
 ## 1. Mẫu Observer là gì
 
