@@ -1,6 +1,6 @@
 # Builder: dựng bản tin thông báo lịch hẹn
 
-[← Bản đồ 7 mẫu](../README.md) · [Kịch bản thuyết trình](kich-ban-thuyet-trinh.md)
+[← Bản đồ 7 mẫu](../README.md) · [Tài liệu chi tiết](tai-lieu-builder.md) · [Kịch bản thuyết trình](kich-ban-thuyet-trinh.md)
 
 ## 1. Mẫu Builder là gì
 
@@ -50,6 +50,10 @@ Ví dụ ngoài đời: quầy bánh mì. Nhân viên (Director) thuộc công t
 | ERD | DFD |
 |---|---|
 | ![erd](diagrams/builder-erd.png) | ![dfd](diagrams/builder-dfd.png) |
+
+**Use case**
+
+![use case](diagrams/builder-use-case.png)
 
 Nguồn `.drawio` trong [diagrams/](diagrams/), sinh bằng `python3 scripts/builder/generate-diagrams.py`.
 

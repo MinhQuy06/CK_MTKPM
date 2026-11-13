@@ -1,6 +1,6 @@
 # Observer: phản ứng khi đặt / hủy lịch
 
-[← Bản đồ 7 mẫu](../README.md) · [Kịch bản thuyết trình](kich-ban-thuyet-trinh.md)
+[← Bản đồ 7 mẫu](../README.md) · [Tài liệu chi tiết](tai-lieu-observer.md) · [Kịch bản thuyết trình](kich-ban-thuyet-trinh.md)
 
 ## 1. Mẫu Observer là gì
 
@@ -49,6 +49,10 @@ Ví dụ ngoài đời: đăng ký kênh YouTube. Kênh (Subject) đăng video t
 | ERD | DFD |
 |---|---|
 | ![erd](diagrams/observer-erd.png) | ![dfd](diagrams/observer-dfd.png) |
+
+**Use case**
+
+![use case](diagrams/observer-use-case.png)
 
 Nguồn `.drawio` trong [diagrams/](diagrams/), sinh bằng `python3 scripts/observer/generate-diagrams.py`.
 

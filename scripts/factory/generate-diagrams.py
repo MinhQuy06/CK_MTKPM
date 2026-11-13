@@ -137,9 +137,41 @@ def dfd():
     d.save('factory-dfd.drawio')
 
 
+def use_case():
+    d = Diagram('Factory — Use Case', 1800, 1080, OUT)
+    d.title('MẪU FACTORY METHOD — MỞ TÀI KHOẢN THEO VAI TRÒ — SƠ ĐỒ USE CASE', 1700)
+    d.system('Hệ thống đặt lịch khám — Mở tài khoản (Factory Method)', 280, 80, 1260, 900)
+    d.actor('guest', 'Khách', 120, 230)
+    d.actor('admin', 'Admin', 120, 660)
+    d.case('uc-reg-patient', 'Đăng ký tài khoản\nbệnh nhân', 330, 130)
+    d.case('uc-reg-doctor', 'Đăng ký tài khoản bác sĩ', 330, 300)
+    d.case('uc-adm-doctor', 'Tạo tài khoản bác sĩ', 330, 560)
+    d.case('uc-adm-patient', 'Tạo tài khoản bệnh nhân', 330, 730)
+    d.case('uc-open', 'Mở tài khoản theo vai trò\n(AccountFactory)', 780, 430)
+    d.case('uc-login', 'Tạo login\n(mã hóa mật khẩu, gán vai trò)', 1170, 300)
+    d.case('uc-profile', 'Tạo hồ sơ theo vai trò\n(factory method)', 1170, 560)
+    d.case('uc-reject', 'Từ chối vai trò\nkhông có factory', 780, 160)
+    d.case('uc-approve', 'Duyệt bác sĩ tự đăng ký', 330, 880)
+    d.assoc('guest', 'uc-reg-patient')
+    d.assoc('guest', 'uc-reg-doctor')
+    d.assoc('admin', 'uc-adm-doctor')
+    d.assoc('admin', 'uc-adm-patient')
+    d.assoc('admin', 'uc-approve')
+    for base in ('uc-reg-patient', 'uc-reg-doctor', 'uc-adm-doctor', 'uc-adm-patient'):
+        d.include(base, 'uc-open')
+    d.include('uc-open', 'uc-login')
+    d.include('uc-open', 'uc-profile')
+    d.extend('uc-reject', 'uc-open', 'ADMIN, NURSE…')
+    d.text('scope', 'Bốn cách mở tài khoản đều đi qua "Mở tài khoản theo vai trò". Không có factory ADMIN nên không ai '
+           'tự đăng ký được Admin. Bác sĩ tự đăng ký chờ Admin duyệt; bác sĩ do Admin tạo được duyệt sẵn.',
+           280, 995, 1260, 50, 14)
+    d.save('factory-use-case.drawio')
+
+
 if __name__ == '__main__':
     class_diagram()
     sequence()
     erd()
     dfd()
-    print('Generated Factory class, sequence, ERD and DFD in', OUT.relative_to(REPO))
+    use_case()
+    print('Generated Factory class, sequence, ERD, DFD and use case in', OUT.relative_to(REPO))

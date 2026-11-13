@@ -1,6 +1,6 @@
 # Factory Method: tạo tài khoản theo vai trò
 
-[← Bản đồ 7 mẫu](../README.md) · [Kịch bản thuyết trình](kich-ban-thuyet-trinh.md)
+[← Bản đồ 7 mẫu](../README.md) · [Tài liệu chi tiết](tai-lieu-factory.md) · [Kịch bản thuyết trình](kich-ban-thuyet-trinh.md)
 
 ## 1. Mẫu Factory Method là gì
 
@@ -53,6 +53,10 @@ Thêm vai trò mới (ví dụ y tá) phải sửa cả ba chỗ; chỉ một ch
 | ERD | DFD |
 |---|---|
 | ![erd](diagrams/factory-erd.png) | ![dfd](diagrams/factory-dfd.png) |
+
+**Use case**
+
+![use case](diagrams/factory-use-case.png)
 
 Nguồn `.drawio` trong [diagrams/](diagrams/), sinh bằng `python3 scripts/factory/generate-diagrams.py`.
 

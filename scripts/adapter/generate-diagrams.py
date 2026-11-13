@@ -122,9 +122,39 @@ def dfd():
     d.save('adapter-dfd.drawio')
 
 
+def use_case():
+    d = Diagram('Adapter — Use Case', 1800, 940, OUT)
+    d.title('MẪU ADAPTER — KÊNH SMS CỦA NHÀ CUNG CẤP — SƠ ĐỒ USE CASE', 1700)
+    d.system('Hệ thống đặt lịch khám — Kênh SMS (Adapter)', 280, 80, 1260, 760)
+    d.actor('patient', 'Bệnh nhân', 120, 200)
+    d.actor('ops', 'Người vận hành', 120, 650)
+    d.actor('vendor', 'Nhà cung cấp SMS\n(eSMS)', 1640, 470)
+    d.case('uc-receive', 'Nhận SMS thông báo lịch hẹn', 330, 180)
+    d.case('uc-toggle', 'Bật / tắt kênh SMS\n(SMS_ENABLED)', 330, 640)
+    d.case('uc-send', 'Gửi SMS qua kênh chung\n(NotificationChannel)', 760, 300)
+    d.case('uc-phone', 'Chuẩn hóa số sang +84', 1170, 140)
+    d.case('uc-text', 'Soạn nội dung SMS ngắn', 1170, 300)
+    d.case('uc-submit', 'Gọi API nhà cung cấp\nvà dịch mã trả về', 1170, 460)
+    d.case('uc-nophone', 'Bỏ qua khi bệnh nhân\nkhông có số', 330, 420)
+    d.case('uc-disabled', 'Bỏ qua khi SMS đang tắt', 760, 690)
+    d.assoc('patient', 'uc-receive')
+    d.assoc('ops', 'uc-toggle')
+    d.assoc('uc-submit', 'vendor')
+    d.include('uc-receive', 'uc-send')
+    for part in ('uc-phone', 'uc-text', 'uc-submit'):
+        d.include('uc-send', part)
+    d.extend('uc-nophone', 'uc-send', 'số rỗng')
+    d.extend('uc-disabled', 'uc-send', 'SMS_ENABLED=false')
+    d.text('scope', 'Phần còn lại của hệ thống chỉ biết "Gửi SMS qua kênh chung"; mọi chi tiết của nhà cung cấp nằm '
+           'trong "Gọi API nhà cung cấp". Đổi nhà cung cấp = thay client phía sau, không đổi use case nào khác.',
+           280, 855, 1260, 50, 14)
+    d.save('adapter-use-case.drawio')
+
+
 if __name__ == '__main__':
     class_diagram()
     sequence()
     erd()
     dfd()
-    print('Generated Adapter class, sequence, ERD and DFD in', OUT.relative_to(REPO))
+    use_case()
+    print('Generated Adapter class, sequence, ERD, DFD and use case in', OUT.relative_to(REPO))

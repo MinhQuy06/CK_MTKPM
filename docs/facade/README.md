@@ -1,6 +1,6 @@
 # Facade: một cửa cho thao tác lịch hẹn
 
-[← Bản đồ 7 mẫu](../README.md) · [Kịch bản thuyết trình](kich-ban-thuyet-trinh.md)
+[← Bản đồ 7 mẫu](../README.md) · [Tài liệu chi tiết](tai-lieu-facade.md) · [Kịch bản thuyết trình](kich-ban-thuyet-trinh.md)
 
 ## 1. Mẫu Facade là gì
 
@@ -52,6 +52,10 @@ Các controller Strategy (báo giá, quyền hưởng) **không** đi qua Facade
 | ERD | DFD |
 |---|---|
 | ![erd](diagrams/facade-erd.png) | ![dfd](diagrams/facade-dfd.png) |
+
+**Use case**
+
+![use case](diagrams/facade-use-case.png)
 
 Nguồn `.drawio` trong [diagrams/](diagrams/), sinh bằng `python3 scripts/facade/generate-diagrams.py`.
 

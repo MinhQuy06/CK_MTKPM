@@ -1,6 +1,6 @@
 # Decorator: bọc dịch vụ thông báo
 
-[← Bản đồ 7 mẫu](../README.md) · [Kịch bản thuyết trình](kich-ban-thuyet-trinh.md)
+[← Bản đồ 7 mẫu](../README.md) · [Tài liệu chi tiết](tai-lieu-decorator.md) · [Kịch bản thuyết trình](kich-ban-thuyet-trinh.md) · [Kịch bản thuyết trình chung Adapter + Decorator](../thuyet-trinh-adapter-decorator.md) · [Lý thuyết + giải thích sơ đồ](ly-thuyet-decorator.md) · [Bản Word](../adapter-decorator.docx)
 
 ## 1. Mẫu Decorator là gì
 
@@ -56,6 +56,10 @@ Thứ tự từ ngoài vào trong: **chống trùng → SMS → ghi lịch sử 
 | ERD | DFD |
 |---|---|
 | ![erd](diagrams/decorator-erd.png) | ![dfd](diagrams/decorator-dfd.png) |
+
+**Use case**
+
+![use case](diagrams/decorator-use-case.png)
 
 Nguồn `.drawio` trong [diagrams/](diagrams/), sinh bằng `python3 scripts/decorator/generate-diagrams.py`.
 

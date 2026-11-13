@@ -107,7 +107,7 @@
             <mxPoint x="1830" y="947" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="l14" value="DeliveryResult (SENT / SKIPPED_NO_PHONE / FAILED)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
+        <mxCell id="l14" value="DeliveryResult (SENT / SKIPPED_NO_PHONE / SKIPPED_DISABLED / FAILED)" edge="1" parent="1" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;verticalAlign=bottom;">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="1830" y="1009" as="sourcePoint" />
             <mxPoint x="710" y="1009" as="targetPoint" />
@@ -182,7 +182,7 @@
             <mxPoint x="1830" y="1383" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="footer" value="Nhắc lịch và hủy lịch đi cùng chuỗi. Mọi dòng lịch sử nằm trong giao dịch đặt lịch nên rollback thì không còn dòng nào. Giới hạn: SMS giả lập đi ngay, email đi sau commit." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=5;" vertex="1" parent="1">
+        <mxCell id="footer" value="Nhắc lịch và hủy lịch đi cùng chuỗi. Mọi dòng lịch sử nằm trong giao dịch đặt lịch nên rollback thì không còn dòng nào. Giới hạn: SMS gửi ngay trong giao dịch, email đi sau commit." style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;shape=text;strokeColor=none;fillColor=none;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;spacing=5;" vertex="1" parent="1">
           <mxGeometry x="30" y="1408" width="1950" height="60" as="geometry" />
         </mxCell>
       </root>

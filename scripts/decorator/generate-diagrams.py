@@ -28,7 +28,7 @@ def class_diagram():
         '  ngược lại → inner.send…(a)'], 760, 520, 600)
     d.uml('sms', '«ConcreteDecorator» 2\nSmsNotificationDecorator', [
         '- channel: NotificationChannel  (Adapter)', '- director: NotificationMessageDirector',
-        '- history: NotificationLogRepository', '+ send…(a): inner.send…(a), rồi SMS', '  ghi SMS SENT / SKIPPED_NO_PHONE / FAILED',
+        '- history: NotificationLogRepository', '+ send…(a): inner.send…(a), rồi SMS', '  ghi SMS SENT / SKIPPED_NO_PHONE / SKIPPED_DISABLED / FAILED',
         '  lỗi SMS không ném ra ngoài'], 1440, 520, 680)
     d.uml('audit', '«ConcreteDecorator» 3 — sát email\nAuditLogDecorator', [
         '- history: NotificationLogRepository', '+ send…(a): inner.send…(a)', '  → ghi EMAIL SENT (lỗi → FAILED, ném lại)'],
@@ -73,7 +73,7 @@ def sequence():
     s.call(3, 5, 'save(… EMAIL SENT)')
     s.reply(3, 2, '')
     s.call(2, 6, 'send(patient.phone, director.bookingConfirmed(a))')
-    s.reply(6, 2, 'DeliveryResult (SENT / SKIPPED_NO_PHONE / FAILED)')
+    s.reply(6, 2, 'DeliveryResult (SENT / SKIPPED_NO_PHONE / SKIPPED_DISABLED / FAILED)')
     s.begin('alt [kênh SMS ném ngoại lệ]')
     s.step(2, 'bắt lỗi → DeliveryResult(FAILED, lý do)', 360, 44)
     s.end()
@@ -81,7 +81,7 @@ def sequence():
     s.reply(2, 1, '')
     s.reply(1, 0, '')
     s.footer('Nhắc lịch và hủy lịch đi cùng chuỗi. Mọi dòng lịch sử nằm trong giao dịch đặt lịch nên rollback thì không '
-             'còn dòng nào. Giới hạn: SMS giả lập đi ngay, email đi sau commit.')
+             'còn dòng nào. Giới hạn: SMS gửi ngay trong giao dịch, email đi sau commit.')
     s.save('decorator-sequence.drawio')
 
 
@@ -98,7 +98,7 @@ def erd():
         ('', '', '(BOOKING_CONFIRMED | APPOINTMENT_REMINDER | BOOKING_CANCELLED)'),
         ('', 'booking_code', 'VARCHAR(50) NOT NULL'), ('', 'channel', 'VARCHAR(10) NOT NULL  (EMAIL | SMS)'),
         ('', 'status', 'VARCHAR(30) NOT NULL'),
-        ('', '', '(SENT | FAILED | SKIPPED_DUPLICATE | SKIPPED_NO_PHONE)'), ('', 'note', 'VARCHAR(255) NULL'),
+        ('', '', '(SENT | FAILED | SKIPPED_DUPLICATE | SKIPPED_NO_PHONE | SKIPPED_DISABLED)'), ('', 'note', 'VARCHAR(255) NULL'),
         ('', 'created_at', 'DATETIME(6) NOT NULL'), ('', '', ''), ('IDX', 'idx_notification_log_booking', ''),
         ('', '  (booking_code, type)', '')], 800, 160, 900, new=True)
     d.rel('appointments', 'patients', 'patient_id', 'ERzeroToMany', 'ERmandOne', 'exitX=0.5;exitY=1;entryX=0.5;entryY=0;')
@@ -134,11 +134,40 @@ def dfd():
     d.edge('d2', 'p3', 'phone', 'exitX=0.5;exitY=0;entryX=0.5;entryY=1;')
     d.edge('p3', 'vendor', 'số + bản tin', 'exitX=1;exitY=0.4;entryX=0;entryY=0.4;')
     d.edge('vendor', 'p3', 'DeliveryResult', 'exitX=0;exitY=0.75;entryX=1;entryY=0.75;')
-    d.edge('p3', 'd1', 'SMS SENT /\nSKIPPED_NO_PHONE /\nFAILED', 'exitX=0.2;exitY=0.95;entryX=0.9;entryY=0;',
+    d.edge('p3', 'd1', 'SMS SENT /\nSKIPPED_NO_PHONE /\nSKIPPED_DISABLED / FAILED', 'exitX=0.2;exitY=0.95;entryX=0.9;entryY=0;',
            [(1222, 600), (1024, 600)])
     d.text('note', 'Yourdon/DeMarco. Thứ tự tiến trình đúng thứ tự lớp bọc: 1.0 chống trùng (ngoài cùng) → 2.0 email '
            '(ghi lịch sử nằm sát email) → 3.0 SMS sau email.', 40, 810, 2100, 50, 14)
     d.save('decorator-dfd.drawio')
+
+
+def use_case():
+    d = Diagram('Decorator — Use Case', 1800, 1000, OUT)
+    d.title('MẪU DECORATOR — BỌC DỊCH VỤ THÔNG BÁO — SƠ ĐỒ USE CASE', 1700)
+    d.system('Hệ thống đặt lịch khám — Chuỗi thông báo (Decorator)', 280, 80, 1260, 820)
+    d.actor('patient', 'Bệnh nhân', 120, 420)
+    d.actor('queue', 'Hàng đợi email\n(RabbitMQ)', 1640, 390)
+    d.actor('sms', 'Kênh SMS\n(Adapter)', 1640, 580)
+    d.case('uc-notify', 'Nhận thông báo\nđặt / hủy / nhắc lịch', 330, 410)
+    d.case('uc-dedup', 'Chống gửi trùng', 760, 260)
+    d.case('uc-sms', 'Gửi thêm SMS', 760, 580)
+    d.case('uc-mail', 'Gửi email', 760, 420)
+    d.case('uc-log', 'Ghi lịch sử thông báo\n(notification_log)', 1170, 500)
+    d.case('uc-skip', 'Bỏ qua lần gửi trùng', 760, 120)
+    d.case('uc-smsfail', 'Ghi lỗi SMS, không chặn\nemail và đặt lịch', 760, 750)
+    d.assoc('patient', 'uc-notify')
+    d.assoc('uc-sms', 'sms')
+    d.assoc('uc-mail', 'queue')
+    for part in ('uc-dedup', 'uc-sms', 'uc-mail'):
+        d.include('uc-notify', part)
+    d.include('uc-mail', 'uc-log')
+    d.include('uc-sms', 'uc-log')
+    d.extend('uc-skip', 'uc-dedup', 'đã gửi email cùng loại')
+    d.extend('uc-smsfail', 'uc-sms', 'kênh SMS lỗi')
+    d.text('scope', 'Mỗi use case bên trong là một lớp bọc; thứ tự chạy: chống trùng → SMS → ghi lịch sử → email. '
+           'Thêm hành vi (ví dụ thử lại) = thêm một use case / lớp bọc, không sửa "Gửi email".',
+           280, 915, 1260, 50, 14)
+    d.save('decorator-use-case.drawio')
 
 
 if __name__ == '__main__':
@@ -146,4 +175,5 @@ if __name__ == '__main__':
     sequence()
     erd()
     dfd()
-    print('Generated Decorator class, sequence, ERD and DFD in', OUT.relative_to(REPO))
+    use_case()
+    print('Generated Decorator class, sequence, ERD, DFD and use case in', OUT.relative_to(REPO))
