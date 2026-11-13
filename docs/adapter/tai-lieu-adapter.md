@@ -222,7 +222,7 @@ Sinh lại bằng `python3 scripts/adapter/generate-diagrams.py`; xuất PNG b�
 |---|---:|---|
 | `SmsChannelAdapterTests` | 4 (một test tham số hóa) | Qua bean `NotificationChannel`: nhà cung cấp nhận đúng `+84…` và nội dung có mã lịch; số nội địa được đổi; số `null`/rỗng → SKIPPED_NO_PHONE; số sai → FAILED; hai trường hợp sau không gọi nhà cung cấp |
 | `VietnamPhoneTests` | 2 (tham số hóa) | Các dạng số phổ biến và các dạng sai |
-| `EsmsGatewayClientTests` | 3 | Máy chủ HTTP giả lập eSMS: từ chối → `REJECTED`; HTTP lỗi → ngoại lệ; thiếu khóa → không khởi tạo |
+| `EsmsGatewayClientTests` | 4 | Máy chủ HTTP giả lập eSMS: gửi đúng định dạng, mã `100` → `OK`; từ chối → `REJECTED`; HTTP lỗi → ngoại lệ; thiếu khóa → không khởi tạo |
 | `DisabledSmsChannelTests` | 1 | SMS tắt → `SKIPPED_DISABLED`, không phải FAILED |
 | `SmsNotificationIntegrationTests` (chung với Decorator) | 2 | Qua API: bệnh nhân có số đặt lịch → nhà cung cấp nhận đúng 1 tin |
 
