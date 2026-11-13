@@ -4,6 +4,8 @@ Phần mẫu cấu trúc, slide 16–24 trong bộ slide chung. Thời lượng 
 
 [README Adapter](adapter/README.md) · [Tài liệu Adapter](adapter/tai-lieu-adapter.md) · [README Decorator](decorator/README.md) · [Tài liệu Decorator](decorator/tai-lieu-decorator.md)
 
+Học kỹ trước khi nói: [Lý thuyết Adapter](adapter/ly-thuyet-adapter.md) · [Lý thuyết Decorator](decorator/ly-thuyet-decorator.md) (lý thuyết, điều kiện, cách làm trong bài, nếu không dùng thì sao, giải thích từng sơ đồ). Bản Word gộp cả ba: [adapter-decorator.docx](adapter-decorator.docx), sinh lại bằng `python3 scripts/common/build-adapter-decorator-docx.py . docs/adapter-decorator.docx`.
+
 ---
 
 ## Tóm tắt một dòng (thuộc lòng)

@@ -217,7 +217,7 @@
         <mxCell id="adapter" value="SmsChannelAdapter&#10;+ VietnamPhone (+84)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
           <mxGeometry x="320" y="1340" width="240" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="vendor" value="SimulatedSms&#10;GatewayClient" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
+        <mxCell id="vendor" value="SmsGatewayClient&#10;eSMS / tắt" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;whiteSpace=wrap;fontSize=15;" vertex="1" parent="1">
           <mxGeometry x="600" y="1340" width="220" height="90" as="geometry" />
         </mxCell>
         <mxCell id="e24" value="send(phone, message)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Arial;shadow=0;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=open;exitX=0.3;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="sms" target="channel">

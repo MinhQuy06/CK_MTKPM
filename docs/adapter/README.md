@@ -1,6 +1,6 @@
 # Adapter: kênh SMS của nhà cung cấp
 
-[← Bản đồ 7 mẫu](../README.md) · [Tài liệu chi tiết](tai-lieu-adapter.md) · [Kịch bản thuyết trình](kich-ban-thuyet-trinh.md) · [Kịch bản thuyết trình chung Adapter + Decorator](../thuyet-trinh-adapter-decorator.md)
+[← Bản đồ 7 mẫu](../README.md) · [Tài liệu chi tiết](tai-lieu-adapter.md) · [Kịch bản thuyết trình](kich-ban-thuyet-trinh.md) · [Kịch bản thuyết trình chung Adapter + Decorator](../thuyet-trinh-adapter-decorator.md) · [Lý thuyết + giải thích sơ đồ](ly-thuyet-adapter.md) · [Bản Word](../adapter-decorator.docx)
 
 ## 1. Mẫu Adapter là gì
 

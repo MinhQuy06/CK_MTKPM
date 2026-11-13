@@ -89,7 +89,7 @@ def main():
     frame(d, 'f-adapter', '«Adapter»', 40, 1290, 800, 170)
     d.box('channel', 'NotificationChannel\n«interface»', 60, 1340, 220, 90, BOX)
     d.box('adapter', 'SmsChannelAdapter\n+ VietnamPhone (+84)', 320, 1340, 240, 90, BOX)
-    d.box('vendor', 'SimulatedSms\nGatewayClient', 600, 1340, 220, 90, BOX)
+    d.box('vendor', 'SmsGatewayClient\neSMS / tắt', 600, 1340, 220, 90, BOX)
     d.edge('sms', 'channel', 'send(phone, message)', 'exitX=0.3;exitY=1;entryX=0.5;entryY=0;', [(526, 1270), (170, 1270)])
     d.edge('adapter', 'channel', '', 'dashed=1;endArrow=block;endFill=0;endSize=14;exitX=0;exitY=0.5;entryX=1;entryY=0.5;')
     d.edge('adapter', 'vendor', 'submitSms', 'exitX=1;exitY=0.5;entryX=0;entryY=0.5;')

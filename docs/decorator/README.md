@@ -1,6 +1,6 @@
 # Decorator: bọc dịch vụ thông báo
 
-[← Bản đồ 7 mẫu](../README.md) · [Tài liệu chi tiết](tai-lieu-decorator.md) · [Kịch bản thuyết trình](kich-ban-thuyet-trinh.md) · [Kịch bản thuyết trình chung Adapter + Decorator](../thuyet-trinh-adapter-decorator.md)
+[← Bản đồ 7 mẫu](../README.md) · [Tài liệu chi tiết](tai-lieu-decorator.md) · [Kịch bản thuyết trình](kich-ban-thuyet-trinh.md) · [Kịch bản thuyết trình chung Adapter + Decorator](../thuyet-trinh-adapter-decorator.md) · [Lý thuyết + giải thích sơ đồ](ly-thuyet-decorator.md) · [Bản Word](../adapter-decorator.docx)
 
 ## 1. Mẫu Decorator là gì
 
